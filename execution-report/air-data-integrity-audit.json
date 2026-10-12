@@ -1,44 +1,44 @@
 {
-  "generatedAt": "2026-10-08T11:27:23.494Z",
+  "generatedAt": "2026-10-12T09:08:45.737Z",
   "provenance": {
     "mode": "CURRENT_EXECUTION",
     "sourceArtifact": "test-results/results.json",
     "sourceFramework": "Playwright",
-    "generatedAt": "2026-10-08T11:27:22.686Z",
+    "generatedAt": "2026-10-12T09:08:45.353Z",
     "restoredFromHistory": false,
     "warning": ""
   },
   "sourceExecution": {
     "source": "json-reporter",
-    "total": 725,
-    "rawTestCount": 725,
-    "attempts": 725,
-    "passed": 548,
-    "failed": 10,
-    "skipped": 167,
+    "total": 726,
+    "rawTestCount": 726,
+    "attempts": 727,
+    "passed": 554,
+    "failed": 15,
+    "skipped": 157,
     "flaky": 0,
     "interrupted": 0,
     "statuses": {
-      "expected": 548,
-      "skipped": 167,
-      "unexpected": 10
+      "expected": 554,
+      "unexpected": 15,
+      "skipped": 157
     }
   },
   "airExecution": {
-    "total": 725,
-    "attempts": 725,
-    "passed": 548,
-    "failed": 10,
-    "skipped": 167,
+    "total": 726,
+    "attempts": 727,
+    "passed": 554,
+    "failed": 15,
+    "skipped": 157,
     "flaky": 0,
     "interrupted": 0,
-    "retryCount": 0
+    "retryCount": 1
   },
   "reconciliation": {
     "status": "PASS",
-    "sourceTotal": 725,
-    "expectedAirTotal": 725,
-    "airTotal": 725,
+    "sourceTotal": 726,
+    "expectedAirTotal": 726,
+    "airTotal": 726,
     "difference": 0
   },
   "duplicates": {
@@ -49,10 +49,10 @@
   },
   "orphanEvidence": [],
   "evidenceClassification": {
-    "perTestEvidence": 10,
+    "perTestEvidence": 25,
     "executionArtifacts": 2,
     "rawReports": 2,
-    "totalWithRawReports": 12,
+    "totalWithRawReports": 27,
     "rawReportsCountAsFailureEvidence": false
   },
   "invalidModuleReferences": [],
@@ -61,9 +61,45 @@
   "evidenceTraceability": {
     "failedTests": [
       {
+        "testId": "chromium > Opportunities.spec.ts > Opportunities > Opportunity tabs filters and row actions show CTA data",
+        "testName": "Opportunities > Opportunity tabs filters and row actions show CTA data",
+        "evidenceCount": 2,
+        "status": "Evidence Available"
+      },
+      {
+        "testId": "chromium > Opportunities.spec.ts > Opportunities > Opportunity save view research watch and pagination",
+        "testName": "Opportunities > Opportunity save view research watch and pagination",
+        "evidenceCount": 2,
+        "status": "Evidence Available"
+      },
+      {
+        "testId": "chromium > DashboardMoreScreens.spec.ts > More dashboard screens > CTA Details opens without changing watch status",
+        "testName": "More dashboard screens > CTA Details opens without changing watch status",
+        "evidenceCount": 5,
+        "status": "Evidence Available"
+      },
+      {
+        "testId": "chromium > DashboardCoverageDepth.spec.ts > Deeper dashboard controls > Simulator clears the searched symbol",
+        "testName": "Deeper dashboard controls > Simulator clears the searched symbol",
+        "evidenceCount": 2,
+        "status": "Evidence Available"
+      },
+      {
+        "testId": "chromium > DashboardScenarioSweep.spec.ts > Remaining dashboard scenarios > Simulator searches a symbol and switches the risk profile",
+        "testName": "Remaining dashboard scenarios > Simulator searches a symbol and switches the risk profile",
+        "evidenceCount": 2,
+        "status": "Evidence Available"
+      },
+      {
+        "testId": "chromium > ProfileSecurityDisplay.spec.ts > Profile Security Display > Profile security MFA backup codes trusted devices and refresh",
+        "testName": "Profile Security Display > Profile security MFA backup codes trusted devices and refresh",
+        "evidenceCount": 2,
+        "status": "Evidence Available"
+      },
+      {
         "testId": "chromium > forgotpassword.spec.ts > Disposable user resets password from the email link and signs in with the new password",
         "testName": "Disposable user resets password from the email link and signs in with the new password",
-        "evidenceCount": 3,
+        "evidenceCount": 2,
         "status": "Evidence Available"
       },
       {
@@ -79,16 +115,22 @@
         "status": "Evidence Available"
       },
       {
+        "testId": "chromium > NewSubscriptionPurchaseMatrix.spec.ts > New Subscription Purchase Use Case 2 Matrix > SC-75I - Invoice PDF amount, currency, and plan match the purchased subscription",
+        "testName": "New Subscription Purchase Use Case 2 Matrix > SC-75I - Invoice PDF amount, currency, and plan match the purchased subscription",
+        "evidenceCount": 1,
+        "status": "Evidence Available"
+      },
+      {
         "testId": "chromium > UpgradeSubscriptionMatrix.spec.ts > Upgrade Subscription Use Case 3 Matrix > SC-95 - Upgrade confirmation email is sent",
         "testName": "Upgrade Subscription Use Case 3 Matrix > SC-95 - Upgrade confirmation email is sent",
         "evidenceCount": 1,
         "status": "Evidence Available"
       },
       {
-        "testId": "chromium > DowngradeSubscriptionMatrix.spec.ts > Downgrade Subscription Use Case 4 Matrix > SC-142 - Scheduled downgrade appears in subscription history",
-        "testName": "Downgrade Subscription Use Case 4 Matrix > SC-142 - Scheduled downgrade appears in subscription history",
-        "evidenceCount": 0,
-        "status": "Evidence Missing"
+        "testId": "chromium > DowngradeSubscriptionMatrix.spec.ts > Downgrade Subscription Use Case 4 Matrix > SC-141 - Scheduled downgrade appears in billing overview",
+        "testName": "Downgrade Subscription Use Case 4 Matrix > SC-141 - Scheduled downgrade appears in billing overview",
+        "evidenceCount": 1,
+        "status": "Evidence Available"
       },
       {
         "testId": "chromium > MonthlyAnnualBillingChangeMatrix.spec.ts > Monthly To Annual Billing Change Use Case 5 Matrix > SC-182 - Confirmation email is sent after monthly-to-annual change",
@@ -97,26 +139,14 @@
         "status": "Evidence Available"
       },
       {
-        "testId": "chromium > MonthlyAnnualBillingChangeMatrix.spec.ts > Monthly To Annual Billing Change Use Case 5 Matrix > SC-196 - Annual savings messaging is displayed accurately",
-        "testName": "Monthly To Annual Billing Change Use Case 5 Matrix > SC-196 - Annual savings messaging is displayed accurately",
+        "testId": "chromium > MonthlyAnnualBillingChangeMatrix.spec.ts > Monthly To Annual Billing Change Use Case 5 Matrix > SC-186 - Double-clicking annual switch confirmation is idempotent",
+        "testName": "Monthly To Annual Billing Change Use Case 5 Matrix > SC-186 - Double-clicking annual switch confirmation is idempotent",
         "evidenceCount": 1,
         "status": "Evidence Available"
-      },
-      {
-        "testId": "chromium > AnnualMonthlyBillingChangeMatrix.spec.ts > Annual To Monthly Billing Change Use Case 6 Matrix > SC-214 - Annual-to-monthly change records subscription history",
-        "testName": "Annual To Monthly Billing Change Use Case 6 Matrix > SC-214 - Annual-to-monthly change records subscription history",
-        "evidenceCount": 0,
-        "status": "Evidence Missing"
       },
       {
         "testId": "chromium > SubscriptionCancellationMatrix.spec.ts > Subscription Cancellation Use Case 7 Matrix > SC-262 - Cancellation confirmation email is sent",
         "testName": "Subscription Cancellation Use Case 7 Matrix > SC-262 - Cancellation confirmation email is sent",
-        "evidenceCount": 1,
-        "status": "Evidence Available"
-      },
-      {
-        "testId": "chromium > SubscriptionCancellationMatrix.spec.ts > Subscription Cancellation Use Case 7 Matrix > SC-275 - Card-backed trial can be cancelled before auto-renewal",
-        "testName": "Subscription Cancellation Use Case 7 Matrix > SC-275 - Card-backed trial can be cancelled before auto-renewal",
         "evidenceCount": 1,
         "status": "Evidence Available"
       }
@@ -136,6 +166,21 @@
         "references": [
           {
             "type": "Failure",
+            "name": "Deeper dashboard controls > Simulator clears the searched symbol",
+            "detail": "Critical failure severity matched release rules."
+          },
+          {
+            "type": "Failure",
+            "name": "Remaining dashboard scenarios > Simulator searches a symbol and switches the risk profile",
+            "detail": "Critical failure severity matched release rules."
+          },
+          {
+            "type": "Failure",
+            "name": "Profile Security Display > Profile security MFA backup codes trusted devices and refresh",
+            "detail": "Critical failure severity matched release rules."
+          },
+          {
+            "type": "Failure",
             "name": "Disposable user resets password from the email link and signs in with the new password",
             "detail": "Critical failure severity matched release rules."
           },
@@ -151,32 +196,12 @@
           },
           {
             "type": "Failure",
-            "name": "Downgrade Subscription Use Case 4 Matrix > SC-142 - Scheduled downgrade appears in subscription history",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
             "name": "Monthly To Annual Billing Change Use Case 5 Matrix > SC-182 - Confirmation email is sent after monthly-to-annual change",
             "detail": "Critical failure severity matched release rules."
           },
           {
             "type": "Failure",
-            "name": "Monthly To Annual Billing Change Use Case 5 Matrix > SC-196 - Annual savings messaging is displayed accurately",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
-            "name": "Annual To Monthly Billing Change Use Case 6 Matrix > SC-214 - Annual-to-monthly change records subscription history",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
             "name": "Subscription Cancellation Use Case 7 Matrix > SC-262 - Cancellation confirmation email is sent",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
-            "name": "Subscription Cancellation Use Case 7 Matrix > SC-275 - Card-backed trial can be cancelled before auto-renewal",
             "detail": "Critical failure severity matched release rules."
           },
           {
@@ -195,8 +220,23 @@
             "detail": "Critical journey status is Critical."
           },
           {
+            "type": "Business Journey",
+            "name": "Dashboard",
+            "detail": "Critical journey status is Critical."
+          },
+          {
             "type": "Module",
             "name": "Billing",
+            "detail": "Critical module risk is High."
+          },
+          {
+            "type": "Module",
+            "name": "Dashboard",
+            "detail": "Critical module risk is High."
+          },
+          {
+            "type": "Module",
+            "name": "MFA",
             "detail": "Critical module risk is High."
           },
           {
@@ -212,6 +252,21 @@
         "references": [
           {
             "type": "Failure",
+            "name": "Deeper dashboard controls > Simulator clears the searched symbol",
+            "detail": "Critical failure severity matched release rules."
+          },
+          {
+            "type": "Failure",
+            "name": "Remaining dashboard scenarios > Simulator searches a symbol and switches the risk profile",
+            "detail": "Critical failure severity matched release rules."
+          },
+          {
+            "type": "Failure",
+            "name": "Profile Security Display > Profile security MFA backup codes trusted devices and refresh",
+            "detail": "Critical failure severity matched release rules."
+          },
+          {
+            "type": "Failure",
             "name": "Disposable user resets password from the email link and signs in with the new password",
             "detail": "Critical failure severity matched release rules."
           },
@@ -227,32 +282,12 @@
           },
           {
             "type": "Failure",
-            "name": "Downgrade Subscription Use Case 4 Matrix > SC-142 - Scheduled downgrade appears in subscription history",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
             "name": "Monthly To Annual Billing Change Use Case 5 Matrix > SC-182 - Confirmation email is sent after monthly-to-annual change",
             "detail": "Critical failure severity matched release rules."
           },
           {
             "type": "Failure",
-            "name": "Monthly To Annual Billing Change Use Case 5 Matrix > SC-196 - Annual savings messaging is displayed accurately",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
-            "name": "Annual To Monthly Billing Change Use Case 6 Matrix > SC-214 - Annual-to-monthly change records subscription history",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
             "name": "Subscription Cancellation Use Case 7 Matrix > SC-262 - Cancellation confirmation email is sent",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
-            "name": "Subscription Cancellation Use Case 7 Matrix > SC-275 - Card-backed trial can be cancelled before auto-renewal",
             "detail": "Critical failure severity matched release rules."
           },
           {
@@ -271,8 +306,23 @@
             "detail": "Critical journey status is Critical."
           },
           {
+            "type": "Business Journey",
+            "name": "Dashboard",
+            "detail": "Critical journey status is Critical."
+          },
+          {
             "type": "Module",
             "name": "Billing",
+            "detail": "Critical module risk is High."
+          },
+          {
+            "type": "Module",
+            "name": "Dashboard",
+            "detail": "Critical module risk is High."
+          },
+          {
+            "type": "Module",
+            "name": "MFA",
             "detail": "Critical module risk is High."
           },
           {
@@ -288,6 +338,21 @@
         "references": [
           {
             "type": "Failure",
+            "name": "Deeper dashboard controls > Simulator clears the searched symbol",
+            "detail": "Critical failure severity matched release rules."
+          },
+          {
+            "type": "Failure",
+            "name": "Remaining dashboard scenarios > Simulator searches a symbol and switches the risk profile",
+            "detail": "Critical failure severity matched release rules."
+          },
+          {
+            "type": "Failure",
+            "name": "Profile Security Display > Profile security MFA backup codes trusted devices and refresh",
+            "detail": "Critical failure severity matched release rules."
+          },
+          {
+            "type": "Failure",
             "name": "Disposable user resets password from the email link and signs in with the new password",
             "detail": "Critical failure severity matched release rules."
           },
@@ -303,32 +368,12 @@
           },
           {
             "type": "Failure",
-            "name": "Downgrade Subscription Use Case 4 Matrix > SC-142 - Scheduled downgrade appears in subscription history",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
             "name": "Monthly To Annual Billing Change Use Case 5 Matrix > SC-182 - Confirmation email is sent after monthly-to-annual change",
             "detail": "Critical failure severity matched release rules."
           },
           {
             "type": "Failure",
-            "name": "Monthly To Annual Billing Change Use Case 5 Matrix > SC-196 - Annual savings messaging is displayed accurately",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
-            "name": "Annual To Monthly Billing Change Use Case 6 Matrix > SC-214 - Annual-to-monthly change records subscription history",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
             "name": "Subscription Cancellation Use Case 7 Matrix > SC-262 - Cancellation confirmation email is sent",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
-            "name": "Subscription Cancellation Use Case 7 Matrix > SC-275 - Card-backed trial can be cancelled before auto-renewal",
             "detail": "Critical failure severity matched release rules."
           },
           {
@@ -347,8 +392,23 @@
             "detail": "Critical journey status is Critical."
           },
           {
+            "type": "Business Journey",
+            "name": "Dashboard",
+            "detail": "Critical journey status is Critical."
+          },
+          {
             "type": "Module",
             "name": "Billing",
+            "detail": "Critical module risk is High."
+          },
+          {
+            "type": "Module",
+            "name": "Dashboard",
+            "detail": "Critical module risk is High."
+          },
+          {
+            "type": "Module",
+            "name": "MFA",
             "detail": "Critical module risk is High."
           },
           {
@@ -359,7 +419,7 @@
         ]
       }
     ],
-    "warnings": 5,
-    "blockers": 14
+    "warnings": 12,
+    "blockers": 16
   }
 }

@@ -1,6 +1,6 @@
 # AIR Automation Validation Summary
 
-Generated: 10/8/2026, 4:57:22 PM
+Generated: 10/12/2026, 2:38:45 PM
 
 Project: OOLTool
 
@@ -16,20 +16,20 @@ This document explains what the latest automation execution validated in plain b
 
 | Metric | Count |
 | --- | ---: |
-| Unique Tests | 725 |
-| Passed | 548 |
-| Failed | 10 |
-| Skipped / Not Executed | 167 |
+| Unique Tests | 726 |
+| Passed | 554 |
+| Failed | 15 |
+| Skipped / Not Executed | 157 |
 | Flaky | 0 |
-| Attempts | 725 |
+| Attempts | 727 |
 
 ## Status Breakdown
 
 | Status | Count |
 | --- | ---: |
-| failed | 10 |
-| passed | 548 |
-| skipped | 167 |
+| failed | 15 |
+| passed | 554 |
+| skipped | 157 |
 
 ## Area Breakdown
 
@@ -38,8 +38,8 @@ This document explains what the latest automation execution validated in plain b
 | Access Control | 1 |
 | Accessibility | 29 |
 | Authentication | 74 |
-| Billing | 443 |
-| Dashboard | 92 |
+| Billing | 442 |
+| Dashboard | 94 |
 | General | 25 |
 | MFA | 8 |
 | Onboarding | 10 |
@@ -147,9 +147,9 @@ This document explains what the latest automation execution validated in plain b
 | PASS | Billing | Curious Explorer free plan completes onboarding without Stripe | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Billing | New user can reach Overlay Strategists trial option | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Billing | New user can start Overlay Strategists trial with card | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
-| SKIPPED | Billing | Overlay Strategists with-card trial opens Stripe checkout with trial details | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The requested page, modal, portal, or panel should open without a load error. |
-| SKIPPED | Billing | Overlay Strategists with-card trial blocks missing Stripe card details | Confirm subscription, plan, invoice, and billing controls are visible and safe. | Invalid or unsafe input should be blocked and the user should remain in a safe state. |
-| SKIPPED | Billing | Overlay Strategists with-card trial rejects declined Stripe card | Confirm subscription, plan, invoice, and billing controls are visible and safe. | Invalid or unsafe input should be blocked and the user should remain in a safe state. |
+| PASS | Billing | Overlay Strategists with-card trial opens Stripe checkout with trial details | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The requested page, modal, portal, or panel should open without a load error. |
+| PASS | Billing | Overlay Strategists with-card trial blocks missing Stripe card details | Confirm subscription, plan, invoice, and billing controls are visible and safe. | Invalid or unsafe input should be blocked and the user should remain in a safe state. |
+| PASS | Billing | Overlay Strategists with-card trial rejects declined Stripe card | Confirm subscription, plan, invoice, and billing controls are visible and safe. | Invalid or unsafe input should be blocked and the user should remain in a safe state. |
 | PASS | Billing | New user can start Overlay Strategists trial without card | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Billing | Trial user can subscribe to a paid plan before the trial ends | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Billing | Overlay Strategists trial requires terms acceptance | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
@@ -161,8 +161,8 @@ This document explains what the latest automation execution validated in plain b
 | PASS | Billing | Income Builder checkout preserves context on refresh and returns safely before payment | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The page should remain usable after refresh without losing required state. |
 | PASS | Billing | SC-48: Stripe checkout displays renewal or auto-renewal copy before payment | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Billing | SC-61: Missing cardholder name is blocked before subscription activation | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
-| SKIPPED | Billing | SC-62: Failed checkout keeps user without active paid subscription | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
-| SKIPPED | Billing | SC-63: Closing Stripe checkout returns user safely without activating subscription | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
+| PASS | Billing | SC-62: Failed checkout keeps user without active paid subscription | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
+| PASS | Billing | SC-63: Closing Stripe checkout returns user safely without activating subscription | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Billing | Disposable user can start Overlay Strategists trial without card | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Billing | Disposable user can start Overlay Strategists trial with card | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Billing | Disposable user can purchase Income Builder monthly and reach Billing | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
@@ -191,6 +191,8 @@ This document explains what the latest automation execution validated in plain b
 | PASS | Dashboard | Dashboard footer legal and support links expose usable targets | Confirm authenticated users can navigate the product without load errors. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Billing | Profile menu exposes billing risk compliance and sign out actions | Confirm subscription, plan, invoice, and billing controls are visible and safe. | Expected controls and information should be visible to the user. |
 | PASS | Dashboard | Profile menu navigation actions open the expected pages | Confirm authenticated users can navigate the product without load errors. | The scenario should complete successfully and leave the application in the expected state. |
+| PASS | Dashboard | Profile menu switches between dark and light theme | Confirm authenticated users can navigate the product without load errors. | The scenario should complete successfully and leave the application in the expected state. |
+| PASS | Dashboard | Profile menu enters and exits full screen | Confirm authenticated users can navigate the product without load errors. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Dashboard | Profile menu closes with Escape and outside click | Confirm authenticated users can navigate the product without load errors. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Dashboard | Dashboard top navigation tabs are visible | Confirm authenticated users can navigate the product without load errors. | Expected controls and information should be visible to the user. |
 | PASS | Dashboard | Dashboard top navigation links open without load errors | Confirm authenticated users can navigate the product without load errors. | The scenario should complete successfully and leave the application in the expected state. |
@@ -213,15 +215,15 @@ This document explains what the latest automation execution validated in plain b
 | PASS | Dashboard | Option exposure changes symbol expiration calls puts strike count and news | Confirm authenticated users can navigate the product without load errors. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Dashboard | View full expiry calendar opens the option chain | Confirm authenticated users can navigate the product without load errors. | The requested page, modal, portal, or panel should open without a load error. |
 | PASS | Dashboard | Manage accounts opens positions and every holdings tab | Confirm authenticated users can navigate the product without load errors. | The requested page, modal, portal, or panel should open without a load error. |
-| PASS | General | Opportunity tabs filters and row actions show CTA data | Confirm the related product behavior is stable and safe for the current execution. | The scenario should complete successfully and leave the application in the expected state. |
-| PASS | General | Opportunity save view research watch and pagination | Confirm the related product behavior is stable and safe for the current execution. | The scenario should complete successfully and leave the application in the expected state. |
+| FAIL | General | Opportunity tabs filters and row actions show CTA data | Confirm the related product behavior is stable and safe for the current execution. | The scenario should complete successfully and leave the application in the expected state. |
+| FAIL | General | Opportunity save view research watch and pagination | Confirm the related product behavior is stable and safe for the current execution. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | General | Opportunity filters return to all strategies and all sources | Confirm the related product behavior is stable and safe for the current execution. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | General | About opportunities opens and closes | Confirm the related product behavior is stable and safe for the current execution. | The requested page, modal, portal, or panel should open without a load error. |
 | PASS | General | About CTA data freshness opens and closes | Confirm the related product behavior is stable and safe for the current execution. | The requested page, modal, portal, or panel should open without a load error. |
 | PASS | Dashboard | Research menu opens equity research for a symbol | Confirm authenticated users can navigate the product without load errors. | The requested page, modal, portal, or panel should open without a load error. |
 | PASS | Dashboard | Academy and Support pages show their content | Confirm authenticated users can navigate the product without load errors. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Dashboard | Option chain strike count keeps calls and puts | Confirm authenticated users can navigate the product without load errors. | The scenario should complete successfully and leave the application in the expected state. |
-| PASS | Dashboard | CTA Details opens without changing watch status | Confirm authenticated users can navigate the product without load errors. | The requested page, modal, portal, or panel should open without a load error. |
+| FAIL | Dashboard | CTA Details opens without changing watch status | Confirm authenticated users can navigate the product without load errors. | The requested page, modal, portal, or panel should open without a load error. |
 | PASS | Dashboard | Research menu opens fundamentals finance news calendar and simulator | Confirm authenticated users can navigate the product without load errors. | The requested page, modal, portal, or panel should open without a load error. |
 | PASS | Dashboard | Portfolio menu opens each holdings destination | Confirm authenticated users can navigate the product without load errors. | The requested page, modal, portal, or panel should open without a load error. |
 | PASS | Dashboard | Watchlist shows symbols or an empty list | Confirm authenticated users can navigate the product without load errors. | Expected controls and information should be visible to the user. |
@@ -252,7 +254,7 @@ This document explains what the latest automation execution validated in plain b
 | PASS | Dashboard | Company Finance unknown symbol stays empty | Confirm authenticated users can navigate the product without load errors. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Dashboard | News opens one headline and returns to the list | Confirm authenticated users can navigate the product without load errors. | The requested page, modal, portal, or panel should open without a load error. |
 | PASS | Dashboard | Company Fundamentals opens a second symbol | Confirm authenticated users can navigate the product without load errors. | The requested page, modal, portal, or panel should open without a load error. |
-| PASS | Dashboard | Simulator clears the searched symbol | Confirm authenticated users can navigate the product without load errors. | The scenario should complete successfully and leave the application in the expected state. |
+| FAIL | Dashboard | Simulator clears the searched symbol | Confirm authenticated users can navigate the product without load errors. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Dashboard | Support keeps an empty ticket from being submitted | Confirm authenticated users can navigate the product without load errors. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Dashboard | News unknown symbol stays on the list | Confirm authenticated users can navigate the product without load errors. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Dashboard | Company Fundamentals unknown symbol stays empty | Confirm authenticated users can navigate the product without load errors. | The scenario should complete successfully and leave the application in the expected state. |
@@ -265,7 +267,7 @@ This document explains what the latest automation execution validated in plain b
 | PASS | Dashboard | Strategy library applies every category and filter | Confirm authenticated users can navigate the product without load errors. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Dashboard | Company Finance opens related research pages and clears the symbol | Confirm authenticated users can navigate the product without load errors. | The requested page, modal, portal, or panel should open without a load error. |
 | PASS | Dashboard | Support walks every category, priority, and status without submitting | Confirm authenticated users can navigate the product without load errors. | The scenario should complete successfully and leave the application in the expected state. |
-| PASS | Dashboard | Simulator searches a symbol and switches the risk profile | Confirm authenticated users can navigate the product without load errors. | The scenario should complete successfully and leave the application in the expected state. |
+| FAIL | Dashboard | Simulator searches a symbol and switches the risk profile | Confirm authenticated users can navigate the product without load errors. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Dashboard | Empty watchlist keeps Add disabled and Sync all stays on the dashboard | Confirm authenticated users can navigate the product without load errors. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Dashboard | Opportunities menu sets every filter value | Confirm authenticated users can navigate the product without load errors. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Dashboard | Portfolio menu sorts holdings and opens each item | Confirm authenticated users can navigate the product without load errors. | The requested page, modal, portal, or panel should open without a load error. |
@@ -297,7 +299,7 @@ This document explains what the latest automation execution validated in plain b
 | PASS | General | Bulk Upload Download Template gives a valid positions template | Confirm the related product behavior is stable and safe for the current execution. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | General | Bulk Upload adds one position from the template and it can be removed | Confirm the related product behavior is stable and safe for the current execution. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Password | Profile identity drafts password toggles and navigation in one session | Confirm password rules and password-change guardrails protect the account. | The scenario should complete successfully and leave the application in the expected state. |
-| PASS | MFA | Profile security MFA backup codes trusted devices and refresh | Confirm two-factor authentication controls protect the account without breaking login recovery. | The page should remain usable after refresh without losing required state. |
+| FAIL | MFA | Profile security MFA backup codes trusted devices and refresh | Confirm two-factor authentication controls protect the account without breaking login recovery. | The page should remain usable after refresh without losing required state. |
 | PASS | Profile | Profile mobile section validation in one session | Confirm profile data and account controls remain visible, stable, and protected. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Password | Password mismatch and wrong current password in one session | Confirm password rules and password-change guardrails protect the account. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Dashboard | Saved Risk Profile and Compliance load edit and survive refresh in one session | Confirm authenticated users can navigate the product without load errors. | The page should remain usable after refresh without losing required state. |
@@ -368,7 +370,7 @@ This document explains what the latest automation execution validated in plain b
 | PASS | Billing | SC-58 - Expired card date is blocked in Stripe checkout | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Billing | SC-59 - Invalid CVC is blocked in Stripe checkout | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Billing | SC-60 - Declined card does not activate subscription | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
-| SKIPPED | Billing | SC-61 - Missing cardholder name is blocked before subscription activation | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
+| PASS | Billing | SC-61 - Missing cardholder name is blocked before subscription activation | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Billing | SC-62 - Failed checkout keeps user without active paid subscription | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Billing | SC-63 - Closing Stripe checkout returns user safely without activating subscription | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Billing | SC-64 - Payment currency and conversion details are displayed correctly | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
@@ -382,7 +384,7 @@ This document explains what the latest automation execution validated in plain b
 | SKIPPED | Billing | SC-72 - Subscription purchase audit log is created | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Billing | SC-73 - Duplicate checkout session cannot create duplicate paid subscriptions | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | SKIPPED | Billing | SC-74 - Expired checkout session cannot activate subscription | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
-| SKIPPED | Billing | SC-75 - Retry after failed payment starts a clean checkout session | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
+| PASS | Billing | SC-75 - Retry after failed payment starts a clean checkout session | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Billing | SC-75A - Terms and subscription terms must be accepted before paid checkout starts | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Billing | SC-75B - Double-clicking purchase does not create duplicate checkout sessions | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Accessibility | SC-75C - Browser back from Stripe checkout returns without activating subscription | Ensure the application remains usable and inspectable for accessibility and browser behavior. | Browser navigation should not break the session or page state. |
@@ -391,7 +393,7 @@ This document explains what the latest automation execution validated in plain b
 | SKIPPED | Billing | SC-75F - Delayed Stripe webhook keeps subscription pending until payment confirmation is received | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Billing | SC-75G - User cannot access paid entitlements before successful payment confirmation | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Billing | SC-75H - Payment receipt or subscription confirmation email is received after purchase | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
-| SKIPPED | Billing | SC-75I - Invoice PDF amount, currency, and plan match the purchased subscription | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
+| FAIL | Billing | SC-75I - Invoice PDF amount, currency, and plan match the purchased subscription | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Billing | SC-75J - Saved payment method last four digits are shown correctly after purchase | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | SKIPPED | Billing | SC-75K - Checkout network interruption shows recoverable error and allows retry | Confirm subscription, plan, invoice, and billing controls are visible and safe. | Expected controls and information should be visible to the user. |
 | PASS | Billing | SC-75L - Currency and conversion-fee copy remains visible for non-USD checkout | Confirm subscription, plan, invoice, and billing controls are visible and safe. | Expected controls and information should be visible to the user. |
@@ -427,7 +429,7 @@ This document explains what the latest automation execution validated in plain b
 | PASS | Accessibility | SC-106 - Browser refresh during upgrade confirmation does not charge or change the plan | Ensure the application remains usable and inspectable for accessibility and browser behavior. | The page should remain usable after refresh without losing required state. |
 | PASS | Accessibility | SC-107 - Browser back from upgrade checkout returns without changing plan | Ensure the application remains usable and inspectable for accessibility and browser behavior. | Browser navigation should not break the session or page state. |
 | SKIPPED | Billing | SC-108 - Upgrade is blocked for cancelled subscription after access end date | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
-| SKIPPED | Billing | SC-109 - Upgrade is available for subscription scheduled to cancel before end date when allowed | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
+| PASS | Billing | SC-109 - Upgrade is available for subscription scheduled to cancel before end date when allowed | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | SKIPPED | Billing | SC-110 - Upgrade audit log is created | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | SKIPPED | Billing | SC-111 - Upgrade webhook processing updates subscription status correctly | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | SKIPPED | Billing | SC-112 - Upgrade failure webhook does not unlock higher-tier entitlement | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
@@ -458,8 +460,8 @@ This document explains what the latest automation execution validated in plain b
 | SKIPPED | Billing | SC-138 - Downgrade with pending cancellation follows correct precedence | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | SKIPPED | Billing | SC-139 - Downgrade with unpaid invoice is blocked or handled correctly | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | SKIPPED | Billing | SC-140 - Downgrade with failed payment state is blocked or handled correctly | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
-| PASS | Billing | SC-141 - Scheduled downgrade appears in billing overview | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
-| FAIL | Billing | SC-142 - Scheduled downgrade appears in subscription history | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
+| FAIL | Billing | SC-141 - Scheduled downgrade appears in billing overview | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
+| PASS | Billing | SC-142 - Scheduled downgrade appears on the Plans screen | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Billing | SC-143 - Downgrade confirmation email is sent | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | SKIPPED | Billing | SC-144 - Downgrade audit log is created | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Billing | SC-145 - User can resume or cancel scheduled downgrade before effective date when allowed | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
@@ -503,7 +505,7 @@ This document explains what the latest automation execution validated in plain b
 | SKIPPED | Billing | SC-183 - Failed payment during monthly-to-annual change keeps monthly billing active | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | SKIPPED | Billing | SC-184 - Declined card during interval change shows payment failure | Confirm subscription, plan, invoice, and billing controls are visible and safe. | Expected controls and information should be visible to the user. |
 | SKIPPED | Billing | SC-185 - Incomplete payment details during interval change are blocked | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
-| PASS | Billing | SC-186 - Double-clicking annual switch confirmation is idempotent | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
+| FAIL | Billing | SC-186 - Double-clicking annual switch confirmation is idempotent | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Accessibility | SC-187 - Browser refresh during monthly-to-annual confirmation does not charge or change the plan | Ensure the application remains usable and inspectable for accessibility and browser behavior. | The page should remain usable after refresh without losing required state. |
 | PASS | Accessibility | SC-188 - Browser back from interval-change checkout returns without changing billing interval | Ensure the application remains usable and inspectable for accessibility and browser behavior. | Browser navigation should not break the session or page state. |
 | SKIPPED | Billing | SC-189 - Monthly-to-annual change is blocked for cancelled subscription after end date | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
@@ -513,7 +515,6 @@ This document explains what the latest automation execution validated in plain b
 | SKIPPED | Billing | SC-193 - Monthly-to-annual change audit log is created | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | SKIPPED | Billing | SC-194 - Monthly-to-annual webhook updates billing interval correctly | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | SKIPPED | Billing | SC-195 - Monthly-to-annual failure webhook leaves monthly billing unchanged | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
-| FAIL | Billing | SC-196 - Annual savings messaging is displayed accurately | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | SKIPPED | Billing | SC-197 - Monthly-to-annual change respects tax and currency configuration | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Billing | SC-198 - Monthly-to-annual change keeps billing portal return link working | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Billing | SC-199 - Monthly-to-annual change can be represented in AIR history | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
@@ -531,7 +532,7 @@ This document explains what the latest automation execution validated in plain b
 | PASS | Billing | SC-211 - Successful annual-to-monthly change updates billing interval when effective | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Billing | SC-212 - Successful annual-to-monthly change preserves same plan tier | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Billing | SC-213 - Successful annual-to-monthly change preserves entitlements until effective date | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
-| FAIL | Billing | SC-214 - Annual-to-monthly change records subscription history | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
+| PASS | Billing | SC-214 - Scheduled annual-to-monthly change appears in billing overview and on the Plans screen | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | SKIPPED | Billing | SC-215 - Annual-to-monthly change records transaction history when charge or credit exists | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | SKIPPED | Billing | SC-216 - Invoice or credit note shows correct annual-to-monthly amount | Confirm subscription, plan, invoice, and billing controls are visible and safe. | Expected controls and information should be visible to the user. |
 | PASS | Billing | SC-217 - Invoice or credit note PDF opens after annual-to-monthly change | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The requested page, modal, portal, or panel should open without a load error. |
@@ -568,7 +569,7 @@ This document explains what the latest automation execution validated in plain b
 | PASS | Billing | SC-248 - Cancellation feedback accepts user text | Confirm subscription, plan, invoice, and billing controls are visible and safe. | Browser navigation should not break the session or page state. |
 | PASS | Billing | SC-249 - Go back from cancellation form leaves subscription unchanged | Confirm subscription, plan, invoice, and billing controls are visible and safe. | Browser navigation should not break the session or page state. |
 | PASS | Billing | SC-250 - Continue to cancellation shows final confirmation before destructive action | Confirm subscription, plan, invoice, and billing controls are visible and safe. | Expected controls and information should be visible to the user. |
-| SKIPPED | Billing | SC-251 - Final cancellation requires explicit confirmation | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
+| PASS | Billing | SC-251 - Final cancellation requires explicit confirmation | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Billing | SC-252 - Dedicated fixture can be cancelled successfully | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Billing | SC-253 - Cancellation confirmation message is displayed | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Billing | SC-254 - Subscription becomes scheduled to cancel at period end | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
@@ -592,7 +593,7 @@ This document explains what the latest automation execution validated in plain b
 | PASS | Billing | SC-272 - Refresh during cancellation form preserves safe state | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The page should remain usable after refresh without losing required state. |
 | PASS | Billing | SC-273 - Double-clicking final cancellation is idempotent | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | SKIPPED | Billing | SC-274 - No-card trial can be cancelled without payment method | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
-| FAIL | Billing | SC-275 - Card-backed trial can be cancelled before auto-renewal | Confirm subscription, plan, invoice, and billing controls are visible and safe. | Browser navigation should not break the session or page state. |
+| PASS | Billing | SC-275 - Card-backed trial can be cancelled before auto-renewal | Confirm subscription, plan, invoice, and billing controls are visible and safe. | Browser navigation should not break the session or page state. |
 | SKIPPED | Billing | SC-276 - Subscription with unpaid invoice follows configured cancellation rule | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | SKIPPED | Billing | SC-277 - Pending upgrade is handled before cancellation | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
 | PASS | Billing | SC-278 - Pending downgrade is handled before cancellation | Confirm subscription, plan, invoice, and billing controls are visible and safe. | The scenario should complete successfully and leave the application in the expected state. |
@@ -781,11 +782,6 @@ This document explains what the latest automation execution validated in plain b
 
 | Category | Scenario | Reason / Next Action |
 | --- | --- | --- |
-| Controlled | Overlay Strategists with-card trial opens Stripe checkout with trial details | Checkout details are validated on the with-card trial user. Checkout details are validated on the with-card trial user. |
-| Controlled | Overlay Strategists with-card trial blocks missing Stripe card details | Missing card validation is folded into the with-card trial user. Missing card validation is folded into the with-card trial user. |
-| Controlled | Overlay Strategists with-card trial rejects declined Stripe card | Declined card validation is folded into the with-card trial user. Declined card validation is folded into the with-card trial user. |
-| Controlled | SC-62: Failed checkout keeps user without active paid subscription | Set BLOCKED_SCENARIO_EXECUTION_ENABLED=true and STRIPE_CHECKOUT_URL to run. Set BLOCKED_SCENARIO_EXECUTION_ENABLED=true and STRIPE_CHECKOUT_URL to run. |
-| Controlled | SC-63: Closing Stripe checkout returns user safely without activating subscription | Set BLOCKED_SCENARIO_EXECUTION_ENABLED=true and STRIPE_CHECKOUT_URL to run. Set BLOCKED_SCENARIO_EXECUTION_ENABLED=true and STRIPE_CHECKOUT_URL to run. |
 | Blocked | SC-08 - No subscription charge during trial | Requires Stripe test account/API access to verify ledger/payment intent amount. Requires Stripe test account/API access to verify ledger/payment intent amount. |
 | Blocked | SC-13 - Same payment method cannot receive another trial | Requires Stripe payment-method fingerprint visibility through API/admin. Requires Stripe payment-method fingerprint visibility through API/admin. |
 | Blocked | SC-14 - Trial lasts exactly 30 days | Requires admin/API time travel or scheduler controls to set trial start/end dates. Requires admin/API time travel or scheduler controls to set trial start/end dates. |
@@ -808,21 +804,17 @@ This document explains what the latest automation execution validated in plain b
 | Blocked | SC-34 - Trial conversion audit log is created | Requires admin/API/DB access to audit log records after trial conversion. Requires admin/API/DB access to audit log records after trial conversion. |
 | Blocked | SC-35 - Reminder analytics are tracked | Requires analytics/admin event visibility. Requires analytics/admin event visibility. |
 | Blocked | SC-43 - Paid subscription can be started from expired trial upgrade prompt | Requires expired-trial fixture or scheduler/API time control. Requires expired-trial fixture or scheduler/API time control. |
-| Controlled | SC-61 - Missing cardholder name is blocked before subscription activation | Requires BLOCKED_SCENARIO_EXECUTION_ENABLED=true and STRIPE_CHECKOUT_URL; validation asserted flexibly (blocked-state OR error copy). Requires BLOCKED_SCENARIO_EXECUTION_ENABLED... |
 | Blocked | SC-66 - Successful purchase creates Stripe customer and subscription records | Requires Stripe sandbox API/admin access to validate customer/subscription objects. Requires Stripe sandbox API/admin access to validate customer/subscription objects. |
 | Blocked | SC-72 - Subscription purchase audit log is created | Requires admin/API/DB access to audit log records. Requires admin/API/DB access to audit log records. |
 | Blocked | SC-74 - Expired checkout session cannot activate subscription | Requires expired checkout-session fixture or Stripe/API session control. Requires expired checkout-session fixture or Stripe/API session control. |
-| Future | SC-75 - Retry after failed payment starts a clean checkout session | Requires failed-payment fixture plus clean retry/session validation. Requires failed-payment fixture plus clean retry/session validation. |
 | Blocked | SC-75E - 3DS or authentication-required card flow is handled without losing subscription context | Requires Stripe sandbox 3DS card fixture and confirmation handling rules. Requires Stripe sandbox 3DS card fixture and confirmation handling rules. |
 | Blocked | SC-75F - Delayed Stripe webhook keeps subscription pending until payment confirmation is received | Requires webhook delay/retry control or backend subscription state API. Requires webhook delay/retry control or backend subscription state API. |
-| Future | SC-75I - Invoice PDF amount, currency, and plan match the purchased subscription | Requires deterministic plan amount fixture and PDF content parsing/validation. Requires deterministic plan amount fixture and PDF content parsing/validation. |
 | Future | SC-75K - Checkout network interruption shows recoverable error and allows retry | Requires controlled network failure injection and retry expectation. Requires controlled network failure injection and retry expectation. |
-| Blocked | SC-96 - Failed upgrade payment does not change current plan | Requires failed-payment upgrade fixture and post-failure billing state validation. Requires failed-payment upgrade fixture and post-failure billing state validation. |
-| Future | SC-97 - Declined card during upgrade shows payment failure message | Requires upgrade checkout fixture with Stripe declined-card path. Requires upgrade checkout fixture with Stripe declined-card path. |
-| Future | SC-98 - Incomplete payment details during upgrade are blocked | Requires upgrade checkout fixture and Stripe validation selectors. Requires upgrade checkout fixture and Stripe validation selectors. |
-| Future | SC-99 - Upgrade retry after failed payment starts clean retry flow | Requires failed upgrade payment fixture and retry behavior confirmation. Requires failed upgrade payment fixture and retry behavior confirmation. |
+| Blocked | SC-96 - Failed upgrade payment does not change current plan | Needs a way to make the subscription card fail when charged. Tried through the browser: adding Stripe test card 4000000000000341 in the billing portal makes it the customer defa... |
+| Blocked | SC-97 - Declined card during upgrade shows payment failure message | An upgrade charges the saved card from a confirmation dialog (no Stripe card form), and a charge-failing card cannot be attached to the subscription through the browser (see SC-... |
+| Blocked | SC-98 - Incomplete payment details during upgrade are blocked | Not testable as written: the upgrade confirmation has no card fields (it charges the saved card), so there are no payment details to leave incomplete. Needs product confirmation... |
+| Blocked | SC-99 - Upgrade retry after failed payment starts clean retry flow | Needs a failed upgrade payment first (see SC-96) and confirmation of the intended retry behaviour. Needs a failed upgrade payment first (see SC-96) and confirmation of the inten... |
 | Blocked | SC-108 - Upgrade is blocked for cancelled subscription after access end date | Requires cancelled/expired subscription fixture. Requires cancelled/expired subscription fixture. |
-| Blocked | SC-109 - Upgrade is available for subscription scheduled to cancel before end date when allowed | Business rule confirmed: users can upgrade any time while access is active. Requires scheduled-cancellation fixture to verify behavior before access end date. Business rule conf... |
 | Blocked | SC-110 - Upgrade audit log is created | Requires admin/API/DB access to audit log records. Requires admin/API/DB access to audit log records. |
 | Blocked | SC-111 - Upgrade webhook processing updates subscription status correctly | Requires webhook event visibility or backend state API. Requires webhook event visibility or backend state API. |
 | Blocked | SC-112 - Upgrade failure webhook does not unlock higher-tier entitlement | Requires failed upgrade webhook fixture and entitlement validation. Requires failed upgrade webhook fixture and entitlement validation. |
@@ -846,11 +838,11 @@ This document explains what the latest automation execution validated in plain b
 | Blocked | SC-159 - Downgrade handles bulk portfolio import availability according to target plan | Requires feature entitlement selectors for bulk portfolio load. Requires feature entitlement selectors for bulk portfolio load. |
 | Blocked | SC-160 - Downgrade handles analytics availability according to target plan | Requires analytics entitlement selectors and target-plan fixture. Requires analytics entitlement selectors and target-plan fixture. |
 | Blocked | SC-161 - Downgrade invoice or credit note is generated when applicable | Requires Stripe invoice/credit-note API visibility and confirmed billing rule. Requires Stripe invoice/credit-note API visibility and confirmed billing rule. |
-| Future | SC-162 - Downgrade with currency conversion displays correct amount and currency | Requires deterministic currency fixture and Stripe copy expectations. Requires deterministic currency fixture and Stripe copy expectations. |
+| Blocked | SC-162 - Downgrade with currency conversion displays correct amount and currency | A downgrade is scheduled and collects no payment, so there is no amount to convert unless the product shows one. Needs product confirmation of what amount and currency a downgra... |
 | Blocked | SC-163 - Downgrade API rejects unauthorized or cross-account downgrade attempts | Requires backend/API support for authorization validation. Requires backend/API support for authorization validation. |
-| Blocked | SC-183 - Failed payment during monthly-to-annual change keeps monthly billing active | Requires failed-payment fixture and post-failure billing state validation. Requires failed-payment fixture and post-failure billing state validation. |
-| Future | SC-184 - Declined card during interval change shows payment failure | Requires billing-change checkout with declined-card fixture. Requires billing-change checkout with declined-card fixture. |
-| Future | SC-185 - Incomplete payment details during interval change are blocked | Requires billing-change checkout fixture and Stripe validation selectors. Requires billing-change checkout fixture and Stripe validation selectors. |
+| Blocked | SC-183 - Failed payment during monthly-to-annual change keeps monthly billing active | Needs a way to make the subscription card fail when charged. Adding a charge-failing test card in the billing portal does not change the card the subscription charges, so the in... |
+| Blocked | SC-184 - Declined card during interval change shows payment failure | An interval change charges the saved card from a confirmation dialog (no Stripe card form), and a charge-failing card cannot be attached to the subscription through the browser... |
+| Blocked | SC-185 - Incomplete payment details during interval change are blocked | Not testable as written: the interval-change confirmation has no card fields (it charges the saved card), so there are no payment details to leave incomplete. Needs product conf... |
 | Blocked | SC-189 - Monthly-to-annual change is blocked for cancelled subscription after end date | Requires cancelled/expired subscription fixture. Requires cancelled/expired subscription fixture. |
 | Blocked | SC-190 - Monthly-to-annual change follows rule for subscription scheduled to cancel | Requires scheduled-cancellation fixture and confirmed business rule. Requires scheduled-cancellation fixture and confirmed business rule. |
 | Blocked | SC-193 - Monthly-to-annual change audit log is created | Requires admin/API/DB access to audit log records. Requires admin/API/DB access to audit log records. |
@@ -860,8 +852,8 @@ This document explains what the latest automation execution validated in plain b
 | Blocked | SC-215 - Annual-to-monthly change records transaction history when charge or credit exists | Requires Stripe invoice/payment/credit visibility for interval change. Requires Stripe invoice/payment/credit visibility for interval change. |
 | Blocked | SC-216 - Invoice or credit note shows correct annual-to-monthly amount | Requires Stripe invoice/credit-note API and deterministic amount validation. Requires Stripe invoice/credit-note API and deterministic amount validation. |
 | Blocked | SC-219 - Failed payment during annual-to-monthly change keeps annual billing active | Requires failed-payment fixture and post-failure billing state validation. Requires failed-payment fixture and post-failure billing state validation. |
-| Future | SC-220 - Declined card during annual-to-monthly change shows payment failure | Requires billing-change checkout with declined-card fixture. Requires billing-change checkout with declined-card fixture. |
-| Future | SC-221 - Incomplete payment details during annual-to-monthly change are blocked | Requires billing-change checkout fixture and Stripe validation selectors. Requires billing-change checkout fixture and Stripe validation selectors. |
+| Blocked | SC-220 - Declined card during annual-to-monthly change shows payment failure | A declined card needs a charge-failing card on the subscription, which cannot be set through the browser (see SC-183). Annual-to-monthly is also scheduled for the next renewal,... |
+| Blocked | SC-221 - Incomplete payment details during annual-to-monthly change are blocked | Not testable as written: the annual-to-monthly change has no card fields, so there are no payment details to leave incomplete. Needs product confirmation of the intended behavio... |
 | Blocked | SC-225 - Annual-to-monthly change is blocked for cancelled subscription after end date | Requires cancelled/expired subscription fixture. Requires cancelled/expired subscription fixture. |
 | Blocked | SC-226 - Annual-to-monthly change follows rule for subscription scheduled to cancel | Requires scheduled-cancellation fixture and confirmed business rule. Requires scheduled-cancellation fixture and confirmed business rule. |
 | Blocked | SC-229 - Annual-to-monthly change audit log is created | Requires admin/API/DB access to audit log records. Requires admin/API/DB access to audit log records. |
@@ -870,7 +862,6 @@ This document explains what the latest automation execution validated in plain b
 | Blocked | SC-233 - Annual-to-monthly change respects tax and currency configuration | Requires Stripe tax/currency API visibility. Requires Stripe tax/currency API visibility. |
 | Blocked | SC-240 - Annual-to-monthly API rejects unauthorized or cross-account interval changes | Requires backend/API support for authorization validation. Requires backend/API support for authorization validation. |
 | Controlled | SC-247 - Cancellation reason is required before final cancellation | The cancel dialog has no reason or feedback field (it only offers "Keep my plan" and "Yes, cancel"), so a required-reason rule cannot be tested. The cancel dialog has no reason... |
-| Blocked | SC-251 - Final cancellation requires explicit confirmation | Requires backend/admin reset support for disposable paid subscription fixture. Requires backend/admin reset support for disposable paid subscription fixture. |
 | Blocked | SC-261 - Cancellation reason is captured for audit or analytics | Requires admin/API access to cancellation metadata. Requires admin/API access to cancellation metadata. |
 | Blocked | SC-264 - Refund action is restricted to authorized admin workflow | Requires admin permissions and refund test fixture. Requires admin permissions and refund test fixture. |
 | Blocked | SC-270 - Paid feature entitlement is removed after billing period ends | Requires time-travel, webhook simulation, or backend fixture. Requires time-travel, webhook simulation, or backend fixture. |
@@ -909,8 +900,8 @@ This document explains what the latest automation execution validated in plain b
 | Blocked | SC-327 - Dunning email includes update payment link | Requires mailbox access and failed payment fixture. Requires mailbox access and failed payment fixture. |
 | Blocked | SC-329 - Expired payment update link is handled clearly | Requires expired portal session fixture. Requires expired portal session fixture. |
 | Blocked | SC-330 - Unauthorized payment update attempt is blocked | Requires backend/API authorization validation. Requires backend/API authorization validation. |
-| Blocked | SC-331 - Failed payment after upgrade keeps previous plan active | Requires upgrade payment failure fixture. Requires upgrade payment failure fixture. |
-| Blocked | SC-332 - Failed payment after interval change keeps previous billing interval | Requires billing interval payment failure fixture. Requires billing interval payment failure fixture. |
+| Blocked | SC-331 - Failed payment after upgrade keeps previous plan active | Needs a way to make the subscription card fail when charged (see SC-96). Requires Stripe API access or an app-side test hook. Needs a way to make the subscription card fail when... |
+| Blocked | SC-332 - Failed payment after interval change keeps previous billing interval | Needs a way to make the subscription card fail when charged (see SC-183). Requires Stripe API access or an app-side test hook. Needs a way to make the subscription card fail whe... |
 | Blocked | SC-333 - Admin can retry failed payment when supported | Requires admin billing management support. Requires admin billing management support. |
 | Blocked | SC-334 - Removed payment method before renewal triggers failed payment flow | Requires saved payment method removal fixture. Requires saved payment method removal fixture. |
 | Blocked | SC-339 - Expired saved card renewal follows dunning flow | Requires saved expired-card renewal fixture. Requires saved expired-card renewal fixture. |
