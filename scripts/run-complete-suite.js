@@ -9,75 +9,12 @@
  * Emails every configured REPORT_EMAIL_* address except Rob / REPORT_EMAIL_EXCLUDE.
  */
 const { spawnSync } = require('child_process');
-const fs = require('fs');
 const path = require('path');
-const flags = require('./complete-run-flags');
+const { applyCompleteRunEnv } = require('./apply-complete-run-env');
 const { collectConfiguredRecipients } = require('./report-recipients');
 
 const projectRoot = path.resolve(__dirname, '..');
-
-function loadEnvFile(filePath) {
-  if (!fs.existsSync(filePath)) {
-    return;
-  }
-
-  for (const rawLine of fs
-    .readFileSync(filePath, 'utf8')
-    .replace(/^\uFEFF/, '')
-    .split(/\r?\n/)) {
-    const line = rawLine.trim();
-
-    if (!line || line.startsWith('#')) {
-      continue;
-    }
-
-    const separator = line.indexOf('=');
-
-    if (separator <= 0) {
-      continue;
-    }
-
-    const key = line.slice(0, separator).trim();
-    let value = line.slice(separator + 1).trim();
-
-    if (
-      (value.startsWith('"') && value.endsWith('"')) ||
-      (value.startsWith("'") && value.endsWith("'"))
-    ) {
-      value = value.slice(1, -1);
-    }
-
-    if (!process.env[key]) {
-      process.env[key] = value;
-    }
-  }
-}
-
-loadEnvFile(path.join(projectRoot, '.env'));
-loadEnvFile(path.join(projectRoot, '.env.local'));
-
-for (const [key, value] of Object.entries(flags)) {
-  process.env[key] = value;
-}
-
-function setDefaultEnv(name, value) {
-  if (!process.env[name]) {
-    process.env[name] = value;
-  }
-}
-
-setDefaultEnv('AUTH_OTP_CODE', '111111');
-setDefaultEnv(
-  'PLAN_SELECTION_EXISTING_EMAIL',
-  'imhardikthanki+plan-selection-prepared@gmail.com'
-);
-setDefaultEnv('PLAN_SELECTION_EXISTING_PASSWORD', 'H@rdik9944');
-setDefaultEnv('ADMIN_EMAIL', 'admin@ooltool.com');
-setDefaultEnv('ADMIN_PASSWORD', 'Admin@1234!');
-
-if (!process.env.SLOW_MO) {
-  process.env.SLOW_MO = '0';
-}
+const { hasGmail } = applyCompleteRunEnv(projectRoot);
 
 const argv = process.argv.slice(2);
 const watch = ['1', 'true', 'yes', 'on'].includes(
@@ -116,7 +53,7 @@ console.log(
   'Complete suite: user-journey file order, Oct 12 554-pass flag profile, destructive Stripe submits off, then AIR.'
 );
 
-if (!String(process.env.GMAIL_APP_PASSWORD || '').replace(/\s+/g, '')) {
+if (!hasGmail) {
   console.warn(
     'GMAIL_APP_PASSWORD is not set. Disposable-user email verification will skip instead of fail. Overlay, direct checkout, and plan-ladder inspect need Gmail to reach the ~550 pass / ~10 fail baseline.'
   );
