@@ -76,14 +76,14 @@ process.env.AIR_REPORT_SCOPE = process.env.AIR_REPORT_SCOPE || 'latest';
 process.env.AIR_RESTORE_HISTORY = process.env.AIR_RESTORE_HISTORY || 'true';
 process.env.SKIP_AIR_REPORT = 'true';
 
-function run(command, args) {
+function run(command, args, options = {}) {
   console.log(`\n> ${command} ${args.join(' ')}`);
 
   return (
     spawnSync(command, args, {
       cwd: projectRoot,
       env: process.env,
-      shell: true,
+      shell: options.shell ?? false,
       stdio: 'inherit'
     }).status ?? 1
   );
@@ -100,7 +100,8 @@ const node = process.execPath;
 console.log(
   'Complete suite: user-journey file order, full speed, paid lifecycle flags on, then AIR.'
 );
-run(node, ['-e', "require('./scripts/execution-order').assertAllSpecsAreListed(); require('./scripts/execution-order').printOrder()"]);
+require('./execution-order').assertAllSpecsAreListed();
+require('./execution-order').printOrder();
 
 if (headed) {
   console.log('Headed browser. Set SLOW_MO=500 to slow clicks.');
@@ -114,7 +115,9 @@ if (headed) {
   playwrightArgs.push('--headed');
 }
 
-const playwrightExit = run(playwright, playwrightArgs);
+const playwrightExit = run(playwright, playwrightArgs, {
+  shell: process.platform === 'win32'
+});
 
 run(node, [path.join(projectRoot, 'scripts', 'generate-air-results.js')]);
 run(node, [path.join(projectRoot, 'scripts', 'generate-execution-report.js')]);
