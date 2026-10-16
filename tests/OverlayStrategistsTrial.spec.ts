@@ -12,6 +12,7 @@ import {
   generateMobileNumber
 } from './utils/emailGenerator';
 import {
+  skipUnlessEmailVerificationReady,
   waitForManualEmailVerification
 } from './helpers/emailVerification';
 import {
@@ -88,6 +89,8 @@ async function registerOverlayUserAndReachPlanSelection(
   page: Page,
   scenario: string
 ) {
+  skipUnlessEmailVerificationReady();
+
   const email =
     generateEmail(
       scenario
@@ -157,6 +160,12 @@ if (
     test.describe.configure({
       timeout: 20 * 60 * 1000
     });
+
+    test.beforeEach(
+      () => {
+        skipUnlessEmailVerificationReady();
+      }
+    );
 
     test(
       'New user can reach Overlay Strategists trial option',

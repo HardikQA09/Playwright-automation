@@ -92,7 +92,7 @@ headless and remains last in the complete AIR run.
 npm run executable:headed
 ```
 
-Complete suite (journey order + paid lifecycle flags + AIR + email to every configured address except Rob):
+Complete suite (journey order + the Oct 12 ~550-pass flag profile + AIR + email to every configured address except Rob). Destructive Stripe submits stay off:
 
 ```powershell
 npm run complete

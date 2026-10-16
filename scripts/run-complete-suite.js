@@ -60,6 +60,21 @@ for (const [key, value] of Object.entries(flags)) {
   process.env[key] = value;
 }
 
+function setDefaultEnv(name, value) {
+  if (!process.env[name]) {
+    process.env[name] = value;
+  }
+}
+
+setDefaultEnv('AUTH_OTP_CODE', '111111');
+setDefaultEnv(
+  'PLAN_SELECTION_EXISTING_EMAIL',
+  'imhardikthanki+plan-selection-prepared@gmail.com'
+);
+setDefaultEnv('PLAN_SELECTION_EXISTING_PASSWORD', 'H@rdik9944');
+setDefaultEnv('ADMIN_EMAIL', 'admin@ooltool.com');
+setDefaultEnv('ADMIN_PASSWORD', 'Admin@1234!');
+
 if (!process.env.SLOW_MO) {
   process.env.SLOW_MO = '0';
 }
@@ -98,8 +113,14 @@ const playwright = path.join(
 const node = process.execPath;
 
 console.log(
-  'Complete suite: user-journey file order, full speed, paid lifecycle flags on, then AIR.'
+  'Complete suite: user-journey file order, Oct 12 554-pass flag profile, destructive Stripe submits off, then AIR.'
 );
+
+if (!String(process.env.GMAIL_APP_PASSWORD || '').replace(/\s+/g, '')) {
+  console.warn(
+    'GMAIL_APP_PASSWORD is not set. Disposable-user email verification will skip instead of fail. Overlay, direct checkout, and plan-ladder inspect need Gmail to reach the ~550 pass / ~10 fail baseline.'
+  );
+}
 require('./execution-order').assertAllSpecsAreListed();
 require('./execution-order').printOrder();
 

@@ -56,7 +56,7 @@ console.log(`Complete-run flags written to .env: ${applied}`);
 console.log(
   hasGmailPassword
     ? 'Gmail App Password is present for automatic email verification.'
-    : 'Gmail App Password is missing. Automatic verification will pause.'
+    : 'Gmail App Password is missing. Disposable-user email verification will skip unless EMAIL_VERIFICATION_PAUSE=true.'
 );
 
 for (const key of secretKeys) {

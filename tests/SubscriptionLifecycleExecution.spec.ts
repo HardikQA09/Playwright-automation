@@ -16,6 +16,7 @@ import {
   generateMobileNumber
 } from './utils/emailGenerator';
 import {
+  skipUnlessEmailVerificationReady,
   waitForManualEmailVerification
 } from './helpers/emailVerification';
 import {
@@ -506,6 +507,8 @@ async function openPlanSelectionForDisposableUser(
   page: Page,
   scenario: string
 ) {
+  skipUnlessEmailVerificationReady();
+
   const email =
     generateEmail(
       scenario

@@ -22,6 +22,7 @@ import {
   generateMobileNumber
 } from '../utils/emailGenerator';
 import {
+  isEmailVerificationReady,
   waitForManualEmailVerification
 } from './emailVerification';
 import {
@@ -641,6 +642,14 @@ export async function registerAndReachPlanSelection(
   page: Page,
   scenario: string
 ) {
+  if (
+    !isEmailVerificationReady()
+  ) {
+    throw new CoverageSkip(
+      'Set GMAIL_APP_PASSWORD for automatic email verification, or EMAIL_VERIFICATION_PAUSE=true for a headed pause.'
+    );
+  }
+
   const email =
     generateEmail(
       scenario
