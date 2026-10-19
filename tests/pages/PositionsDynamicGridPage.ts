@@ -44,11 +44,39 @@ export class PositionsDynamicGridPage {
   }
 
   savedViewSelect() {
-    return this.page.locator(
-      'select'
-    ).filter({
-      hasText: 'All Positions'
-    }).first();
+    return this.page.getByRole(
+      'combobox',
+      {
+        name: /saved views/i
+      }
+    );
+  }
+
+  equityGroupRow() {
+    return this.page.getByRole(
+      'row',
+      {
+        name: /equity.*\d+\s+holdings/i
+      }
+    );
+  }
+
+  optionsGroupRow() {
+    return this.page.getByRole(
+      'row',
+      {
+        name: /options.*\d+\s+positions/i
+      }
+    );
+  }
+
+  cashGroupRow() {
+    return this.page.getByRole(
+      'row',
+      {
+        name: /cash.*\d+\s+balance/i
+      }
+    );
   }
 
   analysisPanel() {
@@ -152,8 +180,6 @@ export class PositionsDynamicGridPage {
       'Checking Positions dynamic grid'
     );
 
-    await this.restoreDefaultView();
-
     await expect(
       this.page.getByRole(
         'heading',
@@ -164,6 +190,8 @@ export class PositionsDynamicGridPage {
     ).toBeVisible({
       timeout: 20000
     });
+
+    await this.restoreDefaultView();
 
     await expect(
       this.page.getByText(
@@ -222,15 +250,13 @@ export class PositionsDynamicGridPage {
     ).toBeVisible();
 
     await expect(
-      this.page.getByText(
-        /equity\s+\d+\s+holdings/i
-      ).first()
-    ).toBeVisible();
+      this.equityGroupRow().first()
+    ).toBeVisible({
+      timeout: 20000
+    });
 
     await expect(
-      this.page.getByText(
-        /options\s+\d+\s+positions/i
-      ).first()
+      this.optionsGroupRow().first()
     ).toBeVisible();
 
     await this.scrollGrid(
@@ -238,9 +264,7 @@ export class PositionsDynamicGridPage {
     );
 
     await expect(
-      this.page.getByText(
-        /cash\s+\d+\s+balance/i
-      ).first()
+      this.cashGroupRow().first()
     ).toBeVisible({
       timeout: 8000
     });
@@ -442,15 +466,11 @@ export class PositionsDynamicGridPage {
     ).toBeVisible();
 
     await expect(
-      this.page.getByText(
-        /options\s+\d+\s+positions/i
-      ).first()
+      this.optionsGroupRow().first()
     ).toBeVisible();
 
     await expect(
-      this.page.getByText(
-        /equity\s+\d+\s+holdings/i
-      )
+      this.equityGroupRow()
     ).toHaveCount(
       0
     );
@@ -466,9 +486,7 @@ export class PositionsDynamicGridPage {
     );
 
     await expect(
-      this.page.getByText(
-        /equity\s+\d+\s+holdings/i
-      ).first()
+      this.equityGroupRow().first()
     ).toBeVisible({
       timeout: 8000
     });
@@ -605,24 +623,21 @@ export class PositionsDynamicGridPage {
       'Selecting a leaf position for analysis metrics'
     );
 
-    const row =
-      this.page.locator(
-        '.ag-row'
-      ).filter({
-        hasText: /chubb ltd/i
-      }).first();
+    const leafCheckbox =
+      this.page.getByRole(
+        'checkbox',
+        {
+          name: /^select cb$/i
+        }
+      );
 
     await expect(
-      row
+      leafCheckbox
     ).toBeVisible({
       timeout: 10000
     });
 
-    await row.locator(
-      'input[type="checkbox"], [role="checkbox"]'
-    ).first().click({
-      force: true
-    });
+    await leafCheckbox.click();
 
     const analyzeSelected =
       this.page.getByRole(
@@ -691,24 +706,14 @@ export class PositionsDynamicGridPage {
       )
     ).toBeVisible();
 
-    const groupRow =
-      this.page.locator(
-        '.ag-row'
-      ).filter({
-        hasText: /equity\s+\d+\s+holdings/i
-      }).first();
-
-    if (
-      await groupRow.locator(
-        'input[type="checkbox"]'
-      ).count()
-    ) {
-      await expect(
-        groupRow.locator(
-          'input[type="checkbox"]'
-        ).first()
-      ).not.toBeChecked();
-    }
+    await expect(
+      this.page.getByRole(
+        'checkbox',
+        {
+          name: /^select equity$/i
+        }
+      )
+    ).not.toBeChecked();
 
     await this.closePanels();
 
@@ -724,8 +729,11 @@ export class PositionsDynamicGridPage {
 
     await this.closePanels();
 
-    await this.page.getByText(
-      /chubb ltd/i
+    await this.page.getByRole(
+      'button',
+      {
+        name: /chubb ltd/i
+      }
     ).first().click();
 
     await expect(
