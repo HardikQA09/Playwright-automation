@@ -47,6 +47,7 @@ const coreExecutableJourneyOrder = [
   'DashboardNavigation.spec.ts',
   'DashboardWidgets.spec.ts',
   'DashboardUiStoryFixes.spec.ts',
+  'OptionExpiryOverview.spec.ts',
   'EventCalendarFundamentals.spec.ts',
   'DashboardResearchPortfolio.spec.ts',
   'Opportunities.spec.ts',
@@ -143,7 +144,8 @@ const scheduleGroups = [
         files: pick([
           'DashboardNavigation.spec.ts',
           'DashboardWidgets.spec.ts',
-          'DashboardUiStoryFixes.spec.ts'
+          'DashboardUiStoryFixes.spec.ts',
+          'OptionExpiryOverview.spec.ts'
         ])
       },
       {
@@ -512,6 +514,7 @@ const executableBatches = [
       'DashboardNavigation.spec.ts',
       'DashboardWidgets.spec.ts',
       'DashboardUiStoryFixes.spec.ts',
+      'OptionExpiryOverview.spec.ts',
       'EventCalendarFundamentals.spec.ts',
       'DashboardResearchPortfolio.spec.ts',
       'Opportunities.spec.ts',
