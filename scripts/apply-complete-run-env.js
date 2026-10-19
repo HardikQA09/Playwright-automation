@@ -65,6 +65,16 @@ function applyCompleteRunEnv(projectRoot = path.resolve(__dirname, '..')) {
   setDefaultEnv('PLAN_SELECTION_EXISTING_PASSWORD', 'H@rdik9944');
   setDefaultEnv('ADMIN_EMAIL', 'admin@ooltool.com');
   setDefaultEnv('ADMIN_PASSWORD', 'Admin@1234!');
+  setDefaultEnv(
+    'REPORT_EMAIL_TO',
+    [
+      'pankaj.bhatla@ooltool.com',
+      'syesha.sen@ooltool.com',
+      'chetan.thumar@quantuminfoway.com',
+      'vishal.chauhan@quantuminfoway.com',
+      'hardik.thanki@quantuminfoway.com'
+    ].join(',')
+  );
 
   if (!process.env.SLOW_MO) {
     process.env.SLOW_MO = '0';

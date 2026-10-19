@@ -37,6 +37,14 @@ function isRobAddress(email) {
   );
 }
 
+const DEFAULT_REPORT_EMAIL_TO = [
+  'pankaj.bhatla@ooltool.com',
+  'syesha.sen@ooltool.com',
+  'chetan.thumar@quantuminfoway.com',
+  'vishal.chauhan@quantuminfoway.com',
+  'hardik.thanki@quantuminfoway.com'
+].join(',');
+
 function collectConfiguredRecipients(env = process.env) {
   const found = [];
 
@@ -46,6 +54,10 @@ function collectConfiguredRecipients(env = process.env) {
     }
 
     found.push(...parseAddressList(value));
+  }
+
+  if (!found.length) {
+    found.push(...parseAddressList(DEFAULT_REPORT_EMAIL_TO));
   }
 
   const excluded = new Set(
@@ -76,6 +88,7 @@ function collectConfiguredRecipients(env = process.env) {
 }
 
 module.exports = {
+  DEFAULT_REPORT_EMAIL_TO,
   collectConfiguredRecipients,
   isRobAddress,
   parseAddressList
