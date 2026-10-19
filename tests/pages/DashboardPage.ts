@@ -1798,46 +1798,6 @@ export class DashboardPage
     );
   }
 
-  async validateDashboardCardLinks() {
-    Logger.info(
-      'Validating dashboard card links'
-    );
-
-    const labels = [
-      /view option exposure/i,
-      /manage accounts/i,
-      /view all opportunities/i
-    ];
-
-    for (const label of labels) {
-      await expect(
-        this.page.getByRole(
-          'link',
-          {
-            name: label
-          }
-        ).or(
-          this.page.getByRole(
-            'button',
-            {
-              name: label
-            }
-          )
-        ).or(
-          this.page.getByText(
-            label
-          )
-        ).first()
-      ).toBeVisible({
-        timeout: 15000
-      });
-    }
-
-    Logger.success(
-      'Dashboard card links are visible'
-    );
-  }
-
   async validateExpiryOverview() {
     Logger.info(
       'Validating Option Expiry Overview'
@@ -1846,8 +1806,26 @@ export class DashboardPage
     const text =
       await this.cardText(
         /option expiry overview/i,
-        /expiration|symbol/i
+        /short options|long options|no open/i
       );
+
+    await expect(
+      this.page.getByRole(
+        'button',
+        {
+          name: /short options/i
+        }
+      )
+    ).toBeVisible();
+
+    await expect(
+      this.page.getByRole(
+        'button',
+        {
+          name: /long options/i
+        }
+      )
+    ).toBeVisible();
 
     const hasContractRow =
       /\b[A-Z]{2,5}\b/.test(
@@ -1858,7 +1836,7 @@ export class DashboardPage
       );
 
     const empty =
-      /no expir|none|no option/i.test(
+      /no options expiring|no open (short|long) options|no expir|none|no option/i.test(
         text
       );
 

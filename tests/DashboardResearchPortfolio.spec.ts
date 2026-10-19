@@ -14,8 +14,10 @@ import { OptionsResearchPage }
 import { PortfolioPage }
   from './pages/PortfolioPage';
 
-import { test }
-  from './fixtures/subscriberAuth';
+import {
+  expect,
+  test
+} from './fixtures/subscriberAuth';
 
 import { safeClick }
   from './helpers/safeClick';
@@ -25,9 +27,10 @@ TEST SUITE: Options Research and Portfolio Accounts
 
 PURPOSE
 -------
-View option exposure and View full expiry calendar open Options Research and its chain.
+View option exposure opens Options Research and its chain.
 Manage Accounts opens the broker account, View positions opens holdings,
 and every holdings tab shows the positions table.
+The dashboard no longer has a View full expiry calendar control.
 
 RUN
 ---
@@ -119,47 +122,45 @@ test.describe(
     );
 
     test(
-      'View full expiry calendar opens the option chain',
+      'Option expiry overview toggles short and long options',
       async ({ page }) => {
-        const research =
-          new OptionsResearchPage(
+        const dashboard =
+          new DashboardPage(
             page
           );
 
-        const calendarLink =
-          page.getByRole(
-            'link',
-            {
-              name: /view full expiry calendar/i
-            }
-          ).first();
-
-        const calendarShown =
-          await calendarLink.waitFor({
-            state: 'visible',
-            timeout: 5000
-          }).then(
-            () => true
-          ).catch(
-            () => false
-          );
+        await dashboard.validateExpiryOverview();
 
         await safeClick(
-          calendarShown
-            ? calendarLink
-            : page.getByRole(
-                'link',
-                {
-                  name: /view option exposure/i
-                }
-              ).first(),
-          calendarShown
-            ? 'View full expiry calendar'
-            : 'View option exposure'
+          page.getByRole(
+            'button',
+            {
+              name: /long options/i
+            }
+          ),
+          'Long Options'
         );
 
-        await research.validateLoaded();
-        await research.validateResearchData();
+        await expect(
+          page.getByRole(
+            'heading',
+            {
+              name: /option expiry overview/i
+            }
+          )
+        ).toBeVisible();
+
+        await safeClick(
+          page.getByRole(
+            'button',
+            {
+              name: /short options/i
+            }
+          ),
+          'Short Options'
+        );
+
+        await dashboard.validateExpiryOverview();
       }
     );
 

@@ -19,8 +19,9 @@ TEST SUITE: Dashboard Widgets
 PURPOSE
 -------
 Confirms the signed-in dashboard shows portfolio, score, events, allocation,
-strategy, broker, opportunity, expiry, and performance cards. Amounts and
-symbols are checked by shape, because those values change with the account.
+strategy, broker, opportunity, and expiry cards. Amounts and symbols are
+checked by shape, because those values change with the account.
+There is no View full expiry calendar control and no OolTool Performance card.
 
 RUN
 ---
@@ -105,20 +106,6 @@ test.describe(
           'Option expiry overview',
           async () => {
             await dashboard.validateExpiryOverview();
-          }
-        );
-
-        await test.step(
-          'Performance',
-          async () => {
-            await dashboard.validatePerformanceSummary();
-          }
-        );
-
-        await test.step(
-          'Card links',
-          async () => {
-            await dashboard.validateDashboardCardLinks();
           }
         );
       }
