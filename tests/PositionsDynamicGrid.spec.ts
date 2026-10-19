@@ -18,8 +18,10 @@ TEST SUITE: Positions dynamic grid
 PURPOSE
 -------
 Validates Portfolio > Positions as a Community AG Grid: Asset→Symbol groups,
-filters and chips, system views, selection charts, Rob asset-type colors,
-and the position drawer. Does not require AG Grid Enterprise.
+filters and chips, system views, selection charts, Rob asset-type hex on
+present badges, and the position drawer. Does not require AG Grid Enterprise.
+Rob display labels (Long Equity, Long Call, …) are not required until UAT
+ships them.
 
 RUN
 ---
