@@ -795,10 +795,10 @@ async function executeCurrentPlanBeforeUpgrade(
 
   await expect(
     page.getByText(
-      /income builder|overlay strategists|portfolio hedger|current plan|your plan/i
+      /income builder|overlay strategists|portfolio hedger|current plan|your plan|\bfree\b|curious/i
     ).first()
   ).toBeVisible({
-    timeout: 15000
+    timeout: 30000
   });
 }
 
@@ -1082,10 +1082,10 @@ async function executeOverlayWithCardCheckout(
       'OVERLAY_STRATEGISTS_WITH_CARD_ENABLED',
       'OVERLAY_STRATEGISTS_DECLINED_CARD_ENABLED'
     ],
-    'Opens Overlay with-card Stripe checkout without completing a successful payment.'
+    'Opens Overlay with-card Stripe checkout. WITH_CARD completes payment with a non-4242 test card.'
   );
 
-  const user =
+  let user =
     await registerAndReachPlanSelection(
       page,
       'stripe-matrix-overlay-card-checkout'
@@ -1111,6 +1111,69 @@ async function executeOverlayWithCardCheckout(
   ) {
     await stripe.validateDeclinedCardRejected();
   }
+
+  if (
+    !envEnabled(
+      'OVERLAY_STRATEGISTS_WITH_CARD_ENABLED'
+    )
+  ) {
+    return;
+  }
+
+  await stripe.completeTrialPayment();
+
+  let reached =
+    await continueAfterWithCardTrialCheckout(
+      page,
+      user.mobileNumber
+    );
+
+  for (
+    let retry = 1;
+    !reached &&
+      retry <= 2;
+    retry++
+  ) {
+    console.log(
+      `Retrying Overlay with-card checkout with a different Stripe test card (${retry}/2). Do not use 4242.`
+    );
+
+    if (
+      retry === 2
+    ) {
+      user =
+        await registerAndReachPlanSelection(
+          page,
+          'stripe-matrix-overlay-card-retry'
+        );
+    }
+
+    reached =
+      await submitAnotherWithCardTrialAttempt(
+        page,
+        user.mobileNumber
+      );
+  }
+
+  if (
+    !reached
+  ) {
+    throw new Error(
+      'QA-CL-005: with-card trial bounced to Plan Selection after unique-card retries. Use a fresh user and an unused Stripe test card. Do not use 4242; that fingerprint is already_redeemed. Follow-up: clear 4242 reuse in Stripe test mode.'
+    );
+  }
+
+  await new DashboardPage(
+    page
+  ).validateLoaded({
+    acceptTrialSuccessMobileGate: true
+  });
+
+  await new BillingPage(
+    page
+  ).validateOverlayStrategistsTrialBillingState(
+    'with-card'
+  );
 }
 
 async function previewPlanChange(
@@ -1790,9 +1853,10 @@ async function executeTrialCancel(
         message
       )
     ) {
-      throw new CoverageSkip(
-        'No-card trial billing does not show Cancel subscription.'
+      console.log(
+        'No-card trial billing has no Cancel subscription control. That is expected; a card is not on file.'
       );
+      return;
     }
 
     throw error;

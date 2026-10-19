@@ -4648,13 +4648,24 @@ async validateOverviewContract() {
         timeout: 10000
       });
 
+  const hasCardOnFile =
+    /visa|mastercard|amex|discover|ending\s+in\s+\d{4}|\u2022{2,}\s*\d{4}|\*{2,}\s*\d{4}/i.test(
+      overviewText
+    );
+
   const onFreePlan =
     /\bfree\b/i.test(
       overviewText
-    ) &&
-    /curious|free plan/i.test(
+    ) ||
+    /canceled|cancelled|expired|curious explorer/i.test(
       overviewText
     );
+
+  const noCardTrial =
+    /trial/i.test(
+      overviewText
+    ) &&
+    !hasCardOnFile;
 
   const viewPlans =
     this.page
@@ -4688,7 +4699,11 @@ async validateOverviewContract() {
       () => false
     );
 
-  if (onFreePlan || hasViewPlans) {
+  if (
+    onFreePlan ||
+    noCardTrial ||
+    hasViewPlans
+  ) {
     await expect(
       this.plansTab
     ).toBeVisible({

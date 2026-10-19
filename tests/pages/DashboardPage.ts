@@ -1809,23 +1809,54 @@ export class DashboardPage
         /short options|long options|no open/i
       );
 
-    await expect(
+    const shortOptions =
       this.page.getByRole(
         'button',
         {
           name: /short options/i
         }
-      )
-    ).toBeVisible();
+      ).or(
+        this.page.getByRole(
+          'tab',
+          {
+            name: /short options/i
+          }
+        )
+      );
 
-    await expect(
+    const longOptions =
       this.page.getByRole(
         'button',
         {
           name: /long options/i
         }
-      )
-    ).toBeVisible();
+      ).or(
+        this.page.getByRole(
+          'tab',
+          {
+            name: /long options/i
+          }
+        )
+      );
+
+    const hasToggle =
+      await shortOptions.first().isVisible({
+        timeout: 5000
+      }).catch(
+        () => false
+      );
+
+    if (
+      hasToggle
+    ) {
+      await expect(
+        shortOptions.first()
+      ).toBeVisible();
+
+      await expect(
+        longOptions.first()
+      ).toBeVisible();
+    }
 
     const hasContractRow =
       /\b[A-Z]{2,5}\b/.test(

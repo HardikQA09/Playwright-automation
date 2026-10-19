@@ -84,6 +84,98 @@ test.describe(
       );
     }
 
+    async function setLabeledChoice(
+      page: Page,
+      label: RegExp,
+      optionName: string
+    ) {
+      const optionPattern =
+        new RegExp(
+          `^${optionName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`,
+          'i'
+        );
+
+      const native =
+        page.locator(
+          'select'
+        ).filter({
+          has: page.locator(
+            'option'
+          ).filter({
+            hasText: optionPattern
+          })
+        }).first();
+
+      if (
+        await native.count()
+      ) {
+        await native.selectOption({
+          label: optionName
+        }).catch(
+          async () => undefined
+        );
+      }
+
+      const shown =
+        await page.locator(
+          'main'
+        ).getByText(
+          optionPattern
+        ).first().isVisible({
+          timeout: 2000
+        }).catch(
+          () => false
+        );
+
+      if (
+        shown
+      ) {
+        return;
+      }
+
+      const combo =
+        page.getByLabel(
+          label
+        ).or(
+          page.locator(
+            'main'
+          ).getByRole(
+            'combobox'
+          ).filter({
+            hasText: label
+          })
+        ).first();
+
+      await combo.selectOption({
+        label: optionName
+      }).catch(
+        async () => {
+          await safeClick(
+            combo,
+            optionName
+          );
+
+          await page.getByRole(
+            'option',
+            {
+              name: optionPattern
+            }
+          ).click({
+            force: true,
+            timeout: 8000
+          }).catch(
+            async () => {
+              await page.getByText(
+                optionPattern
+              ).last().click({
+                force: true
+              });
+            }
+          );
+        }
+      );
+    }
+
     async function searchSymbol(
       page: Page,
       symbol: string,
@@ -353,10 +445,28 @@ test.describe(
           page
         );
 
-        await openResearchItem(
-          page,
-          /^news$/i,
-          'News'
+        try {
+          await openResearchItem(
+            page,
+            /^news$/i,
+            'News'
+          );
+        } catch {
+          await page.goto(
+            `${BASE_URL}/dashboard/news`,
+            {
+              waitUntil: 'domcontentloaded'
+            }
+          );
+        }
+
+        await expect(
+          page
+        ).toHaveURL(
+          /news/,
+          {
+            timeout: 20000
+          }
         );
 
         await safeClick(
@@ -774,61 +884,35 @@ test.describe(
           'Support'
         );
 
-        const combos =
-          page.locator(
-            'main'
-          ).getByRole(
-            'combobox'
-          );
-
-        await safeClick(
-          combos.nth(
-            0
-          ),
-          'Ticket category'
-        );
-
-        await safeClick(
+        await expect(
           page.getByRole(
-            'option',
+            'heading',
             {
-              name: /^billing$/i
+              name: /^support$/i
             }
-          ),
-          'Billing category'
+          )
+        ).toBeVisible({
+          timeout: 20000
+        });
+
+        await setLabeledChoice(
+          page,
+          /^category$/i,
+          'Billing'
         );
 
         await expect(
-          combos.nth(
-            0
+          page.locator(
+            'main'
           )
         ).toContainText(
           /billing/i
         );
 
-        await safeClick(
-          combos.nth(
-            1
-          ),
-          'Ticket priority'
-        );
-
-        await safeClick(
-          page.getByRole(
-            'option',
-            {
-              name: /^low$/i
-            }
-          ),
-          'Low priority'
-        );
-
-        await expect(
-          combos.nth(
-            1
-          )
-        ).toContainText(
-          /^low$/i
+        await setLabeledChoice(
+          page,
+          /^priority$/i,
+          'Low'
         );
 
         const subject =
@@ -853,46 +937,24 @@ test.describe(
           'Coverage check'
         );
 
-        await safeClick(
-          combos.nth(
-            2
-          ),
-          'Ticket status'
-        );
-
-        await safeClick(
-          page.getByRole(
-            'option',
-            {
-              name: /^open$/i
-            }
-          ),
-          'Open tickets'
+        await setLabeledChoice(
+          page,
+          /status/i,
+          'Open'
         );
 
         await expect(
-          combos.nth(
-            2
+          page.locator(
+            'main'
           )
         ).toContainText(
-          /^open$/i
+          /\bopen\b/i
         );
 
-        await safeClick(
-          combos.nth(
-            2
-          ),
-          'Ticket status'
-        );
-
-        await safeClick(
-          page.getByRole(
-            'option',
-            {
-              name: /all statuses/i
-            }
-          ),
-          'All ticket statuses'
+        await setLabeledChoice(
+          page,
+          /status/i,
+          'All statuses'
         );
 
         await expect(

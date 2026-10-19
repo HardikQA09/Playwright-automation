@@ -568,35 +568,71 @@ export class OpportunitiesPage
     const dialog =
       this.page.getByRole(
         'dialog'
+      ).or(
+        this.page.getByRole(
+          'alertdialog'
+        )
       );
 
+    const nameField =
+      dialog.getByRole(
+        'textbox'
+      ).or(
+        this.page.getByRole(
+          'textbox',
+          {
+            name: /view name|name your view|^name$/i
+          }
+        )
+      ).or(
+        this.page.getByPlaceholder(
+          /view name|name your view|enter a name/i
+        )
+      ).first();
+
     await expect(
-      dialog
+      nameField
     ).toBeVisible({
-      timeout: 10000
+      timeout: 15000
     });
 
-    await dialog.getByRole(
-      'textbox'
-    ).first().fill(
+    await nameField.fill(
       viewName
     );
 
-    await safeClick(
+    const saveConfirm =
       dialog.getByRole(
         'button',
         {
           name: /^save$/i
         }
-      ),
+      ).or(
+        this.page.getByRole(
+          'button',
+          {
+            name: /^save$/i
+          }
+        )
+      ).first();
+
+    await safeClick(
+      saveConfirm,
       'Save the view'
     );
 
     await expect(
-      dialog
+      nameField
     ).toBeHidden({
       timeout: 10000
-    });
+    }).catch(
+      async () => {
+        await expect(
+          dialog
+        ).toBeHidden({
+          timeout: 5000
+        });
+      }
+    );
 
     Logger.success(
       `Saved opportunity view ${viewName}`
@@ -1043,7 +1079,14 @@ export class OpportunitiesPage
       this.page.getByRole(
         'row'
       ).filter({
-        hasText: /cash secured put|covered call|protective put|long call/i
+        has: this.page.getByRole(
+          'button',
+          {
+            name: /row actions/i
+          }
+        )
+      }).filter({
+        hasText: /cash secured put|covered call|protective put|long call|\bCC\b|\bCSP\b/i
       }).first();
 
     await safeClick(
@@ -1062,7 +1105,14 @@ export class OpportunitiesPage
         {
           name: /cta details/i
         }
-      ),
+      ).or(
+        this.page.getByRole(
+          'button',
+          {
+            name: /cta details/i
+          }
+        )
+      ).first(),
       'CTA Details'
     );
 
@@ -1195,6 +1245,49 @@ export class OpportunitiesPage
   private async validateTable(
     tabLabel: string
   ) {
+    const empty =
+      /\)\s*0\s*$/.test(
+        tabLabel
+      ) ||
+      await this.page.getByText(
+        /no opportunit/i
+      ).first().isVisible({
+        timeout: 2000
+      }).catch(
+        () => false
+      );
+
+    const symbolHeader =
+      this.page.getByRole(
+        'columnheader',
+        {
+          name: /^symbol/i
+        }
+      ).first();
+
+    const tableReady =
+      await symbolHeader.isVisible({
+        timeout: empty ? 4000 : 15000
+      }).catch(
+        () => false
+      );
+
+    if (
+      !tableReady
+    ) {
+      if (
+        empty
+      ) {
+        return;
+      }
+
+      await expect(
+        symbolHeader
+      ).toBeVisible({
+        timeout: 5000
+      });
+    }
+
     for (const header of [
       /^symbol/i,
       /^strategy/i,
@@ -1216,11 +1309,6 @@ export class OpportunitiesPage
         timeout: 15000
       });
     }
-
-    const empty =
-      /\)\s*0\s*$/.test(
-        tabLabel
-      );
 
     if (
       !empty

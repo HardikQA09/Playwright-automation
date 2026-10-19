@@ -392,6 +392,12 @@ $env:BILLING_EXPECTED_FREQUENCY="per year"
 $env:BILLING_EXPECTED_CARD_LAST4="4242"
 ```
 
+Overlay Strategists **with-card trial** must not use `4242424242424242`. That Stripe test fingerprint is already redeemed (`already_redeemed`) and returns the user to Plan Selection / Free. Paid checkout may still use `STRIPE_CARD` 4242. Set `STRIPE_TRIAL_CARD` to another Visa/Mastercard test card, or leave it unset so automation rotates `stripe.trialCards`. Follow-up: clear 4242 reuse in Stripe test mode.
+
+```powershell
+$env:STRIPE_TRIAL_CARD="4000003560000008"
+```
+
 Run through npm script:
 
 ```powershell

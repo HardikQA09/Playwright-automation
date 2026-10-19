@@ -3243,8 +3243,8 @@ function plainFailureStory(test, index = 0) {
     next = 'Open the upgrade box and compare the amount due today with the next recurring price, then rerun this check.';
   } else if (lower.includes('manage subscription control was not found') || lower.includes('cancel subscription control was not found')) {
     happened = 'Cancel subscription was not on the billing page.';
-    wanted = 'A trial without a card should still offer Cancel subscription, without asking for a card.';
-    next = 'Open Billing for the no-card trial and look for Cancel subscription on Overview, Plans, and History.';
+    wanted = 'A paid or card-backed plan should offer Cancel. A no-card trial or Free plan does not need Cancel.';
+    next = 'If Billing is Free or a no-card trial, missing Cancel is expected. If this was a paid plan, add Cancel subscription on Overview.';
   } else if (lower.includes('paid') && (lower.includes('getbytext') || lower.includes('tobevisible'))) {
     happened = 'Billing history did not show a Paid status.';
     wanted = 'A paid subscriber should see Paid on the billing history.';

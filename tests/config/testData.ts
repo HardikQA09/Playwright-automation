@@ -986,8 +986,21 @@ export function uniqueStripeTrialCard(
       ''
     );
 
-  if (configuredCard) {
+  if (
+    configuredCard &&
+    configuredCard !==
+      '4242424242424242'
+  ) {
     return configuredCard;
+  }
+
+  if (
+    configuredCard ===
+    '4242424242424242'
+  ) {
+    console.warn(
+      'STRIPE_TRIAL_CARD=4242424242424242 is already_redeemed for Overlay with-card trial. Rotating an unused country test card. Paid checkout may still use STRIPE_CARD 4242. Follow-up: clear 4242 reuse in Stripe test mode.'
+    );
   }
 
   let card =
@@ -1009,14 +1022,31 @@ export function uniqueStripeTrialCard(
         STRIPE_TRIAL_CARDS.length
       ];
 
+    if (
+      card ===
+      '4242424242424242'
+    ) {
+      continue;
+    }
+
     if (!trialCardAlreadyUsed(card)) {
       rememberTrialCard(card);
       return card;
     }
   }
 
-  rememberTrialCard(card);
-  return card;
+  const fallback =
+    STRIPE_TRIAL_CARDS.find(
+      (candidate) =>
+        candidate !==
+        '4242424242424242'
+    ) ??
+    card;
+
+  rememberTrialCard(
+    fallback
+  );
+  return fallback;
 }
 
 export const STRIPE_DECLINED_CARD =

@@ -10,6 +10,14 @@
  * Extra paid purchases and destructive Stripe submits stay OFF.
  * Turning those on converts the documented skips into executions and
  * drops the suite from ~550 pass / ~10-15 fail to hundreds of failures.
+ *
+ * Overlay with-card trial must not use Stripe test card 4242
+ * (already_redeemed). Paid checkout may still use STRIPE_CARD 4242.
+ * Follow-up: clear 4242 reuse in Stripe test mode.
+ *
+ * npm run weekly:report / test:daily / test:every-2-days now apply this
+ * same flag profile so weekly does not skip Overlay, direct checkout, and
+ * plan-ladder inspect the way an unflagged weekly run did.
  */
 module.exports = {
   AUTH_EMAIL_VERIFICATION_REQUIRED: 'true',
