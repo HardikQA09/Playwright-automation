@@ -146,7 +146,8 @@ const scheduleGroups = [
           'DashboardNavigation.spec.ts',
           'DashboardWidgets.spec.ts',
           'DashboardUiStoryFixes.spec.ts',
-          'OptionExpiryOverview.spec.ts'
+          'OptionExpiryOverview.spec.ts',
+          'PositionsDynamicGrid.spec.ts'
         ])
       },
       {
@@ -176,7 +177,6 @@ const scheduleGroups = [
         name: 'Dashboard screens',
         files: pick([
           'EventCalendarFundamentals.spec.ts',
-          'PositionsDynamicGrid.spec.ts',
           'DashboardResearchPortfolio.spec.ts',
           'Opportunities.spec.ts',
           'DashboardMoreScreens.spec.ts',

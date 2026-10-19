@@ -17,9 +17,9 @@ TEST SUITE: Positions dynamic grid
 
 PURPOSE
 -------
-Validates Portfolio > Positions as a Community AG Grid: grouped asset rows,
-search, expand/collapse, filtered analysis charts, and the position drawer.
-Does not require AG Grid Enterprise.
+Validates Portfolio > Positions as a Community AG Grid: Asset→Symbol groups,
+filters and chips, system views, selection charts, Rob asset-type colors,
+and the position drawer. Does not require AG Grid Enterprise.
 
 RUN
 ---
@@ -75,6 +75,7 @@ test.describe(
           );
 
         await grid.expectLoaded();
+        await grid.expectToolbar();
         await grid.expectCommunityGridOnly();
       }
     );
@@ -93,6 +94,32 @@ test.describe(
     );
 
     test(
+      'Dashboard positions call filter shows active filter chips',
+      async ({ page }) => {
+        const grid =
+          new PositionsDynamicGridPage(
+            page
+          );
+
+        await grid.expectLoaded();
+        await grid.expectCallFilterChips();
+      }
+    );
+
+    test(
+      'Dashboard positions by broker view groups and can add a level',
+      async ({ page }) => {
+        const grid =
+          new PositionsDynamicGridPage(
+            page
+          );
+
+        await grid.expectLoaded();
+        await grid.expectByBrokerSavedView();
+      }
+    );
+
+    test(
       'Dashboard positions analyze filtered shows allocation value and pnl charts',
       async ({ page }) => {
         const grid =
@@ -106,6 +133,19 @@ test.describe(
     );
 
     test(
+      'Dashboard positions selected rows open analysis metrics and charts',
+      async ({ page }) => {
+        const grid =
+          new PositionsDynamicGridPage(
+            page
+          );
+
+        await grid.expectLoaded();
+        await grid.expectSelectionAnalysis();
+      }
+    );
+
+    test(
       'Dashboard positions row opens the detail drawer',
       async ({ page }) => {
         const grid =
@@ -115,6 +155,32 @@ test.describe(
 
         await grid.expectLoaded();
         await grid.expectPositionDrawer();
+      }
+    );
+
+    test(
+      'Dashboard positions columns and save view stay on the community grid',
+      async ({ page }) => {
+        const grid =
+          new PositionsDynamicGridPage(
+            page
+          );
+
+        await grid.expectLoaded();
+        await grid.expectColumnPickerAndSaveView();
+      }
+    );
+
+    test(
+      'Dashboard positions badges use the Rob asset type colors',
+      async ({ page }) => {
+        const grid =
+          new PositionsDynamicGridPage(
+            page
+          );
+
+        await grid.expectLoaded();
+        await grid.expectRobPalette();
       }
     );
   }
