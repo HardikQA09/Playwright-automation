@@ -28,26 +28,25 @@ process.env.AIR_REPORT_SCOPE = process.env.AIR_REPORT_SCOPE || 'latest';
 process.env.AIR_RESTORE_HISTORY = process.env.AIR_RESTORE_HISTORY || 'true';
 process.env.SKIP_AIR_REPORT = 'true';
 
-function run(command, args, options = {}) {
+function run(command, args) {
   console.log(`\n> ${command} ${args.join(' ')}`);
 
   return (
     spawnSync(command, args, {
       cwd: projectRoot,
       env: process.env,
-      shell: options.shell ?? false,
       stdio: 'inherit'
     }).status ?? 1
   );
 }
 
-const playwright = path.join(
+const node = process.execPath;
+const playwrightCli = path.join(
   projectRoot,
   'node_modules',
-  '.bin',
-  process.platform === 'win32' ? 'playwright.cmd' : 'playwright'
+  'playwright',
+  'cli.js'
 );
-const node = process.execPath;
 
 console.log(
   'Complete suite: user-journey file order, Oct 12 554-pass flag profile, destructive Stripe submits off, then AIR.'
@@ -73,9 +72,10 @@ if (headed) {
   playwrightArgs.push('--headed');
 }
 
-const playwrightExit = run(playwright, playwrightArgs, {
-  shell: process.platform === 'win32'
-});
+const playwrightExit = run(node, [
+  playwrightCli,
+  ...playwrightArgs
+]);
 
 run(node, [path.join(projectRoot, 'scripts', 'generate-air-results.js')]);
 run(node, [path.join(projectRoot, 'scripts', 'generate-execution-report.js')]);

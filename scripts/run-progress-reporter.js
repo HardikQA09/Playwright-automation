@@ -65,6 +65,12 @@ class RunProgressReporter {
     );
   }
 
+  onTestBegin(test) {
+    console.log(
+      `> [${this.done + 1}/${this.total}] ${test.title}`
+    );
+  }
+
   onTestEnd(test, result) {
     this.done += 1;
 
