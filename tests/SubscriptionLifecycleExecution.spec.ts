@@ -641,6 +641,20 @@ async function loginPreparedPaidUser(
       password
     );
 
+    const billing =
+      new BillingPage(
+        page
+      );
+
+    if (
+      await billing.isFreeOrNoCardPlan()
+    ) {
+      test.skip(
+        true,
+        'Prepared paid user is Free/no-card, so plan-change previews do not apply. Set BILLING_MANAGEMENT_EMAIL to a paid fixture.'
+      );
+    }
+
     return;
   }
 

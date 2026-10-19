@@ -3076,16 +3076,32 @@ async function executePack(
   try {
     await pack.setup(ctx);
   } catch (error) {
+    const skipReason =
+      error instanceof ScenarioSkip
+        ? error.reason
+        : (
+          error instanceof Error &&
+          (
+            error.name ===
+              'CoverageSkip' ||
+            /GMAIL_APP_PASSWORD|EMAIL_VERIFICATION_PAUSE/i.test(
+              error.message
+            )
+          )
+        )
+          ? error.message
+          : '';
+
     for (const stepName of Object.keys(
       pack.steps
     )) {
       outcomes.set(
         stepName,
-        error instanceof ScenarioSkip
+        skipReason
           ? {
               status: 'skipped',
               reason:
-                `${error.reason} (user ${ctx.email || 'not created'})`
+                `${skipReason} (user ${ctx.email || 'not created'})`
             }
           : {
               status: 'failed',

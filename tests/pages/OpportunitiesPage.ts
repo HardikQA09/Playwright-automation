@@ -1,6 +1,7 @@
 import {
   expect,
-  Locator
+  Locator,
+  Page
 } from '@playwright/test';
 
 import { BasePage }
@@ -428,6 +429,22 @@ export class OpportunitiesPage
     }
   }
 
+  private rowActionLocator(
+    scope: Locator | Page =
+      this.page
+  ) {
+    return scope.getByRole(
+      'button',
+      {
+        name: /row actions|more actions|open menu|^more$|actions/i
+      }
+    ).or(
+      scope.locator(
+        'button[aria-haspopup="menu"]'
+      )
+    );
+  }
+
   async validateRowActions() {
     Logger.info(
       'Validating opportunity row actions'
@@ -437,21 +454,13 @@ export class OpportunitiesPage
       this.page.getByRole(
         'row'
       ).filter({
-        has: this.page.getByRole(
-          'button',
-          {
-            name: /row actions/i
-          }
-        )
+        has: this.rowActionLocator()
       }).first();
 
     await safeClick(
-      row.getByRole(
-        'button',
-        {
-          name: /row actions/i
-        }
-      ),
+      this.rowActionLocator(
+        row
+      ).first(),
       'Open row actions'
     );
 
@@ -886,21 +895,13 @@ export class OpportunitiesPage
           this.page.getByRole(
             'row'
           ).filter({
-            has: this.page.getByRole(
-              'button',
-              {
-                name: /row actions/i
-              }
-            )
+            has: this.rowActionLocator()
           }).first();
 
         await safeClick(
-          row.getByRole(
-            'button',
-            {
-              name: /row actions/i
-            }
-          ),
+          this.rowActionLocator(
+            row
+          ).first(),
           'Open row actions'
         );
       };
@@ -938,9 +939,17 @@ export class OpportunitiesPage
       }
     );
 
-    await this.page.goBack({
-      waitUntil: 'domcontentloaded'
-    });
+    const origin =
+      new URL(
+        this.page.url()
+      ).origin;
+
+    await this.page.goto(
+      `${origin}/dashboard/opportunities`,
+      {
+        waitUntil: 'domcontentloaded'
+      }
+    );
 
     await this.validateLoaded();
 
@@ -1079,23 +1088,15 @@ export class OpportunitiesPage
       this.page.getByRole(
         'row'
       ).filter({
-        has: this.page.getByRole(
-          'button',
-          {
-            name: /row actions/i
-          }
-        )
+        has: this.rowActionLocator()
       }).filter({
         hasText: /cash secured put|covered call|protective put|long call|\bCC\b|\bCSP\b/i
       }).first();
 
     await safeClick(
-      row.getByRole(
-        'button',
-        {
-          name: /row actions/i
-        }
-      ),
+      this.rowActionLocator(
+        row
+      ).first(),
       'Open row actions'
     );
 

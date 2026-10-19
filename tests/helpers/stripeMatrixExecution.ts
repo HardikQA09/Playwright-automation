@@ -239,7 +239,7 @@ function isMissingPlanAction(
           error
         );
 
-  return /Could not find (upgrade|downgrade|interval) control|No (monthly|annual) upgrade or interval/i.test(
+  return /Could not find (upgrade|downgrade|interval) control|No (monthly|annual) upgrade or interval|opened a new-purchase dialog|Free\/no-card|no paid plan to preview/i.test(
     message
   );
 }
@@ -1190,6 +1190,14 @@ async function previewPlanChange(
     new BillingPage(
       page
     );
+
+  if (
+    await billing.isFreeOrNoCardPlan()
+  ) {
+    throw new CoverageSkip(
+      'Shared subscriber is Free/no-card, so there is no paid plan to preview. Set BILLING_MANAGEMENT_EMAIL to a paid fixture.'
+    );
+  }
 
   try {
     await billing.openPlanChangeCalculationPreview({

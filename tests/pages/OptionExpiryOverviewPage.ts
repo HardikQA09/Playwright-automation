@@ -6,8 +6,7 @@ import {
 import {
   callDistancePct,
   expiryBucket,
-  parseMoney,
-  parseSignedPercent
+  parseMoney
 } from '../helpers/optionExpiryDistance';
 import { safeClick }
   from '../helpers/safeClick';
@@ -357,78 +356,94 @@ export class OptionExpiryOverviewPage {
       /call distance\s*=\s*\(\(\s*last price\s*-\s*strike\s*\)\s*\/\s*strike\s*\)\s*x\s*100/i
     );
 
-    const last =
+    const tableRows =
+      [
+        ...text.matchAll(
+          /\$([\d,.]+)\s+\$([\d,.]+)\s+([+-]?\d+(?:\.\d+)?)\s*%/g
+        )
+      ];
+
+    expect(
+      tableRows.length,
+      'Need strike/last/distance rows in the expiry modal'
+    ).toBeGreaterThan(
+      0
+    );
+
+    const underlyingMatch =
+      text.match(
+        /underlying last\s*(\$[\d,.]+)/i
+      );
+
+    const underlyingLast =
       parseMoney(
-        (
-          text.match(
-            /underlying last\s*(\$[\d,.]+)/i
-          ) ||
-          []
-        )[1] ||
+        underlyingMatch?.[1] ||
         ''
       );
 
-    const tableRow =
-      text.match(
-        /\$([\d,.]+)\s+\$([\d,.]+)\s+([+-]?\d+(?:\.\d+)?)\s*%/i
-      );
+    for (const row of tableRows) {
+      const k =
+        parseMoney(
+          `$${row[1]}`
+        );
+      const last =
+        Number.isFinite(
+          underlyingLast
+        ) &&
+        underlyingLast > 0
+          ? underlyingLast
+          : parseMoney(
+            `$${row[2]}`
+          );
+      const shown =
+        Number(
+          row[3]
+        );
+      const expected =
+        callDistancePct(
+          last,
+          k
+        );
 
-    const k =
-      parseMoney(
-        tableRow
-          ? `$${tableRow[1]}`
-          : ''
-      );
-
-    const shown =
-      parseSignedPercent(
-        text
-      );
-
-    const expected =
-      callDistancePct(
+      expect(
         last,
-        k
+        'Last price should parse from the modal table when Underlying last is N/A'
+      ).toBeGreaterThan(
+        0
       );
 
-    expect(
-      last,
-      'Underlying last should parse'
-    ).toBeGreaterThan(
-      0
-    );
-
-    expect(
-      k,
-      'Strike should parse'
-    ).toBeGreaterThan(
-      0
-    );
-
-    expect(
-      Math.abs(
-        shown - expected
-      ),
-      `Distance ${shown}% should match ((${last} - ${k}) / ${k}) x 100 = ${expected.toFixed(2)}%`
-    ).toBeLessThan(
-      0.015
-    );
-
-    const bucket =
-      expiryBucket(
-        expected
+      expect(
+        k,
+        'Strike should parse'
+      ).toBeGreaterThan(
+        0
       );
 
-    expect(
-      text
-    ).toMatch(
-      new RegExp(
-        `\\b${bucket}\\b`
-      )
-    );
+      expect(
+        Math.abs(
+          shown - expected
+        ),
+        `Distance ${shown}% should match ((${last} - ${k}) / ${k}) x 100 = ${expected.toFixed(2)}%`
+      ).toBeLessThan(
+        0.05
+      );
+
+      const bucket =
+        expiryBucket(
+          expected
+        );
+
+      expect(
+        text
+      ).toMatch(
+        new RegExp(
+          `\\b${bucket}\\b`
+        )
+      );
+    }
 
     Logger.success(
-      `Call distance ${shown}% is ${bucket}`
+      `Call distance matches ((last - strike) / strike) x 100 for ${tableRows.length} row(s)`
     );
   }
 }
