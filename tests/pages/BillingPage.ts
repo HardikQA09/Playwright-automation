@@ -552,6 +552,53 @@ Logger.success(
   'Billing Page Opened'
 );
 }
+
+async isFreePlanWithoutPaymentMethod() {
+  await this.validateOverview();
+
+  const text = (
+    await this.page
+      .locator('main')
+      .innerText({ timeout: 15000 })
+      .catch(() => '')
+  ).replace(/\s+/g, ' ');
+
+  const cancelVisible = await this.page
+    .getByRole('button', { name: /cancel subscription/i })
+    .or(this.page.getByRole('link', { name: /cancel subscription/i }))
+    .first()
+    .isVisible({ timeout: 2000 })
+    .catch(() => false);
+
+  const paidPlan = /income builder|overlay strategists|portfolio hedger/i.test(
+    text
+  );
+
+  return (
+    /\bplan\s+free\b|\bfree\b[\s\S]{0,40}\bprice\b/i.test(text) &&
+    /current plan/i.test(text) &&
+    !paidPlan &&
+    !cancelVisible
+  );
+}
+
+/**
+ * The Stripe customer portal is only exposed for an active paid subscription.
+ * Matrix coverage uses this as a fixture precondition before it tries plan
+ * changes, cancellation, invoices, or payment-method screens.
+ */
+async hasActivePaidSubscriptionManagement() {
+  await this.validateOverview();
+
+  return this.manageSubscriptionControl()
+    .then(
+      () => true
+    )
+    .catch(
+      () => false
+    );
+}
+
 async validatePlans() {
 
  Logger.info(
@@ -5193,7 +5240,9 @@ async subscribeToPaidPlanBeforeTrialEnds() {
 
     await confirmPay.evaluate(
       (button) => {
-        button.click();
+        if (button instanceof HTMLElement) {
+          button.click();
+        }
       }
     );
   } else if (!reachedStripe) {

@@ -78,7 +78,10 @@ test.describe(
         await expect(control).toBeVisible();
 
         // 2) Use it
-        await safeClick(control);
+        await safeClick(
+          control,
+          'Open REPLACE_CONTROL_NAME'
+        );
 
         // 3) Assert the expected screen
         await expect(page).toHaveURL(

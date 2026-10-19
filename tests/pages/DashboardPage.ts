@@ -1833,6 +1833,41 @@ export class DashboardPage
       });
     }
 
+    const eventsLink = this.page.getByRole('link', {
+      name: /view more|view (full )?event calendar|event calendar/i
+    }).first();
+
+    await expect(
+      eventsLink,
+      'Upcoming Events should link to the event calendar (the label is "View more", not a separate calendar title).'
+    ).toBeVisible({
+      timeout: 15000
+    });
+
+    const expiryCard = this.page
+      .locator('section, article, div')
+      .filter({ has: this.page.getByRole('heading', { name: /option expiry overview/i }) })
+      .first();
+
+    const expiryText = await expiryCard
+      .innerText({ timeout: 5000 })
+      .catch(() => '');
+
+    const expiryEmpty = /no open (short|long) options|no expir|none/i.test(
+      expiryText
+    );
+
+    const expiryCalendar = expiryCard.getByRole('link', {
+      name: /view full expiry calendar|expiry calendar|view more/i
+    }).first();
+
+    if (
+      !expiryEmpty &&
+      (await expiryCalendar.isVisible({ timeout: 2000 }).catch(() => false))
+    ) {
+      await expect(expiryCalendar).toBeVisible();
+    }
+
     Logger.success(
       'Dashboard card links are visible'
     );

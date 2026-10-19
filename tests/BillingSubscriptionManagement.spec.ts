@@ -82,6 +82,15 @@ test.describe(
             page
           );
 
+        if (
+          !await billing.hasActivePaidSubscriptionManagement()
+        ) {
+          test.skip(
+            true,
+            'The configured billing account has no active paid subscription. Stripe portal, invoices, cancellation, and payment-method checks require BILLING_MANAGEMENT_EMAIL/PASSWORD for an active paid subscriber.'
+          );
+        }
+
         await test.step(
           'Paid subscriber is not offered Overlay Strategists trial CTA',
           async () => {

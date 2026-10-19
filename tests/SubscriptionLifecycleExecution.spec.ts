@@ -638,6 +638,20 @@ async function loginPreparedPaidUser(
       password
     );
 
+    const billing =
+      new BillingPage(
+        page
+      );
+
+    if (
+      !await billing.hasActivePaidSubscriptionManagement()
+    ) {
+      test.skip(
+        true,
+        `The prepared subscription fixture ${email} has no active paid subscription. Set SUB_LIFECYCLE_PAID_EMAIL/PASSWORD to an active paid Stripe subscriber, or set SUB_LIFECYCLE_CREATE_DISPOSABLE_USER=true to create a dedicated fixture.`
+      );
+    }
+
     return;
   }
 

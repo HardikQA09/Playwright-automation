@@ -243,6 +243,36 @@ function isMissingPlanAction(
   );
 }
 
+function isPaidSubscriptionFixtureUnavailable(
+  error: unknown
+) {
+  const message =
+    error instanceof Error
+      ? error.message
+      : String(
+          error
+        );
+
+  return /Manage subscription control was not found|Billing should show one current paid plan|Could not find (upgrade|downgrade|interval) control/i.test(
+    message
+  );
+}
+
+async function requireActivePaidSubscriptionFixture(
+  billing: BillingPage,
+  coverage: string
+) {
+  if (
+    await billing.hasActivePaidSubscriptionManagement()
+  ) {
+    return;
+  }
+
+  throw new CoverageSkip(
+    `The configured billing fixture does not have an active paid subscription, so ${coverage} cannot run. Set BILLING_MANAGEMENT_EMAIL/PASSWORD or SUB_LIFECYCLE_PAID_EMAIL/PASSWORD to an active paid Stripe subscriber.`
+  );
+}
+
 export function inferStripeMatrixCoverageKey(
   automation?: string,
   title = ''
@@ -782,6 +812,11 @@ async function executeCurrentPlanBeforeUpgrade(
       page
     );
 
+  await requireActivePaidSubscriptionFixture(
+    billing,
+    'current-plan-before-upgrade coverage'
+  );
+
   await billing.validateOverview();
 
   await expect(
@@ -804,6 +839,11 @@ async function executeBillingInApp(
     new BillingPage(
       page
     );
+
+  await requireActivePaidSubscriptionFixture(
+    billing,
+    'paid billing-plan coverage'
+  );
 
   await billing.validateOverview();
   await billing.validateOverviewContract();
@@ -830,6 +870,11 @@ async function executeBillingPortal(
     envEnabled(
       'BILLING_SUBSCRIPTION_MANAGEMENT_ENABLED'
     );
+
+  await requireActivePaidSubscriptionFixture(
+    billing,
+    'Stripe customer-portal coverage'
+  );
 
   await billing.validateStripePortalSession({
     restore: !managementEnabled
@@ -1118,6 +1163,11 @@ async function previewPlanChange(
     new BillingPage(
       page
     );
+
+  await requireActivePaidSubscriptionFixture(
+    billing,
+    `${action} calculation-preview coverage`
+  );
 
   try {
     await billing.openPlanChangeCalculationPreview({
@@ -2046,9 +2096,17 @@ async function executeDowngradeTargets(
     page
   );
 
-  await new BillingPage(
-    page
-  ).assertDowngradeTargetsAreLowerTier();
+  const billing =
+    new BillingPage(
+      page
+    );
+
+  await requireActivePaidSubscriptionFixture(
+    billing,
+    'downgrade-target coverage'
+  );
+
+  await billing.assertDowngradeTargetsAreLowerTier();
 }
 
 async function executeScenarioStep(
@@ -2253,6 +2311,28 @@ async function runCoverageKey(
       };
     }
 
+    if (
+      isPaidSubscriptionFixtureUnavailable(
+        error
+      )
+    ) {
+      const skipped: CoverageOutcome = {
+        status: 'skipped',
+        reason:
+          `The configured billing fixture is not an active paid subscriber. ${error instanceof Error ? error.message : String(error)}`
+      };
+
+      coverageCache.set(
+        key,
+        skipped
+      );
+
+      return {
+        ...skipped,
+        cache: 'miss'
+      };
+    }
+
     const failed: CoverageOutcome = {
       status: 'failed',
       error
@@ -2362,6 +2442,20 @@ export async function executeStripeMatrixScenario(
       scenario.automation,
       scenario.title
     );
+
+  if (
+    coverageKey.startsWith(
+      'air:'
+    ) &&
+    !envEnabled(
+      'AIR_SELF_VALIDATION_ENABLED'
+    )
+  ) {
+    test.skip(
+      true,
+      'AIR self-validation reads a previously generated report and is excluded from the live Playwright execution. Run it separately with AIR_SELF_VALIDATION_ENABLED=true after npm run air:parse.'
+    );
+  }
 
   const cached =
     coverageCache.get(

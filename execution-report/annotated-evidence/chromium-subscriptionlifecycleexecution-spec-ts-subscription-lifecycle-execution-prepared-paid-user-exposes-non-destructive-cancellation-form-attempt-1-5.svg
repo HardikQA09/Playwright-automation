@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <image href="../../test-results/SubscriptionLifecycleExecu-7c6e2-structive-cancellation-form-j14/test-failed-1.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid meet"/>
+  <rect x="21" y="186" width="406" height="33" rx="8" fill="rgba(220,38,38,0.16)" stroke="#dc2626" stroke-width="8"/>
+  <rect x="12" y="12" width="520" height="64" rx="10" fill="#dc2626"/>
+  <text x="28" y="34" fill="#ffffff" font-family="Arial, sans-serif" font-size="13" font-weight="800" letter-spacing="0.08em">FAILED</text>
+  <text x="28" y="54" fill="#ffffff" font-family="Arial, sans-serif" font-size="16" font-weight="700">Cancel subscription was not on the billing page.</text>
+</svg>

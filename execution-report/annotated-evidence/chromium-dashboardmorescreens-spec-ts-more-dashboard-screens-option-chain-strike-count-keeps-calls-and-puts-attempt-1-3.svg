@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <image href="../../test-results/DashboardMoreScreens-More--a6ca2--count-keeps-calls-and-puts-j20/test-failed-1.png" x="0" y="0" width="1280" height="720" preserveAspectRatio="xMidYMid meet"/>
+  <rect x="64" y="15" width="98" height="35" rx="8" fill="rgba(220,38,38,0.16)" stroke="#dc2626" stroke-width="8"/>
+  <rect x="12" y="62" width="520" height="64" rx="10" fill="#dc2626"/>
+  <text x="28" y="84" fill="#ffffff" font-family="Arial, sans-serif" font-size="13" font-weight="800" letter-spacing="0.08em">FAILED</text>
+  <text x="28" y="104" fill="#ffffff" font-family="Arial, sans-serif" font-size="16" font-weight="700">The button or message we looked for was not on the page.</text>
+</svg>

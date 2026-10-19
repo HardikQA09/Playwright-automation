@@ -124,16 +124,18 @@ function buildMessage(air, args) {
 
   const env = air.environment?.name ?? 'UAT';
   const intro =
-    `Hi team,\n\nPlease find the OolTool automation execution report for the ${env} ` +
+    `Hello,\n\nPlease find the OolTool QA automation execution report for the ${env} ` +
     `environment (${args.label.toLowerCase()}).`;
   const verdict = passing
     ? `All executed tests passed. Release decision: ${decision}.`
-    : `${s.failed} test(s) failed out of ${s.executed} executed, so the release decision is ${decision}. ` +
-      `The failed tests, details and evidence are in the attached reports.`;
+    : `${s.failed} test(s) failed out of ${s.executed} executed. Release decision: ${decision}. ` +
+      `Failed-test detail, screenshots and traces are in the attached reports.`;
   const closing =
-    'Attached: the AIR execution report (open the .html file in a browser) and the ' +
-    'Playwright report (unzip it and open index.html). ' +
-    'Please reply to this email if anything needs a closer look.\n\nRegards,\nOolTool QA Automation';
+    'Attachments:\n' +
+    '1. AIR execution report (.html) — open this file in a browser for the full AIR report, including the release decision and evidence.\n' +
+    '2. Playwright report (.zip) — unzip the file and open index.html for step details, screenshots and traces.\n\n' +
+    'Please review the attached reports and reply to this email if anything needs a closer look.\n\n' +
+    'Regards,\nOolTool QA Automation';
 
   const html = `
 <div style="font-family:Segoe UI,Arial,sans-serif;font-size:14px;color:#222">

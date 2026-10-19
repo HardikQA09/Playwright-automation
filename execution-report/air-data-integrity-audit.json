@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-10-12T09:08:45.737Z",
+  "generatedAt": "2026-10-19T06:52:20.173Z",
   "provenance": {
     "mode": "CURRENT_EXECUTION",
     "sourceArtifact": "test-results/results.json",
     "sourceFramework": "Playwright",
-    "generatedAt": "2026-10-12T09:08:45.353Z",
+    "generatedAt": "2026-10-19T06:52:19.790Z",
     "restoredFromHistory": false,
     "warning": ""
   },
@@ -13,23 +13,23 @@
     "total": 726,
     "rawTestCount": 726,
     "attempts": 727,
-    "passed": 554,
-    "failed": 15,
-    "skipped": 157,
+    "passed": 461,
+    "failed": 14,
+    "skipped": 251,
     "flaky": 0,
     "interrupted": 0,
     "statuses": {
-      "expected": 554,
-      "unexpected": 15,
-      "skipped": 157
+      "expected": 461,
+      "skipped": 251,
+      "unexpected": 14
     }
   },
   "airExecution": {
     "total": 726,
     "attempts": 727,
-    "passed": 554,
-    "failed": 15,
-    "skipped": 157,
+    "passed": 461,
+    "failed": 14,
+    "skipped": 251,
     "flaky": 0,
     "interrupted": 0,
     "retryCount": 1
@@ -49,10 +49,10 @@
   },
   "orphanEvidence": [],
   "evidenceClassification": {
-    "perTestEvidence": 25,
+    "perTestEvidence": 24,
     "executionArtifacts": 2,
     "rawReports": 2,
-    "totalWithRawReports": 27,
+    "totalWithRawReports": 26,
     "rawReportsCountAsFailureEvidence": false
   },
   "invalidModuleReferences": [],
@@ -61,8 +61,8 @@
   "evidenceTraceability": {
     "failedTests": [
       {
-        "testId": "chromium > Opportunities.spec.ts > Opportunities > Opportunity tabs filters and row actions show CTA data",
-        "testName": "Opportunities > Opportunity tabs filters and row actions show CTA data",
+        "testId": "chromium > DashboardWidgets.spec.ts > Dashboard Widgets > Dashboard shows portfolio score events allocation and opportunities",
+        "testName": "Dashboard Widgets > Dashboard shows portfolio score events allocation and opportunities",
         "evidenceCount": 2,
         "status": "Evidence Available"
       },
@@ -73,26 +73,26 @@
         "status": "Evidence Available"
       },
       {
-        "testId": "chromium > DashboardMoreScreens.spec.ts > More dashboard screens > CTA Details opens without changing watch status",
-        "testName": "More dashboard screens > CTA Details opens without changing watch status",
+        "testId": "chromium > DashboardMoreScreens.spec.ts > More dashboard screens > Option chain strike count keeps calls and puts",
+        "testName": "More dashboard screens > Option chain strike count keeps calls and puts",
         "evidenceCount": 5,
         "status": "Evidence Available"
       },
       {
-        "testId": "chromium > DashboardCoverageDepth.spec.ts > Deeper dashboard controls > Simulator clears the searched symbol",
-        "testName": "Deeper dashboard controls > Simulator clears the searched symbol",
+        "testId": "chromium > DashboardCoverageDepth.spec.ts > Deeper dashboard controls > News switches portfolio and watchlist, then searches a symbol",
+        "testName": "Deeper dashboard controls > News switches portfolio and watchlist, then searches a symbol",
         "evidenceCount": 2,
         "status": "Evidence Available"
       },
       {
-        "testId": "chromium > DashboardScenarioSweep.spec.ts > Remaining dashboard scenarios > Simulator searches a symbol and switches the risk profile",
-        "testName": "Remaining dashboard scenarios > Simulator searches a symbol and switches the risk profile",
+        "testId": "chromium > DashboardCoverageDepth.spec.ts > Deeper dashboard controls > Support changes ticket fields and status without submitting",
+        "testName": "Deeper dashboard controls > Support changes ticket fields and status without submitting",
         "evidenceCount": 2,
         "status": "Evidence Available"
       },
       {
-        "testId": "chromium > ProfileSecurityDisplay.spec.ts > Profile Security Display > Profile security MFA backup codes trusted devices and refresh",
-        "testName": "Profile Security Display > Profile security MFA backup codes trusted devices and refresh",
+        "testId": "chromium > BillingEdgeValidation.spec.ts > Billing Edge Validation > Billing overview plans and history in one session",
+        "testName": "Billing Edge Validation > Billing overview plans and history in one session",
         "evidenceCount": 2,
         "status": "Evidence Available"
       },
@@ -121,26 +121,20 @@
         "status": "Evidence Available"
       },
       {
+        "testId": "chromium > UpgradeSubscriptionMatrix.spec.ts > Upgrade Subscription Use Case 3 Matrix > SC-76 - Current lower-tier paid subscription is displayed before upgrade",
+        "testName": "Upgrade Subscription Use Case 3 Matrix > SC-76 - Current lower-tier paid subscription is displayed before upgrade",
+        "evidenceCount": 1,
+        "status": "Evidence Available"
+      },
+      {
         "testId": "chromium > UpgradeSubscriptionMatrix.spec.ts > Upgrade Subscription Use Case 3 Matrix > SC-95 - Upgrade confirmation email is sent",
         "testName": "Upgrade Subscription Use Case 3 Matrix > SC-95 - Upgrade confirmation email is sent",
         "evidenceCount": 1,
         "status": "Evidence Available"
       },
       {
-        "testId": "chromium > DowngradeSubscriptionMatrix.spec.ts > Downgrade Subscription Use Case 4 Matrix > SC-141 - Scheduled downgrade appears in billing overview",
-        "testName": "Downgrade Subscription Use Case 4 Matrix > SC-141 - Scheduled downgrade appears in billing overview",
-        "evidenceCount": 1,
-        "status": "Evidence Available"
-      },
-      {
         "testId": "chromium > MonthlyAnnualBillingChangeMatrix.spec.ts > Monthly To Annual Billing Change Use Case 5 Matrix > SC-182 - Confirmation email is sent after monthly-to-annual change",
         "testName": "Monthly To Annual Billing Change Use Case 5 Matrix > SC-182 - Confirmation email is sent after monthly-to-annual change",
-        "evidenceCount": 1,
-        "status": "Evidence Available"
-      },
-      {
-        "testId": "chromium > MonthlyAnnualBillingChangeMatrix.spec.ts > Monthly To Annual Billing Change Use Case 5 Matrix > SC-186 - Double-clicking annual switch confirmation is idempotent",
-        "testName": "Monthly To Annual Billing Change Use Case 5 Matrix > SC-186 - Double-clicking annual switch confirmation is idempotent",
         "evidenceCount": 1,
         "status": "Evidence Available"
       },
@@ -166,17 +160,7 @@
         "references": [
           {
             "type": "Failure",
-            "name": "Deeper dashboard controls > Simulator clears the searched symbol",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
-            "name": "Remaining dashboard scenarios > Simulator searches a symbol and switches the risk profile",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
-            "name": "Profile Security Display > Profile security MFA backup codes trusted devices and refresh",
+            "name": "Billing Edge Validation > Billing overview plans and history in one session",
             "detail": "Critical failure severity matched release rules."
           },
           {
@@ -220,23 +204,8 @@
             "detail": "Critical journey status is Critical."
           },
           {
-            "type": "Business Journey",
-            "name": "Dashboard",
-            "detail": "Critical journey status is Critical."
-          },
-          {
             "type": "Module",
             "name": "Billing",
-            "detail": "Critical module risk is High."
-          },
-          {
-            "type": "Module",
-            "name": "Dashboard",
-            "detail": "Critical module risk is High."
-          },
-          {
-            "type": "Module",
-            "name": "MFA",
             "detail": "Critical module risk is High."
           },
           {
@@ -252,17 +221,7 @@
         "references": [
           {
             "type": "Failure",
-            "name": "Deeper dashboard controls > Simulator clears the searched symbol",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
-            "name": "Remaining dashboard scenarios > Simulator searches a symbol and switches the risk profile",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
-            "name": "Profile Security Display > Profile security MFA backup codes trusted devices and refresh",
+            "name": "Billing Edge Validation > Billing overview plans and history in one session",
             "detail": "Critical failure severity matched release rules."
           },
           {
@@ -306,23 +265,8 @@
             "detail": "Critical journey status is Critical."
           },
           {
-            "type": "Business Journey",
-            "name": "Dashboard",
-            "detail": "Critical journey status is Critical."
-          },
-          {
             "type": "Module",
             "name": "Billing",
-            "detail": "Critical module risk is High."
-          },
-          {
-            "type": "Module",
-            "name": "Dashboard",
-            "detail": "Critical module risk is High."
-          },
-          {
-            "type": "Module",
-            "name": "MFA",
             "detail": "Critical module risk is High."
           },
           {
@@ -338,17 +282,7 @@
         "references": [
           {
             "type": "Failure",
-            "name": "Deeper dashboard controls > Simulator clears the searched symbol",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
-            "name": "Remaining dashboard scenarios > Simulator searches a symbol and switches the risk profile",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
-            "name": "Profile Security Display > Profile security MFA backup codes trusted devices and refresh",
+            "name": "Billing Edge Validation > Billing overview plans and history in one session",
             "detail": "Critical failure severity matched release rules."
           },
           {
@@ -392,23 +326,8 @@
             "detail": "Critical journey status is Critical."
           },
           {
-            "type": "Business Journey",
-            "name": "Dashboard",
-            "detail": "Critical journey status is Critical."
-          },
-          {
             "type": "Module",
             "name": "Billing",
-            "detail": "Critical module risk is High."
-          },
-          {
-            "type": "Module",
-            "name": "Dashboard",
-            "detail": "Critical module risk is High."
-          },
-          {
-            "type": "Module",
-            "name": "MFA",
             "detail": "Critical module risk is High."
           },
           {
@@ -419,7 +338,7 @@
         ]
       }
     ],
-    "warnings": 12,
-    "blockers": 16
+    "warnings": 16,
+    "blockers": 11
   }
 }
