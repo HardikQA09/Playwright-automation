@@ -38,6 +38,13 @@ test.describe(
       timeout: 120000
     });
 
+    test.use({
+      viewport: {
+        width: 1440,
+        height: 1100
+      }
+    });
+
     test.beforeEach(
       async ({ page }) => {
         const dashboard =

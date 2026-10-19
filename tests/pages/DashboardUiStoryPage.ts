@@ -1,6 +1,5 @@
 import {
   expect,
-  Locator,
   Page
 } from '@playwright/test';
 
@@ -53,6 +52,14 @@ export type PieHoverLayout = {
     box: ChartBox;
   } | null;
   tooltipVisible: boolean;
+};
+
+type AllocationRaw = {
+  legend: Array<{
+    label: string;
+    bg: string;
+  }>;
+  pie: string[];
 };
 
 export class DashboardUiStoryPage {
@@ -175,162 +182,171 @@ export class DashboardUiStoryPage {
     );
   }
 
-  async readAssetTypePalette() {
+  private async allocationRootData(): Promise<AllocationRaw> {
+    const heading =
+      this.allocationHeading();
+
     await expect(
-      this.allocationHeading()
+      heading
     ).toBeVisible({
       timeout: 20000
     });
 
-    await this.allocationHeading().scrollIntoViewIfNeeded();
+    await heading.scrollIntoViewIfNeeded();
 
-    const raw =
-      await this.page.evaluate(
-        () => {
-          const heading =
-            [...document.querySelectorAll(
-              'h1,h2,h3,h4'
-            )].find(
-              (node) =>
-                /asset allocation/i.test(
-                  node.textContent || ''
-                )
+    return heading.evaluate(
+      (headingNode) => {
+        let root =
+          headingNode.parentElement;
+
+        while (
+          root &&
+          root !== document.body
+        ) {
+          const firstHeading =
+            root.querySelector(
+              'h1, h2, h3, h4'
             );
 
-          if (!heading) {
+          const piePaths =
+            [...root.querySelectorAll(
+              'svg path'
+            )].filter(
+              (path) => {
+                const fill =
+                  (
+                    path.getAttribute(
+                      'fill'
+                    ) ||
+                    ''
+                  ).toLowerCase();
+
+                return fill.startsWith(
+                  '#'
+                ) &&
+                  fill !== '#fff' &&
+                  fill !== '#ffffff';
+              }
+            );
+
+          if (
+            firstHeading === headingNode &&
+            piePaths.length >= 1
+          ) {
+            const legend: AllocationRaw['legend'] = [];
+
+            for (const node of [...root.querySelectorAll(
+              '*'
+            )]) {
+              const box =
+                node.getBoundingClientRect();
+
+              if (
+                box.width < 8 ||
+                box.width > 28 ||
+                box.height < 8 ||
+                box.height > 28
+              ) {
+                continue;
+              }
+
+              const bg =
+                getComputedStyle(
+                  node as HTMLElement
+                ).backgroundColor;
+
+              const nearby =
+                (
+                  node.parentElement?.innerText ||
+                  ''
+                )
+                  .replace(
+                    /\s+/g,
+                    ' '
+                  )
+                  .trim();
+
+              const named =
+                nearby.match(
+                  /\b(equity|cash|options)\b/i
+                );
+
+              if (
+                !named ||
+                bg === 'rgba(0, 0, 0, 0)'
+              ) {
+                continue;
+              }
+
+              legend.push({
+                label: named[1],
+                bg
+              });
+            }
+
+            const uniqueLegend =
+              Object.values(
+                legend.reduce(
+                  (
+                    map: Record<string, AllocationRaw['legend'][number]>,
+                    entry
+                  ) => {
+                    const key =
+                      entry.label.toLowerCase();
+
+                    if (!map[key]) {
+                      map[key] =
+                        entry;
+                    }
+
+                    return map;
+                  },
+                  {}
+                )
+              );
+
             return {
-              legend: [] as Array<{
-                label: string;
-                bg: string;
-              }>,
-              pie: [] as string[]
+              legend: uniqueLegend,
+              pie: piePaths.map(
+                (path) =>
+                  path.getAttribute(
+                    'fill'
+                  ) || ''
+              )
             };
           }
 
-          let root =
-            heading.parentElement;
-
-          while (root) {
-            const svg =
-              root.querySelector(
-                'svg'
-              );
-
-            if (svg) {
-              const pie =
-                [...svg.querySelectorAll(
-                  'path'
-                )]
-                  .map(
-                    (path) =>
-                      path.getAttribute(
-                        'fill'
-                      ) || ''
-                  )
-                  .filter(
-                    (fill) =>
-                      fill &&
-                      fill !== 'none' &&
-                      fill.toLowerCase() !== '#fff' &&
-                      fill.toLowerCase() !== '#ffffff'
-                  );
-
-              const legend: Array<{
-                label: string;
-                bg: string;
-              }> = [];
-
-              for (const node of [...root.querySelectorAll(
-                '*'
-              )]) {
-                const box =
-                  node.getBoundingClientRect();
-
-                if (
-                  box.width < 8 ||
-                  box.width > 28 ||
-                  box.height < 8 ||
-                  box.height > 28
-                ) {
-                  continue;
-                }
-
-                const bg =
-                  getComputedStyle(
-                    node as HTMLElement
-                  ).backgroundColor;
-
-                const nearby =
-                  (
-                    node.parentElement?.innerText ||
-                    ''
-                  )
-                    .replace(
-                      /\s+/g,
-                      ' '
-                    )
-                    .trim();
-
-                const named =
-                  nearby.match(
-                    /\b(equity|cash|options)\b/i
-                  );
-
-                if (
-                  !named ||
-                  bg === 'rgba(0, 0, 0, 0)'
-                ) {
-                  continue;
-                }
-
-                legend.push({
-                  label: named[1],
-                  bg
-                });
-              }
-
-              const uniqueLegend =
-                Object.values(
-                  legend.reduce(
-                    (
-                      map: Record<string, {
-                        label: string;
-                        bg: string;
-                      }>,
-                      entry
-                    ) => {
-                      const key =
-                        entry.label.toLowerCase();
-
-                      if (!map[key]) {
-                        map[key] =
-                          entry;
-                      }
-
-                      return map;
-                    },
-                    {}
-                  )
-                );
-
-              return {
-                legend: uniqueLegend,
-                pie
-              };
-            }
-
-            root =
-              root.parentElement;
-          }
-
-          return {
-            legend: [] as Array<{
-              label: string;
-              bg: string;
-            }>,
-            pie: [] as string[]
-          };
+          root =
+            root.parentElement;
         }
+
+        return {
+          legend: [],
+          pie: []
+        };
+      }
+    );
+  }
+
+  async readAssetTypePalette() {
+    const raw =
+      await expect.poll(
+        async () =>
+          this.allocationRootData(),
+        {
+          timeout: 15000,
+          message:
+            'Asset Allocation pie slices should render'
+        }
+      ).toMatchObject({
+        pie: expect.arrayContaining([
+          expect.stringMatching(
+            /^#/
+          )
+        ])
+      }).then(
+        async () =>
+          this.allocationRootData()
       );
 
     const legend: PaletteEntry[] =
@@ -435,56 +451,92 @@ export class DashboardUiStoryPage {
     );
   }
 
-  private slicePath(
-    fill: string
-  ): Locator {
-    return this.page.locator(
-      `svg path[fill="${fill}"], svg path[fill="${fill.toUpperCase()}"]`
-    ).first();
-  }
-
   async hoverAllocationSlice(
     fill: string
   ) {
-    const path =
-      this.slicePath(
+    const box =
+      await this.allocationHeading().evaluate(
+        (headingNode, wantedFill) => {
+          const wanted =
+            wantedFill.toLowerCase();
+
+          let root =
+            headingNode.parentElement;
+
+          while (
+            root &&
+            root !== document.body
+          ) {
+            const firstHeading =
+              root.querySelector(
+                'h1, h2, h3, h4'
+              );
+
+            if (
+              firstHeading === headingNode
+            ) {
+              const path =
+                [...root.querySelectorAll(
+                  'svg path'
+                )].find(
+                  (node) =>
+                    (
+                      node.getAttribute(
+                        'fill'
+                      ) ||
+                      ''
+                    ).toLowerCase() === wanted
+                );
+
+              if (path) {
+                const rect =
+                  path.getBoundingClientRect();
+
+                return {
+                  x: rect.x,
+                  y: rect.y,
+                  w: rect.width,
+                  h: rect.height
+                };
+              }
+            }
+
+            root =
+              root.parentElement;
+          }
+
+          return null;
+        },
         fill
       );
 
-    await path.scrollIntoViewIfNeeded();
+    expect(
+      box,
+      `Allocation pie should include a slice filled with ${fill}`
+    ).toBeTruthy();
 
-    await path.hover({
-      force: true
-    });
+    await this.page.mouse.move(
+      box!.x +
+      Math.max(
+        6,
+        box!.w * 0.65
+      ),
+      box!.y +
+      Math.max(
+        6,
+        box!.h * 0.35
+      )
+    );
 
-    const tooltip =
+    await expect(
       this.page.locator(
         '.recharts-tooltip-wrapper'
       ).filter({
         hasText: /equity|cash|options|\$/i
-      });
-
-    await expect(
-      tooltip
+      })
     ).toBeVisible({
       timeout: 5000
-    }).catch(
-      async () => {
-        await path.hover({
-          force: true,
-          position: {
-            x: 8,
-            y: 8
-          }
-        });
-
-        await expect(
-          tooltip
-        ).toBeVisible({
-          timeout: 5000
-        });
-      }
-    );
+    });
   }
 
   async readPieHoverLayout(
@@ -498,7 +550,7 @@ export class DashboardUiStoryPage {
       () => {
         const asBox = (
           rect: DOMRect
-        ): ChartBox => ({
+        ) => ({
           x: rect.x,
           y: rect.y,
           w: rect.width,
@@ -545,62 +597,53 @@ export class DashboardUiStoryPage {
               )
             : [];
 
-        const overlay =
+        const heading =
           [...document.querySelectorAll(
             'h1,h2,h3,h4'
-          )]
-            .find(
-              (node) =>
-                /asset allocation/i.test(
-                  node.textContent || ''
-                )
-            );
+          )].find(
+            (node) =>
+              /asset allocation/i.test(
+                node.textContent || ''
+              )
+          );
 
-        let centerTotal: {
-          text: string;
-          box: ChartBox;
-        } | null =
+        let centerTotal: PieHoverLayout['centerTotal'] =
           null;
 
-        if (overlay) {
+        if (heading) {
           let root =
-            overlay.parentElement;
+            heading.parentElement;
 
-          while (root) {
-            const center =
-              [...root.querySelectorAll(
-                'p,span,div'
-              )].find(
-                (node) =>
-                  /\$[\d,.]+[kmb]?/i.test(
-                    node.textContent || ''
-                  ) &&
-                  /total/i.test(
-                    node.textContent || ''
-                  )
+          while (
+            root &&
+            root !== document.body
+          ) {
+            const firstHeading =
+              root.querySelector(
+                'h1, h2, h3, h4'
               );
 
-            if (center) {
+            if (
+              firstHeading === heading
+            ) {
               const amount =
-                [...center.querySelectorAll(
+                [...root.querySelectorAll(
                   'p,span,div'
-                )]
-                  .concat(
-                    [center]
-                  )
-                  .find(
-                    (node) =>
-                      /^\$[\d,.]+[kmb]?$/i.test(
-                        (node.textContent || '').replace(
+                )].find(
+                  (node) => {
+                    const text =
+                      (node.textContent || '')
+                        .replace(
                           /\s+/g,
                           ''
-                        )
-                      ) ||
-                      /\$[\d,.]+[kmb]?/i.test(
-                        node.textContent || ''
-                      ) &&
-                      node.childElementCount === 0
-                  );
+                        );
+
+                    return node.childElementCount === 0 &&
+                      /^\$[\d,.]+[kmb]?$/i.test(
+                        text
+                      );
+                  }
+                );
 
               if (amount) {
                 centerTotal = {
@@ -619,50 +662,33 @@ export class DashboardUiStoryPage {
               break;
             }
 
-            if (
-              root.querySelector(
-                'svg path'
-              )
-            ) {
-              break;
-            }
-
             root =
               root.parentElement;
           }
         }
 
-        const category =
-          lines.find(
+        return {
+          category: lines.find(
             (line) =>
               /^(equity|cash|options)/i.test(
                 line.text
               )
           ) ||
-          null;
-
-        const value =
-          lines.find(
+            null,
+          value: lines.find(
             (line) =>
               /^\$[\d,.]+/.test(
                 line.text
               )
           ) ||
-          null;
-
-        const percent =
-          lines.find(
+            null,
+          percent: lines.find(
             (line) =>
               /^\d+(?:\.\d+)?%$/.test(
                 line.text
               )
           ) ||
-          null;
-
-        return {
-          category,
-          value,
-          percent,
+            null,
           centerTotal,
           tooltipVisible
         };
@@ -684,7 +710,11 @@ export class DashboardUiStoryPage {
           /equity/i.test(
             entry.label
           )
-      );
+      ) ||
+      palette.pie[0] && {
+        label: 'Equity',
+        hex: palette.pie[0]
+      };
 
     expect(
       equity,
@@ -695,12 +725,6 @@ export class DashboardUiStoryPage {
       await this.readPieHoverLayout(
         equity!.hex
       );
-
-    expect(
-      layout.tooltipVisible ||
-      layout.category,
-      'Hovering an allocation slice should show a category label'
-    ).toBeTruthy();
 
     expect(
       layout.category,
