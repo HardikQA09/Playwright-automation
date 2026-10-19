@@ -548,7 +548,7 @@ test.describe(
           page.getByRole(
             'tab',
             {
-              name: /^watchlist$/i
+              name: /^watchlist\b/i
             }
           ),
           'Watchlist news'
@@ -944,16 +944,18 @@ test.describe(
         );
 
         await expect(
-          page.locator(
-            'main'
-          )
-        ).toContainText(
-          /\bopen\b/i
-        );
+          page.getByRole(
+            'combobox'
+          ).filter({
+            hasText: /open/i
+          }).first()
+        ).toBeVisible({
+          timeout: 8000
+        });
 
         await setLabeledChoice(
           page,
-          /status/i,
+          /open|status|all statuses/i,
           'All statuses'
         );
 

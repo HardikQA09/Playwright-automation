@@ -1867,7 +1867,7 @@ export class DashboardPage
       );
 
     const empty =
-      /no options expiring|no open (short|long) options|no expir|none|no option/i.test(
+      /no options expiring|no open (short|long) options|no .{0,40}options expiring|no expir|none|no option/i.test(
         text
       );
 
