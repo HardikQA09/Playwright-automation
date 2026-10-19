@@ -48,6 +48,7 @@ const coreExecutableJourneyOrder = [
   'DashboardWidgets.spec.ts',
   'DashboardUiStoryFixes.spec.ts',
   'OptionExpiryOverview.spec.ts',
+  'PositionsDynamicGrid.spec.ts',
   'EventCalendarFundamentals.spec.ts',
   'DashboardResearchPortfolio.spec.ts',
   'Opportunities.spec.ts',
@@ -175,6 +176,7 @@ const scheduleGroups = [
         name: 'Dashboard screens',
         files: pick([
           'EventCalendarFundamentals.spec.ts',
+          'PositionsDynamicGrid.spec.ts',
           'DashboardResearchPortfolio.spec.ts',
           'Opportunities.spec.ts',
           'DashboardMoreScreens.spec.ts',
@@ -515,6 +517,7 @@ const executableBatches = [
       'DashboardWidgets.spec.ts',
       'DashboardUiStoryFixes.spec.ts',
       'OptionExpiryOverview.spec.ts',
+      'PositionsDynamicGrid.spec.ts',
       'EventCalendarFundamentals.spec.ts',
       'DashboardResearchPortfolio.spec.ts',
       'Opportunities.spec.ts',
