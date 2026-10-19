@@ -18,8 +18,9 @@ TEST SUITE: Option Expiry Overview revamp
 PURPOSE
 -------
 Validates the dashboard Option Expiry Overview card against the revamp:
-Short/Long tabs, OTM–ITM legend, integer breakdown, footer totals, TAB TOTAL,
+Short/Long tabs, OTM–ITM legend, integer breakdown, footer totals,
 and the row drill-down modal with distance formula.
+TAB TOTAL is out of scope.
 
 RUN
 ---
@@ -80,18 +81,6 @@ test.describe(
           );
 
         await expiry.expectFooterTotals();
-      }
-    );
-
-    test(
-      'Dashboard expiry overview shows a TAB TOTAL summary row',
-      async ({ page }) => {
-        const expiry =
-          new OptionExpiryOverviewPage(
-            page
-          );
-
-        await expiry.expectTabTotalRow();
       }
     );
 

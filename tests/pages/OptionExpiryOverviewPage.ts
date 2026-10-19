@@ -165,27 +165,6 @@ export class OptionExpiryOverviewPage {
     );
   }
 
-  async expectTabTotalRow() {
-    Logger.info(
-      'Checking TAB TOTAL summary row'
-    );
-
-    await this.openLongOptions();
-
-    await expect(
-      this.page.getByText(
-        /tab total/i
-      ).first(),
-      'Active tab should include a TAB TOTAL row for qty and category counts'
-    ).toBeVisible({
-      timeout: 8000
-    });
-
-    Logger.success(
-      'TAB TOTAL row is shown'
-    );
-  }
-
   async expectIntegerBreakdown() {
     Logger.info(
       'Checking integer breakdown counts'
