@@ -46,6 +46,9 @@ const coreExecutableJourneyOrder = [
 
   'DashboardNavigation.spec.ts',
   'DashboardWidgets.spec.ts',
+  'DashboardUiStoryFixes.spec.ts',
+  'OptionExpiryOverview.spec.ts',
+  'PositionsDynamicGrid.spec.ts',
   'EventCalendarFundamentals.spec.ts',
   'DashboardResearchPortfolio.spec.ts',
   'Opportunities.spec.ts',
@@ -141,7 +144,10 @@ const scheduleGroups = [
         name: 'Dashboard entry',
         files: pick([
           'DashboardNavigation.spec.ts',
-          'DashboardWidgets.spec.ts'
+          'DashboardWidgets.spec.ts',
+          'DashboardUiStoryFixes.spec.ts',
+          'OptionExpiryOverview.spec.ts',
+          'PositionsDynamicGrid.spec.ts'
         ])
       },
       {
@@ -344,6 +350,7 @@ const suites = {
     'onboarding.spec.ts',
     'DashboardNavigation.spec.ts',
     'DashboardWidgets.spec.ts',
+    'DashboardUiStoryFixes.spec.ts',
     'AddManualPosition.spec.ts',
     'ProfileNegative.spec.ts',
     'ProfilePasswordMismatch.spec.ts',
@@ -363,6 +370,7 @@ const suites = {
     'PlanSelectionValidation.spec.ts',
     'DashboardNavigation.spec.ts',
     'DashboardWidgets.spec.ts',
+    'DashboardUiStoryFixes.spec.ts',
     'AddManualPosition.spec.ts',
     'ProfileNegative.spec.ts',
     'ProfileSecurityDisplay.spec.ts',
@@ -389,6 +397,7 @@ const suites = {
     'PaymentNegative.spec.ts',
     'DashboardNavigation.spec.ts',
     'DashboardWidgets.spec.ts',
+    'DashboardUiStoryFixes.spec.ts',
     'AddManualPosition.spec.ts',
     'ProfileNegative.spec.ts',
     'ProfileSecurityDisplay.spec.ts',
@@ -411,6 +420,7 @@ const suites = {
     'PlanSelectionValidation.spec.ts',
     'DashboardNavigation.spec.ts',
     'DashboardWidgets.spec.ts',
+    'DashboardUiStoryFixes.spec.ts',
     'ProfileNegative.spec.ts',
     'ProfileSecurityDisplay.spec.ts',
     'ProfileMobileValidation.spec.ts',
@@ -436,6 +446,7 @@ const suites = {
     'AuthUiValidation.spec.ts',
     'DashboardNavigation.spec.ts',
     'DashboardWidgets.spec.ts',
+    'DashboardUiStoryFixes.spec.ts',
     'ProfileNegative.spec.ts',
     'ProfileSecurityDisplay.spec.ts',
     'ProfileMobileValidation.spec.ts',
@@ -504,6 +515,9 @@ const executableBatches = [
     files: testPaths([
       'DashboardNavigation.spec.ts',
       'DashboardWidgets.spec.ts',
+      'DashboardUiStoryFixes.spec.ts',
+      'OptionExpiryOverview.spec.ts',
+      'PositionsDynamicGrid.spec.ts',
       'EventCalendarFundamentals.spec.ts',
       'DashboardResearchPortfolio.spec.ts',
       'Opportunities.spec.ts',

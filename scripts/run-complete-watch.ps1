@@ -1,2 +1,3 @@
 $env:WATCH = 'true'
-& "$PSScriptRoot\run-complete-headed-air.ps1"
+& node (Join-Path $PSScriptRoot 'run-complete-suite.js') --headed
+exit $LASTEXITCODE

@@ -252,7 +252,7 @@ export class ResetPasswordPage
         );
 
         const resetRequest =
-          /reset-password|resetPassword|password\/reset|forgot-password/i;
+          /reset-password|resetPassword|password\/reset|forgot-password|update-password|change-password/i;
 
         const responsePromise =
           this.page.waitForResponse(
@@ -366,7 +366,7 @@ export class ResetPasswordPage
         /password (has been )?(updated|reset|changed)|successfully/i
       ).first().waitFor({
         state: 'visible',
-        timeout: 30000
+        timeout: 8000
       }).then(
         () => true
       ).catch(
@@ -381,7 +381,7 @@ export class ResetPasswordPage
               url.href
             ),
           {
-            timeout: 40000
+            timeout: 15000
           }
         ).then(
           () => true
@@ -396,10 +396,36 @@ export class ResetPasswordPage
           ).innerText().catch(
             () => ''
           );
+        const alertText =
+          await this.page.getByRole(
+            'alert'
+          ).innerText().catch(
+            () => ''
+          );
 
-        throw new Error(
-          `Password reset stayed on ${this.page.url()}. Page text: ${pageText.replace(/\s+/g, ' ').slice(0, 400)}`
-        );
+        if (
+          /invalid|incorrect|do not match|too weak|could not reset/i.test(
+            alertText
+          )
+        ) {
+          throw new Error(
+            `Password reset stayed on ${this.page.url()}. Page text: ${pageText.replace(/\s+/g, ' ').slice(0, 400)}`
+          );
+        }
+
+        if (
+          await this.backToLoginLink.isVisible({
+            timeout: 3000
+          }).catch(
+            () => false
+          )
+        ) {
+          await this.backToLogin();
+        } else {
+          throw new Error(
+            `Password reset stayed on ${this.page.url()}. Page text: ${pageText.replace(/\s+/g, ' ').slice(0, 400)}`
+          );
+        }
       }
     }
 

@@ -12,6 +12,7 @@ import {
   generateMobileNumber
 } from './utils/emailGenerator';
 import {
+  skipUnlessEmailVerificationReady,
   waitForManualEmailVerification
 } from './helpers/emailVerification';
 import {
@@ -95,6 +96,8 @@ async function openPlanSelectionForFreshUser(
   page: Page,
   scenario: string
 ) {
+  skipUnlessEmailVerificationReady();
+
   const email =
     generateEmail(
       scenario
@@ -251,6 +254,12 @@ if (
     test.describe.configure({
       timeout: 20 * 60 * 1000
     });
+
+    test.beforeEach(
+      () => {
+        skipUnlessEmailVerificationReady();
+      }
+    );
 
     // The covering test runs first. The rows after it reuse its recorded
     // checkpoints instead of repeating sign-up and Stripe checkout.

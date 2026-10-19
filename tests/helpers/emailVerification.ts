@@ -1,5 +1,6 @@
 import {
-  Page
+  Page,
+  test
 } from '@playwright/test';
 
 import {
@@ -34,6 +35,44 @@ export function isEmailVerificationPage(
 ) {
   return /verify-email/i.test(
     page.url()
+  );
+}
+
+function emailVerificationPauseEnabled() {
+  return [
+    '1',
+    'true',
+    'yes',
+    'on'
+  ].includes(
+    String(
+      process.env.EMAIL_VERIFICATION_PAUSE ??
+        ''
+    ).toLowerCase()
+  );
+}
+
+export function isEmailVerificationReady() {
+  if (
+    !AUTH_SETTINGS.emailVerificationRequired
+  ) {
+    return true;
+  }
+
+  return isGmailAutomationEnabled() ||
+    emailVerificationPauseEnabled();
+}
+
+export function skipUnlessEmailVerificationReady() {
+  if (
+    isEmailVerificationReady()
+  ) {
+    return;
+  }
+
+  test.skip(
+    true,
+    'Set GMAIL_APP_PASSWORD for automatic email verification, or EMAIL_VERIFICATION_PAUSE=true for a headed pause.'
   );
 }
 
@@ -112,6 +151,8 @@ export async function waitForManualEmailVerification(
     }`
   );
 
+  skipUnlessEmailVerificationReady();
+
   if (
     isGmailAutomationEnabled()
   ) {
@@ -181,7 +222,7 @@ export async function waitForManualEmailVerification(
         message
       );
 
-      if (process.env.CI || process.env.EMAIL_VERIFICATION_PAUSE !== 'true') {
+      if (process.env.CI || !emailVerificationPauseEnabled()) {
         throw new Error(
           `Automatic Gmail verification failed for ${email}. ${message}`
         );
@@ -198,12 +239,6 @@ export async function waitForManualEmailVerification(
     console.log(
       'Copy .env.example to .env and paste the Gmail App Password, or set $env:GMAIL_APP_PASSWORD in this VS Code terminal.'
     );
-
-    if (process.env.CI || process.env.EMAIL_VERIFICATION_PAUSE !== 'true') {
-      throw new Error(
-        `Automatic Gmail verification is not configured for ${email}. Set GMAIL_APP_PASSWORD in .env.`
-      );
-    }
   }
 
   console.log(

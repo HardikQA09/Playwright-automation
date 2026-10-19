@@ -3186,6 +3186,10 @@ function getFailureClientDescription(test, index = 0) {
     return 'The subscriber login and billing validation journey did not complete.';
   }
 
+  if (title.includes('dashboard shows portfolio score events allocation')) {
+    return 'A dashboard card this check reads was missing. There is no View full expiry calendar control.';
+  }
+
   if (title.includes('signup otp input accepts more than six digits')) {
     return 'Signup OTP input currently accepts more than six digits before validation.';
   }
@@ -3243,8 +3247,8 @@ function plainFailureStory(test, index = 0) {
     next = 'Open the upgrade box and compare the amount due today with the next recurring price, then rerun this check.';
   } else if (lower.includes('manage subscription control was not found') || lower.includes('cancel subscription control was not found')) {
     happened = 'Cancel subscription was not on the billing page.';
-    wanted = 'A trial without a card should still offer Cancel subscription, without asking for a card.';
-    next = 'Open Billing for the no-card trial and look for Cancel subscription on Overview, Plans, and History.';
+    wanted = 'A paid or card-backed plan should offer Cancel. A no-card trial or Free plan does not need Cancel.';
+    next = 'If Billing is Free or a no-card trial, missing Cancel is expected. If this was a paid plan, add Cancel subscription on Overview.';
   } else if (lower.includes('paid') && (lower.includes('getbytext') || lower.includes('tobevisible'))) {
     happened = 'Billing history did not show a Paid status.';
     wanted = 'A paid subscriber should see Paid on the billing history.';
@@ -3327,6 +3331,10 @@ function plainFailureStory(test, index = 0) {
     happened = 'The plan heading was on the page, but it was hidden.';
     wanted = 'A visible plan control, such as Monthly, Annual, or a plan name, should be on the page.';
     next = 'Open the plan page and confirm Monthly, Annual, or a plan name is visible, then rerun this check.';
+  } else if (lower.includes('dashboard shows portfolio score events allocation')) {
+    happened = 'A dashboard card this check reads was not on the page.';
+    wanted = 'The dashboard should show portfolio value, Ools score, events, allocation, strategy, brokers, top opportunities, and option expiry. There is no View full expiry calendar button.';
+    next = 'Scroll below Top 10 Opportunities. Option Expiry Overview is on that row. Short Options and Long Options are filters on that card when it has contracts.';
   } else if (lower.includes('tobevisible') || lower.includes('element(s) not found')) {
     happened = 'The button or message we looked for was not on the page.';
     wanted = 'The expected button or message should be visible.';

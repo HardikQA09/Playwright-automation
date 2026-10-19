@@ -718,6 +718,15 @@ export class OptionsResearchPage
 
     await this.ensureSymbolResult();
 
+    await this.page.getByText(
+      /loading option chain/i
+    ).first().waitFor({
+      state: 'hidden',
+      timeout: 30000
+    }).catch(
+      () => undefined
+    );
+
     for (const label of [
       /expir(?:ation|y)(?:\s+date)?/i,
       /^show$/i,
@@ -727,7 +736,9 @@ export class OptionsResearchPage
         this.page.getByText(
           label
         ).first()
-      ).toBeVisible();
+      ).toBeVisible({
+        timeout: 20000
+      });
     }
 
     const strikeCount =

@@ -949,12 +949,16 @@ test.describe(
 
         const strategy =
           page.locator(
-            'main a'
+            'main a, main button'
           ).filter({
-            hasText: /explore scenario/i
+            hasText: /explore scenario|protective put/i
           }).first();
 
-        await strategy.scrollIntoViewIfNeeded();
+        await expect(
+          strategy
+        ).toBeVisible({
+          timeout: 20000
+        });
 
         await safeClick(
           strategy,

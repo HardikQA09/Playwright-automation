@@ -9,14 +9,16 @@
  *
  * Settings come from .env / .env.local (see .env.example):
  *   REPORT_EMAIL_TO, REPORT_EMAIL_CC, REPORT_EMAIL_FROM
- *   REPORT_EMAIL_TO_<LABEL>  optional per-schedule recipients, e.g.
- *                            REPORT_EMAIL_TO_DAILY, REPORT_EMAIL_TO_WEEKLY
+ *   REPORT_EMAIL_TO_<LABEL> / REPORT_EMAIL_CC_<LABEL>
+ *     added to the same send, they do not replace the other lists
+ *   REPORT_EMAIL_EXCLUDE     never send here (Rob is always excluded)
  *   REPORT_SMTP_HOST / REPORT_SMTP_PORT / REPORT_SMTP_USER / REPORT_SMTP_PASS
  *     (default to Gmail using GMAIL_USER and GMAIL_APP_PASSWORD)
  *   REPORT_URL               optional link to the hosted report
  */
 const fs = require('fs');
 const path = require('path');
+const { collectConfiguredRecipients } = require('./report-recipients');
 
 const projectRoot = path.resolve(__dirname, '..');
 const reportDir = path.join(projectRoot, 'execution-report');
@@ -83,16 +85,17 @@ function escapeHtml(value) {
 }
 
 function recipientsFor(args) {
-  if (args.to) return args.to;
+  if (args.to) {
+    const { recipients, skipped } = collectConfiguredRecipients({
+      REPORT_EMAIL_TO: args.to,
+      REPORT_EMAIL_EXCLUDE: process.env.REPORT_EMAIL_EXCLUDE
+    });
 
-  const key = args.label
-    .toUpperCase()
-    .replace(/[^A-Z0-9]+/g, '_')
-    .replace(/^_|_$/g, '');
+    return { to: recipients.join(', '), skipped };
+  }
 
-  return (
-    process.env[`REPORT_EMAIL_TO_${key}`] || process.env.REPORT_EMAIL_TO || ''
-  );
+  const { recipients, skipped } = collectConfiguredRecipients();
+  return { to: recipients.join(', '), skipped };
 }
 
 function buildMessage(air, args) {
@@ -180,7 +183,11 @@ async function main() {
 
   const air = JSON.parse(fs.readFileSync(airPath, 'utf8'));
   const { subject, html, text } = buildMessage(air, args);
-  const to = recipientsFor(args);
+  const { to, skipped } = recipientsFor(args);
+
+  if (skipped.length) {
+    console.log(`Not sending to excluded addresses: ${skipped.join(', ')}`);
+  }
 
   const attachments = [];
   const today = new Date().toISOString().slice(0, 10);
@@ -246,9 +253,7 @@ async function main() {
   if (args.dryRun) {
     console.log('DRY RUN - nothing sent.');
     console.log(`To: ${to || '(not set - set REPORT_EMAIL_TO)'}`);
-    console.log(
-      `Cc: ${args.to ? '(none - test send)' : process.env.REPORT_EMAIL_CC || '(none)'}`
-    );
+    console.log('Cc: (folded into To so every remaining configured address is included)');
     console.log(`Subject: ${subject}`);
     console.log(`Attachments: ${attachments.map((a) => a.filename).join(', ')}`);
     console.log(`\n${text}`);
@@ -257,7 +262,7 @@ async function main() {
 
   if (!to) {
     throw new Error(
-      'No recipients. Set REPORT_EMAIL_TO in .env (comma separated) or pass --to.'
+      'No recipients. Set REPORT_EMAIL_TO / REPORT_EMAIL_CC (comma separated) or pass --to.'
     );
   }
 
@@ -283,8 +288,6 @@ async function main() {
   const info = await transport.sendMail({
     from: process.env.REPORT_EMAIL_FROM || user,
     to,
-    // An explicit --to is a test send, so it must not copy the team.
-    cc: args.to ? undefined : process.env.REPORT_EMAIL_CC || undefined,
     subject: args.to ? `[TEST] ${subject}` : subject,
     text,
     html,
