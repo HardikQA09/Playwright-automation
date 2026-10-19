@@ -22,6 +22,8 @@ Confirms the signed-in dashboard shows portfolio, score, events, allocation,
 strategy, broker, opportunity, and expiry cards. Amounts and symbols are
 checked by shape, because those values change with the account.
 There is no View full expiry calendar control and no OolTool Performance card.
+Short Options and Long Options are filters on Option Expiry Overview (below
+Top 10 Opportunities), not a separate calendar button.
 
 RUN
 ---

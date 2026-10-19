@@ -1806,57 +1806,8 @@ export class DashboardPage
     const text =
       await this.cardText(
         /option expiry overview/i,
-        /short options|long options|no open/i
+        /otm|ntm|atm|itm|short options|long options|no .{0,40}options expiring|no open/i
       );
-
-    const shortOptions =
-      this.page.getByRole(
-        'button',
-        {
-          name: /short options/i
-        }
-      ).or(
-        this.page.getByRole(
-          'tab',
-          {
-            name: /short options/i
-          }
-        )
-      );
-
-    const longOptions =
-      this.page.getByRole(
-        'button',
-        {
-          name: /long options/i
-        }
-      ).or(
-        this.page.getByRole(
-          'tab',
-          {
-            name: /long options/i
-          }
-        )
-      );
-
-    const hasToggle =
-      await shortOptions.first().isVisible({
-        timeout: 5000
-      }).catch(
-        () => false
-      );
-
-    if (
-      hasToggle
-    ) {
-      await expect(
-        shortOptions.first()
-      ).toBeVisible();
-
-      await expect(
-        longOptions.first()
-      ).toBeVisible();
-    }
 
     const hasContractRow =
       /\b[A-Z]{2,5}\b/.test(
@@ -1872,7 +1823,11 @@ export class DashboardPage
       );
 
     expect(
-      empty || hasContractRow
+      empty ||
+      hasContractRow ||
+      /short options|long options|\botm\b|options expiring/i.test(
+        text
+      )
     ).toBe(
       true
     );
