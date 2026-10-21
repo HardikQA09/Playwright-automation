@@ -69,6 +69,8 @@ test.describe(
         if (
           !usesSharedSubscriber
         ) {
+          // Shared subscriberAuth cookies would keep plantest on /dashboard.
+          await page.context().clearCookies();
           await new LoginPage(
             page
           ).login(

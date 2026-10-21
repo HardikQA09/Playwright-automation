@@ -3186,6 +3186,10 @@ function getFailureClientDescription(test, index = 0) {
     return 'The subscriber login and billing validation journey did not complete.';
   }
 
+  if (title.includes('dashboard shows portfolio score events allocation')) {
+    return 'A dashboard card this check reads was missing. There is no View full expiry calendar control.';
+  }
+
   if (title.includes('signup otp input accepts more than six digits')) {
     return 'Signup OTP input currently accepts more than six digits before validation.';
   }
@@ -3195,12 +3199,40 @@ function getFailureClientDescription(test, index = 0) {
     : defaultReason;
 }
 
+
+function shortScenarioName(test, index = 0) {
+  const full = getFailureFullTitle(test, index);
+  const parts = String(full).split(/\s*>\s*/);
+  return (parts.at(-1) || full).trim();
+}
+
+function extractLocatorHint(raw = '') {
+  const locator =
+    raw.match(/Locator:\s*([^\n]+)/i)?.[1] ||
+    raw.match(/waiting for ([^\n]+?)(?:\s+to be|\s+to have|\s*$)/i)?.[1] ||
+    '';
+  return compactText(String(locator).replace(/\s+/g, ' '), 160);
+}
+
+function extractReceivedHint(raw = '') {
+  const received =
+    raw.match(/Received:\s*([^\n]+)/i)?.[1] ||
+    raw.match(/Received string:\s*"?([^"\n]+)"?/i)?.[1] ||
+    '';
+  return compactText(String(received).replace(/\s+/g, ' '), 180);
+}
+
 function plainFailureStory(test, index = 0) {
+  const scenario = shortScenarioName(test, index);
+
   if (test?.productBug) {
     return {
+      scenario,
       happened: test.productBug.actual,
       wanted: test.productBug.expected,
       next: test.productBug.next,
+      repro: '1. Open the product screen this check covers. 2. Follow the same user steps in the check title. 3. Compare the result with the expected wording below.',
+      evidence: 'Open the Picture column for this row, then the Trace / Video chips on the investigation card.',
     };
   }
 
@@ -3212,10 +3244,14 @@ function plainFailureStory(test, index = 0) {
     .split(/Call log:/i)[0]
     .slice(0, 700);
   const lower = `${title} ${raw}`.toLowerCase();
+  const locatorHint = extractLocatorHint(raw);
+  const receivedHint = extractReceivedHint(raw);
 
   let happened = 'This check did not finish the way we expected.';
   let wanted = 'The screen should show the expected result and let the check finish.';
   let next = 'Fix the screen this check was waiting for, then rerun it.';
+  let repro = `1. Open the app as the same kind of user this check uses. 2. Reproduce: ${scenario}. 3. Confirm the expected result below.`;
+  let evidence = 'Open the Picture column for this row, then the Trace / Video / Logs chips below for screenshots and replay.';
 
   if (lower.includes('reset-password') && (lower.includes('tohaveurl') || lower.includes('/login'))) {
     happened = 'Update Password stayed on the reset page. Sign-in did not open.';
@@ -3243,8 +3279,8 @@ function plainFailureStory(test, index = 0) {
     next = 'Open the upgrade box and compare the amount due today with the next recurring price, then rerun this check.';
   } else if (lower.includes('manage subscription control was not found') || lower.includes('cancel subscription control was not found')) {
     happened = 'Cancel subscription was not on the billing page.';
-    wanted = 'A trial without a card should still offer Cancel subscription, without asking for a card.';
-    next = 'Open Billing for the no-card trial and look for Cancel subscription on Overview, Plans, and History.';
+    wanted = 'A paid or card-backed plan should offer Cancel. A no-card trial or Free plan does not need Cancel.';
+    next = 'If Billing is Free or a no-card trial, missing Cancel is expected. If this was a paid plan, add Cancel subscription on Overview.';
   } else if (lower.includes('paid') && (lower.includes('getbytext') || lower.includes('tobevisible'))) {
     happened = 'Billing history did not show a Paid status.';
     wanted = 'A paid subscriber should see Paid on the billing history.';
@@ -3327,14 +3363,73 @@ function plainFailureStory(test, index = 0) {
     happened = 'The plan heading was on the page, but it was hidden.';
     wanted = 'A visible plan control, such as Monthly, Annual, or a plan name, should be on the page.';
     next = 'Open the plan page and confirm Monthly, Annual, or a plan name is visible, then rerun this check.';
+  } else if (lower.includes('dashboard shows portfolio score events allocation')) {
+    happened = 'A dashboard card this check reads was not on the page.';
+    wanted = 'The dashboard should show portfolio value, Ools score, events, allocation, strategy, brokers, top opportunities, and option expiry. There is no View full expiry calendar button.';
+    next = 'Scroll below Top 10 Opportunities. Option Expiry Overview is on that row. Short Options and Long Options are filters on that card when it has contracts.';
+  } else if (lower.includes('drill-down') || lower.includes('getbyrole(\'dialog\')') || lower.includes('getbyrole("dialog")')) {
+    happened = locatorHint
+      ? `After clicking an Option Expiry Overview row, the drill-down panel did not open (${locatorHint}).`
+      : 'After clicking an Option Expiry Overview row, the drill-down panel did not open.';
+    wanted = 'Clicking a contract row should open a dialog or detail panel with expiration, underlying last, and contract details.';
+    next = 'On Dashboard, open Option Expiry Overview → Long Options, click a contract row, and confirm a detail panel appears.';
+    repro = '1. Sign in. 2. Open Dashboard and scroll to Option Expiry Overview. 3. Choose Long Options. 4. Click a contract row. 5. Expect a drill-down dialog or side panel.';
+  } else if (lower.includes('category') && lower.includes('combobox')) {
+    happened = 'Support ticket Category control was on the page as plain text next to a combobox, but the check could not select a Category value in time.';
+    wanted = 'Category and Priority should be selectable without submitting the ticket.';
+    next = 'Open Support, change Category to Billing and Priority to Low without submitting, then rerun this check.';
+    repro = '1. Sign in. 2. Open Support. 3. Change Category to Billing. 4. Change Priority to Low. 5. Leave the ticket unsubmitted.';
+  } else if (lower.includes('covered call') && lower.includes('option')) {
+    happened = 'Opportunities strategy filter did not show a Covered Call option after the list was opened.';
+    wanted = 'Each Opportunities filter should expose its known values so the check can select and restore them.';
+    next = 'Open Opportunities, open the All Strategies filter, and confirm Covered Call (or the current strategy labels) appear.';
+    repro = '1. Sign in. 2. Open Opportunities. 3. Open the strategy filter. 4. Select Covered Call (or the closest strategy label). 5. Restore All Strategies.';
+  } else if (lower.includes('dashboard/billing') && lower.includes('tohaveurl')) {
+    happened = receivedHint
+      ? `After login from a protected deep link, the browser stayed on ${receivedHint} instead of returning to Billing.`
+      : 'After login from a protected deep link, the browser did not return to the intended Billing route.';
+    wanted = 'Logging in from a protected deep link should return the user to that same route (for example /dashboard/billing).';
+    next = 'Sign out, open /dashboard/billing, sign in, and confirm the app lands on Billing — not only Dashboard.';
+    repro = '1. Sign out. 2. Open /dashboard/billing while logged out. 3. Sign in. 4. Expect to land on Billing.';
+  } else if (lower.includes('invalid|incorrect|wrong') || (lower.includes('forgot') && lower.includes('tobevisible'))) {
+    happened = 'After resetting the password, signing in with the old password did not show the expected error message.';
+    wanted = 'The old password should be rejected with a clear invalid/incorrect message after a successful reset.';
+    next = 'Complete forgot-password, then try the old password on login and confirm the error wording appears.';
+    repro = '1. Request a password reset for a disposable user. 2. Open the email link and set a new password. 3. Sign in with the old password. 4. Expect an invalid-password message.';
+  } else if (lower.includes('cancellation confirmation') || (lower.includes('no gmail message') && lower.includes('cancel'))) {
+    happened = 'No cancellation confirmation email arrived within 120 seconds after scheduling cancel-at-period-end.';
+    wanted = 'After cancellation is scheduled, the disposable user should receive a cancellation confirmation email.';
+    next = 'Schedule cancel-at-period-end on a disposable paid user and confirm the mailbox receives a cancellation email.';
+    repro = '1. Create a disposable paid Income Builder user. 2. Schedule cancellation at period end. 3. Wait up to 2 minutes. 4. Expect a cancellation confirmation email.';
+  } else if (lower.includes('user not created') || (lower.includes('textbox') && lower.includes('email') && lower.includes('timeout'))) {
+    happened = 'The disposable-user signup screen never showed the Email field, so the scenario could not create its test account.';
+    wanted = 'Signup should show the Email field so the disposable user can be created before the cancel checks run.';
+    next = 'Open signup and confirm the Email field appears within 30 seconds, then rerun the cancellation scenario.';
+    repro = '1. Open the registration page used by disposable users. 2. Wait for the Email field. 3. If it never appears, capture the blank/loading screen.';
+  } else if (lower.includes('covering test') || lower.includes('checkpoint')) {
+    happened = 'A covering check that was supposed to create this checkpoint did not finish in this run, so this row had nothing to assert.';
+    wanted = 'The covering Plan Selection / Overlay trial check should finish first and leave the shared checkpoint for this row.';
+    next = 'Rerun the covering Plan Selection check first, then this Overlay trial option check.';
+    repro = '1. Run Plan catalog pricing overlay trial and complete-setup in one session. 2. Confirm it passes. 3. Rerun New user can reach Overlay Strategists trial option.';
+  } else if (lower.includes('plan charge') && lower.includes('list price')) {
+    happened = 'The upgrade confirmation showed a plan charge that did not match the list price, list-plus-credit, or prorated amount due today.';
+    wanted = 'The upgrade box should show a charge that matches the list price, unused credit, or prorated amount due today.';
+    next = 'Open the upgrade confirmation and compare Amount due today with the plan list price and any unused-time credit.';
+    repro = '1. Start from a lower paid plan. 2. Open upgrade to the next plan. 3. Read Amount due today, credit, and next bill. 4. Confirm the charge math.';
   } else if (lower.includes('tobevisible') || lower.includes('element(s) not found')) {
-    happened = 'The button or message we looked for was not on the page.';
-    wanted = 'The expected button or message should be visible.';
-    next = 'Put the missing button or message on the page, then rerun this check.';
+    happened = locatorHint
+      ? `The control this check needed was not on the page: ${locatorHint}.`
+      : 'The button or message we looked for was not on the page.';
+    wanted = 'The expected button or message should be visible before the time limit.';
+    next = 'Put the missing control on the page (or update the check if the product label changed), then rerun this check.';
+    repro = `1. Open the screen for: ${scenario}. 2. Look for the missing control${locatorHint ? ` (${locatorHint})` : ''}. 3. Capture a screenshot if it is absent.`;
   } else if (lower.includes('timeout') || lower.includes('timed out')) {
-    happened = 'The page took too long, and the check stopped before it could finish.';
-    wanted = 'The page should be ready before the time limit.';
-    next = 'Open the page this check starts on and wait until it is ready, then rerun it.';
+    happened = locatorHint
+      ? `The page took too long waiting for: ${locatorHint}.`
+      : 'The page took too long, and the check stopped before it could finish.';
+    wanted = 'The page should be ready and show the expected control before the time limit.';
+    next = 'Open the page this check starts on, wait until it is ready, then rerun it.';
+    repro = `1. Open the starting page for: ${scenario}. 2. Wait for the expected control${locatorHint ? ` (${locatorHint})` : ''}. 3. If it never appears, capture the loading/error state.`;
   } else if (lower.includes('test not found in the worker')) {
     happened = 'This check was removed while the run was already going, so the runner could not find it.';
     wanted = 'Only checks that are still in the suite should run.';
@@ -3362,7 +3457,7 @@ function plainFailureStory(test, index = 0) {
     next = titledNext;
   }
 
-  return { happened, wanted, next };
+  return { scenario, happened, wanted, next, repro, evidence };
 }
 
 function specificFailureNextAction(title, raw = '') {
@@ -4582,8 +4677,13 @@ const failedRows = (failedSourceItems.length > 0
     <tr${hiddenClass} data-failure-row data-failure-index="${index}">
       <td title="${escapeHtml(fullTitle)}"><a class="table-evidence-link" href="${failedSourceItems.length ? `#failure-group-${failureGroupKey(test, index).key}` : '#failures'}"><strong>${escapeHtml(title)}</strong></a></td>
       <td>${escapeHtml(moduleName)}</td>
-      <td><strong>${escapeHtml(reason)}</strong><small>What to do: ${escapeHtml(nextAction)}</small></td>
-      <td><a class="table-evidence-link" href="${failedSourceItems.length ? `#failure-group-${failureGroupKey(test, index).key}` : '#failures'}">Open this group</a></td>
+      <td>
+        <strong>${escapeHtml(reason)}</strong>
+        <small><b>Expected:</b> ${escapeHtml(story.wanted)}</small>
+        <small><b>Reproduce:</b> ${escapeHtml(story.repro || nextAction)}</small>
+        <small><b>Evidence:</b> ${escapeHtml(story.evidence || 'Open Picture / Trace for this row.')}</small>
+      </td>
+      <td><a class="table-evidence-link" href="${failedSourceItems.length ? `#failure-group-${failureGroupKey(test, index).key}` : '#failures'}">Open evidence</a></td>
     </tr>`;
   })
   .join('');
@@ -4635,17 +4735,21 @@ const failureInvestigationCards = failedSourceItems
           <span class="failure-flag">${test.productBug ? 'Product bug' : 'Failed'}</span>
         </div>
         <div class="failure-reason-block">
-          <span>What we checked</span>
-          <p>${escapeHtml(title)}</p>
-          <span>What happened</span>
-          <p>${escapeHtml(plainFailureStory(test, index).happened)}</p>
-          <span>What we wanted</span>
+          <span>Scenario we tested</span>
+          <p>${escapeHtml(plainFailureStory(test, index).scenario || title)}</p>
+          <span>What we expected</span>
           <p>${escapeHtml(plainFailureStory(test, index).wanted)}</p>
+          <span>What actually happened</span>
+          <p>${escapeHtml(plainFailureStory(test, index).happened)}</p>
+          <span>Steps to reproduce</span>
+          <p>${escapeHtml(plainFailureStory(test, index).repro || '')}</p>
+          <span>Evidence</span>
+          <p>${escapeHtml(plainFailureStory(test, index).evidence || 'Open the Picture column and Trace / Video chips for this failure.')}</p>
           <span>Why it matters</span>
           <p>${escapeHtml(impact)}</p>
         </div>
         ${renderFailureScreenshotEvidence(test, index)}
-        <p class="failure-next-action"><b>What to do:</b> ${escapeHtml(plainFailureStory(test, index).next)}</p>
+        <p class="failure-next-action"><b>What to do next:</b> ${escapeHtml(plainFailureStory(test, index).next)}</p>
         <details class="failure-more-detail">
           <summary>Error detail</summary>
           <p class="technical-error">${escapeHtml(getFailureTechnicalError(test))}</p>

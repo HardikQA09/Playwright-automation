@@ -13,6 +13,7 @@ import {
   generateMobileNumber
 } from './utils/emailGenerator';
 import {
+  skipUnlessEmailVerificationReady,
   waitForManualEmailVerification
 } from './helpers/emailVerification';
 import {
@@ -186,6 +187,8 @@ async function openPlanSelection(
 
     return;
   }
+
+  skipUnlessEmailVerificationReady();
 
   const email =
     generateEmail(

@@ -1,5 +1,6 @@
 import {
-  Page
+  Page,
+  test
 } from '@playwright/test';
 
 import {
@@ -37,6 +38,44 @@ export function isEmailVerificationPage(
   );
 }
 
+function emailVerificationPauseEnabled() {
+  return [
+    '1',
+    'true',
+    'yes',
+    'on'
+  ].includes(
+    String(
+      process.env.EMAIL_VERIFICATION_PAUSE ??
+        ''
+    ).toLowerCase()
+  );
+}
+
+export function isEmailVerificationReady() {
+  if (
+    !AUTH_SETTINGS.emailVerificationRequired
+  ) {
+    return true;
+  }
+
+  return isGmailAutomationEnabled() ||
+    emailVerificationPauseEnabled();
+}
+
+export function skipUnlessEmailVerificationReady() {
+  if (
+    isEmailVerificationReady()
+  ) {
+    return;
+  }
+
+  test.skip(
+    true,
+    'Set GMAIL_APP_PASSWORD for automatic email verification, or EMAIL_VERIFICATION_PAUSE=true for a headed pause.'
+  );
+}
+
 export async function openFreshLoginPage(
   page: Page
 ) {
@@ -52,7 +91,13 @@ export async function openFreshLoginPage(
       )
     ).first();
 
-  for (let attempt = 1; attempt <= 2; attempt += 1) {
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    if (attempt > 1) {
+      // Stored subscriber sessions redirect /login → /dashboard.
+      // Clear them so a different BILLING_MANAGEMENT / profile user can sign in.
+      await page.context().clearCookies();
+    }
+
     await page.goto(
       `${BASE_URL}${URLS.LOGIN}`,
       {
@@ -66,7 +111,7 @@ export async function openFreshLoginPage(
     const ready =
       await emailField.waitFor({
         state: 'visible',
-        timeout: 30000
+        timeout: 15000
       }).then(
         () => true
       ).catch(
@@ -111,6 +156,8 @@ export async function waitForManualEmailVerification(
         : 'disabled'
     }`
   );
+
+  skipUnlessEmailVerificationReady();
 
   if (
     isGmailAutomationEnabled()
@@ -181,7 +228,7 @@ export async function waitForManualEmailVerification(
         message
       );
 
-      if (process.env.CI || process.env.EMAIL_VERIFICATION_PAUSE !== 'true') {
+      if (process.env.CI || !emailVerificationPauseEnabled()) {
         throw new Error(
           `Automatic Gmail verification failed for ${email}. ${message}`
         );
@@ -198,12 +245,6 @@ export async function waitForManualEmailVerification(
     console.log(
       'Copy .env.example to .env and paste the Gmail App Password, or set $env:GMAIL_APP_PASSWORD in this VS Code terminal.'
     );
-
-    if (process.env.CI || process.env.EMAIL_VERIFICATION_PAUSE !== 'true') {
-      throw new Error(
-        `Automatic Gmail verification is not configured for ${email}. Set GMAIL_APP_PASSWORD in .env.`
-      );
-    }
   }
 
   console.log(

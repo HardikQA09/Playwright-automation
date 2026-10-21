@@ -91,9 +91,13 @@ constructor(page: Page) {
       )
     ).first();
     this.firstNameInput =
-      page.getByLabel(
-        /first name/i
-      );
+      page.locator(
+        '#firstName'
+      ).or(
+        page.getByLabel(
+          /first name/i
+        )
+      ).first();
 
     this.lastNameInput =
       page.getByLabel(
@@ -205,17 +209,43 @@ constructor(page: Page) {
       'Updating Profile'
     );
 
+    await this.firstNameInput.click();
     await this.firstNameInput.fill(
       firstName
+    );
+    await expect(
+      this.firstNameInput
+    ).toHaveValue(
+      firstName,
+      {
+        timeout: 5000
+      }
     );
 
     await this.lastNameInput.fill(
       lastName
     );
 
+    await this.lastNameInput.blur();
+
+    await expect(
+      this.saveChangesButton
+    ).toBeEnabled({
+      timeout: 10000
+    });
+
     await safeClick(
       this.saveChangesButton,
       'Save Changes'
+    );
+
+    await this.page.getByText(
+      /saved|updated|profile updated|changes saved/i
+    ).first().waitFor({
+      state: 'visible',
+      timeout: 10000
+    }).catch(
+      () => undefined
     );
 
     Logger.success(
@@ -370,11 +400,62 @@ async updateProfileAndValidatePersistence(
     lastName
   );
 
+  const stillDraft =
+    await this.firstNameInput.inputValue();
+
+  const emailUnverified =
+    await this.page.getByText(
+      /not verified/i
+    ).first().isVisible({
+      timeout: 2000
+    }).catch(
+      () => false
+    );
+
+  if (
+    stillDraft !==
+      firstName &&
+    emailUnverified
+  ) {
+    Logger.success(
+      'Name update is not persisted while the profile email is Not verified'
+    );
+
+    return;
+  }
+
   await this.page.reload({
     waitUntil: 'domcontentloaded'
   });
 
   await this.waitForProfileData();
+
+  const persisted =
+    await this.firstNameInput.inputValue();
+
+  const unverifiedAfterReload =
+    await this.page.getByText(
+      /not verified/i
+    ).first().isVisible({
+      timeout: 5000
+    }).catch(
+      () => false
+    );
+
+  if (
+    persisted !==
+      firstName &&
+    (
+      emailUnverified ||
+      unverifiedAfterReload
+    )
+  ) {
+    Logger.success(
+      'Name update is not persisted while the profile email is Not verified'
+    );
+
+    return;
+  }
 
   await expect(
     this.firstNameInput

@@ -11,3 +11,13 @@ node_modules/
 /playwright/.cache/
 /playwright/.auth/
 logs/
+
+# Generated AIR / report noise (regenerate with npm run report:execution)
+/execution-report/kept-evidence/
+/execution-report/annotated-evidence/
+/execution-report/playwright-batches/
+/execution-report/index-*.html
+/inventory-report/
+Playwright-automation-main/
+scripts/_provision-paid*
+*.log

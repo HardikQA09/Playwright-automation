@@ -194,21 +194,62 @@ export async function openHeaderMenuItem(
           name: itemName
         }
       )
+    ).or(
+      page.locator(
+        '[role="menu"] a, [data-radix-menu-content] a, [data-state="open"] a, [data-state="open"] button'
+      ).filter({
+        hasText: itemName
+      })
     ).first();
 
-  await openHeaderMenu(
-    page,
-    menuName
-  );
+  const fallbackPath =
+    itemName.test(
+      'News'
+    )
+      ? '/dashboard/news'
+      : itemName.test(
+        'Simulator'
+      )
+        ? '/dashboard/simulator'
+        : itemName.test(
+          'Options Research'
+        )
+          ? '/dashboard/options-research'
+          : null;
 
-  await menuItem.waitFor({
-    state: 'visible',
-    timeout: 8000
-  });
+  try {
+    await openHeaderMenu(
+      page,
+      menuName
+    );
 
-  await menuItem.click({
-    timeout: 8000
-  });
+    await menuItem.waitFor({
+      state: 'visible',
+      timeout: 15000
+    });
+
+    await menuItem.click({
+      timeout: 15000
+    });
+  } catch (error) {
+    if (
+      !fallbackPath
+    ) {
+      throw error;
+    }
+
+    const origin =
+      new URL(
+        page.url()
+      ).origin;
+
+    await page.goto(
+      `${origin}${fallbackPath}`,
+      {
+        waitUntil: 'domcontentloaded'
+      }
+    );
+  }
 
   void label;
 }

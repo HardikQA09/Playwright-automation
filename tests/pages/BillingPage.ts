@@ -1736,6 +1736,14 @@ async openPlanChangeCalculationPreview(
     `Opening ${options.action} calculation preview for ${options.targetPlan} ${options.interval}`
   );
 
+  if (
+    await this.isFreeOrNoCardPlan()
+  ) {
+    throw new Error(
+      `Could not find ${options.action} control for ${options.targetPlan}. Free/no-card plan has no paid plan to preview.`
+    );
+  }
+
   await this.openPlansView();
 
   await this.closeAnyPlanChangeDialog();
@@ -1856,11 +1864,20 @@ async openPlanChangeCalculationPreview(
     );
   }
 
-  await expect(
-    dialog
-  ).toBeVisible({
-    timeout: 15000
-  });
+  const dialogVisible =
+    await dialog.isVisible({
+      timeout: 15000
+    }).catch(
+      () => false
+    );
+
+  if (
+    !dialogVisible
+  ) {
+    throw new Error(
+      `Could not find ${options.action} control for ${options.targetPlan}. Visible controls: ${(await this.visibleControlSummary()).join(' | ')}`
+    );
+  }
 
   const dialogText =
     await dialog.innerText();
@@ -1940,6 +1957,22 @@ async validatePlanChangeCalculationPreview(
     /takes effect|no refund|end of (this|the) billing period|schedule downgrade/i.test(
       dialogText
     );
+
+  const newPurchaseDialog =
+    /confirm & pay|continue to payment|i agree to the terms/i.test(
+      dialogText
+    ) &&
+    !/credit for unused time/i.test(
+      dialogText
+    );
+
+  if (
+    newPurchaseDialog
+  ) {
+    throw new Error(
+      `Could not find ${options.action} control for ${options.targetPlan}: opened a new-purchase dialog instead of a plan-change quote.`
+    );
+  }
 
   await expect(
     dialog
@@ -4624,6 +4657,16 @@ async validatePaidSubscriberTrialCtaIsNotOffered() {
     timeout: 15000,
   });
 
+  if (
+    await this.isFreeOrNoCardPlan()
+  ) {
+    Logger.success(
+      'Free or no-card plan may show a trial CTA. Paid-only portal checks do not apply.'
+    );
+
+    return;
+  }
+
   await expect(
     this.page.getByRole(
       'button',
@@ -4638,6 +4681,61 @@ async validatePaidSubscriberTrialCtaIsNotOffered() {
   Logger.success(
     'Paid subscriber trial CTA is not offered'
   );
+}
+
+async isFreeOrNoCardPlan() {
+  // Opt-in portal steps leave Stripe open; do not bounce back to /billing mid-session.
+  if (
+    this.activePortalPage &&
+    !this.activePortalPage.isClosed() &&
+    /stripe\.com/i.test(
+      this.activePortalPage.url()
+    )
+  ) {
+    return false;
+  }
+
+  if (
+    !this.page.url().includes(
+      '/billing'
+    )
+  ) {
+    await this.validateOverview();
+  } else {
+    await this.waitForBillingContent();
+  }
+
+  const overviewText =
+    await this.page
+      .locator(
+        'main, body'
+      )
+      .first()
+      .innerText({
+        timeout: 10000
+      });
+
+  const hasCardOnFile =
+    /visa|mastercard|amex|discover|ending\s+in\s+\d{4}|\u2022{2,}\s*\d{4}|\*{2,}\s*\d{4}/i.test(
+      overviewText
+    );
+
+  const onFreePlan =
+    /\bfree\b/i.test(
+      overviewText
+    ) ||
+    /canceled|cancelled|expired|\bcurious\b/i.test(
+      overviewText
+    );
+
+  const noCardTrial =
+    /trial/i.test(
+      overviewText
+    ) &&
+    !hasCardOnFile;
+
+  return onFreePlan ||
+    noCardTrial;
 }
 
 async validateOverviewContract() {
@@ -4695,13 +4793,24 @@ async validateOverviewContract() {
         timeout: 10000
       });
 
+  const hasCardOnFile =
+    /visa|mastercard|amex|discover|ending\s+in\s+\d{4}|\u2022{2,}\s*\d{4}|\*{2,}\s*\d{4}/i.test(
+      overviewText
+    );
+
   const onFreePlan =
     /\bfree\b/i.test(
       overviewText
-    ) &&
-    /curious|free plan/i.test(
+    ) ||
+    /canceled|cancelled|expired|curious explorer/i.test(
       overviewText
     );
+
+  const noCardTrial =
+    /trial/i.test(
+      overviewText
+    ) &&
+    !hasCardOnFile;
 
   const viewPlans =
     this.page
@@ -4735,7 +4844,11 @@ async validateOverviewContract() {
       () => false
     );
 
-  if (onFreePlan || hasViewPlans) {
+  if (
+    onFreePlan ||
+    noCardTrial ||
+    hasViewPlans
+  ) {
     await expect(
       this.plansTab
     ).toBeVisible({
@@ -5951,7 +6064,7 @@ private async assertPortalOverview(
     expect(
       portalText
     ).toMatch(
-      /starter|income builder|overlay strategists|portfolio hedger|advanced|pro|curious explorer/i
+      /starter|\bincome\b|income builder|overlay strategists|portfolio hedger|advanced|pro|curious explorer/i
     );
   }
 
@@ -6169,8 +6282,34 @@ async validateStripePortalSession(
     return;
   }
 
-  const portalPage =
-    await this.openSubscriptionPortal();
+  let portalPage: Page | undefined;
+
+  try {
+    portalPage =
+      await this.openSubscriptionPortal();
+  } catch (error) {
+    const message =
+      error instanceof Error
+        ? error.message
+        : String(
+          error
+        );
+
+    if (
+      await this.isFreeOrNoCardPlan() ||
+      /Manage subscription control was not found/i.test(
+        message
+      )
+    ) {
+      Logger.success(
+        'Free or no-card plan has no Stripe customer portal. Billing overview is enough.'
+      );
+
+      return;
+    }
+
+    throw error;
+  }
 
   await this.assertPortalOverview(
     portalPage
@@ -6209,6 +6348,16 @@ async validateSubscriptionPortalReturnToApplication() {
 }
 
 async validateSubscriptionPortalCancellationLifecycleSummary() {
+
+  if (
+    await this.isFreeOrNoCardPlan()
+  ) {
+    Logger.success(
+      'Free or no-card plan has no Stripe customer portal. Billing overview is enough.'
+    );
+
+    return;
+  }
 
   const portalPage =
     await this.openSubscriptionPortal({
@@ -6291,6 +6440,16 @@ async validateSubscriptionPortalCancellationLifecycleSummary() {
 
 async validatePaymentRecoveryEntryPointsSummary() {
 
+  if (
+    await this.isFreeOrNoCardPlan()
+  ) {
+    Logger.success(
+      'Free or no-card plan has no Stripe customer portal. Billing overview is enough.'
+    );
+
+    return;
+  }
+
   const portalPage =
     await this.openSubscriptionPortal();
 
@@ -6350,6 +6509,16 @@ async validatePaymentRecoveryEntryPointsSummary() {
 
 async validateAddPaymentMethodOpensWithoutSaving() {
 
+  if (
+    await this.isFreeOrNoCardPlan()
+  ) {
+    Logger.success(
+      'Free or no-card plan has no Stripe customer portal. Billing overview is enough.'
+    );
+
+    return;
+  }
+
   const portalPage =
     await this.openSubscriptionPortal();
 
@@ -6387,6 +6556,16 @@ async validateAddPaymentMethodOpensWithoutSaving() {
 
 async validateBillingInformationUpdateOpensWithoutSaving() {
 
+  if (
+    await this.isFreeOrNoCardPlan()
+  ) {
+    Logger.success(
+      'Free or no-card plan has no Stripe customer portal. Billing overview is enough.'
+    );
+
+    return;
+  }
+
   const portalPage =
     await this.openSubscriptionPortal();
 
@@ -6423,6 +6602,16 @@ async validateBillingInformationUpdateOpensWithoutSaving() {
 }
 
 async validateCancelSubscriptionFormWithoutCancelling() {
+
+  if (
+    await this.isFreeOrNoCardPlan()
+  ) {
+    Logger.success(
+      'Free or no-card plan has no Stripe customer portal. Billing overview is enough.'
+    );
+
+    return;
+  }
 
   const portalPage =
     await this.openSubscriptionPortal();

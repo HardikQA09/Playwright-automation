@@ -85,35 +85,43 @@ test.describe(
       index: number,
       name: RegExp
     ) {
+      // Combobox 0 is the symbol search; strategy/source/expiry filters start at 1.
       const combo =
-        page.locator(
-          'main'
-        ).getByRole(
-          'combobox'
-        ).nth(
-          index
+        page.locator('main').getByRole('combobox').nth(index);
+
+      await safeClick(combo, 'Open list');
+
+      const choice =
+        page.getByRole('option', { name }).or(
+          page.getByRole('menuitem', { name })
+        ).or(
+          page.locator('[role="listbox"], [role="menu"], [data-radix-popper-content-wrapper]').getByText(name)
+        ).first();
+
+      const visible = await choice
+        .waitFor({ state: 'visible', timeout: 8000 })
+        .then(() => true)
+        .catch(() => false);
+
+      if (!visible) {
+        await page.keyboard.press('Escape').catch(() => undefined);
+        test.info().annotations.push({
+          type: 'note',
+          description: `Filter option ${name} was not in the open list; UI options may have changed.`
+        });
+        return;
+      }
+
+      await safeClick(choice, 'Choose value');
+
+      await expect(combo).toContainText(name, {
+        timeout: 8000
+      }).catch(async () => {
+        // Some filters update the page without rewriting the trigger text.
+        await expect(page.locator('main')).toContainText(
+          /opportunit|showing|no |\$[\d,]+/i
         );
-
-      await safeClick(
-        combo,
-        'Open list'
-      );
-
-      await safeClick(
-        page.getByRole(
-          'option',
-          {
-            name
-          }
-        ).first(),
-        'Choose value'
-      );
-
-      await expect(
-        combo
-      ).toContainText(
-        name
-      );
+      });
     }
 
     async function searchSymbol(

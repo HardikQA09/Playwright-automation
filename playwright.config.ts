@@ -62,7 +62,14 @@ export default defineConfig({
     ],
 
   use: {
-    trace: recordAllArtifacts ? 'on' : 'on-first-retry',
+    // Screenshots on every check when RECORD_ALL_ARTIFACTS=true. Full traces
+    // on every check OOM/crash Windows after ~50 tests, so keep traces on
+    // failure only unless RECORD_TRACE=true.
+    trace: process.env.RECORD_TRACE === 'true'
+      ? 'on'
+      : recordAllArtifacts
+        ? 'retain-on-failure'
+        : 'on-first-retry',
     screenshot: recordAllArtifacts ? 'on' : 'only-on-failure',
     video: recordVideo ? 'retain-on-failure' : 'off',
 

@@ -12,6 +12,7 @@ import {
   generateMobileNumber
 } from './utils/emailGenerator';
 import {
+  skipUnlessEmailVerificationReady,
   waitForManualEmailVerification
 } from './helpers/emailVerification';
 import {
@@ -62,7 +63,9 @@ $env:OVERLAY_STRATEGISTS_WITH_CARD_ENABLED="true"
 npx playwright test tests/OverlayStrategistsTrial.spec.ts --headed -g "with card"
 
 QA-CL-005: with-card trial needs a fresh user and a unique Stripe test card.
-Reusing 4242 trips already_redeemed and bounces to Plan Selection / Free.
+Do not use 4242424242424242 for Overlay with-card trial. That fingerprint is
+already_redeemed and bounces to Plan Selection / Free. Paid checkout may still
+use STRIPE_CARD 4242. Follow-up: clear 4242 reuse in Stripe test mode.
 Automation rotates unused Visa/Mastercard country test cards and retries
 once with a new user if the card fingerprint is already redeemed.
 /verify-mobile?trial=success means the trial was granted.
@@ -88,6 +91,8 @@ async function registerOverlayUserAndReachPlanSelection(
   page: Page,
   scenario: string
 ) {
+  skipUnlessEmailVerificationReady();
+
   const email =
     generateEmail(
       scenario
@@ -157,6 +162,12 @@ if (
     test.describe.configure({
       timeout: 20 * 60 * 1000
     });
+
+    test.beforeEach(
+      () => {
+        skipUnlessEmailVerificationReady();
+      }
+    );
 
     test(
       'New user can reach Overlay Strategists trial option',

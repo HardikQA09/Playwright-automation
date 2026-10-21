@@ -13,6 +13,7 @@ import {
   generateMobileNumber
 } from './utils/emailGenerator';
 import {
+  skipUnlessEmailVerificationReady,
   waitForManualEmailVerification
 } from './helpers/emailVerification';
 import { CompliancePage }
@@ -135,6 +136,8 @@ async function registerAndLoginFreshUser(
 
     return;
   }
+
+  skipUnlessEmailVerificationReady();
 
   const email =
     generateEmail(

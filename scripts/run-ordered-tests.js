@@ -1,5 +1,6 @@
 const { spawnSync } = require('child_process');
 const path = require('path');
+const { applyCompleteRunEnv } = require('./apply-complete-run-env');
 
 const {
   assertAllSpecsAreListed,
@@ -9,6 +10,16 @@ const {
   suites,
   testPaths
 } = require('./execution-order');
+
+const { hasGmail } = applyCompleteRunEnv(
+  path.join(__dirname, '..')
+);
+
+if (!hasGmail) {
+  console.warn(
+    'GMAIL_APP_PASSWORD is not set. Disposable-user email verification will skip instead of fail. Overlay, direct checkout, and plan-ladder inspect need Gmail to stay near the Oct 12 skip count.'
+  );
+}
 
 assertAllSpecsAreListed();
 

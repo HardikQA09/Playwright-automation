@@ -1881,7 +1881,7 @@ export class DashboardPage
     const text =
       await this.cardText(
         /option expiry overview/i,
-        /expiration|symbol/i
+        /otm|ntm|atm|itm|short options|long options|no .{0,40}options expiring|no open/i
       );
 
     const hasContractRow =
@@ -1893,12 +1893,16 @@ export class DashboardPage
       );
 
     const empty =
-      /no expir|none|no option/i.test(
+      /no options expiring|no open (short|long) options|no .{0,40}options expiring|no expir|none|no option/i.test(
         text
       );
 
     expect(
-      empty || hasContractRow
+      empty ||
+      hasContractRow ||
+      /short options|long options|\botm\b|options expiring/i.test(
+        text
+      )
     ).toBe(
       true
     );

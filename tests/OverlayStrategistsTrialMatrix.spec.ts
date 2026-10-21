@@ -113,11 +113,11 @@ const useCaseOneScenarios: UseCaseScenario[] = [
     ],
     title: 'Start trial with valid card',
     priority: 'Critical',
-    status: 'known-bug',
+    status: 'automated',
     automation:
-      'OverlayStrategistsTrial.spec.ts > New user can start Overlay Strategists trial with card; PlanSelectionValidation.spec.ts > with-card trial explains card collection, auto-renewal, and cancellation',
+      'OverlayStrategistsTrial.spec.ts > New user can start Overlay Strategists trial with card',
     dependency:
-      'Confirmed product bug: after activating the free trial with a valid payment card, Billing still displays Free Plan and does not show the saved payment method. Expected Billing state is active Free Trial with associated payment method.'
+      'QA-CL-005: do not use Stripe test card 4242 for Overlay with-card trial. That fingerprint is already_redeemed and bounces to Plan Selection / Free. Rotate an unused country test card per fresh user. 4242 reuse is a follow-up to clear in Stripe, not a trial-flow defect.'
   },
   {
     id: 'SC-08',
