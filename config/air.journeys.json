@@ -77,6 +77,33 @@
       "critical": true
     },
     {
+      "name": "Roll Configuration",
+      "patterns": [
+        "roll configuration",
+        "roll config",
+        "income first",
+        "tax-aware",
+        "balanced strategy",
+        "benchmark templates",
+        "remove from active",
+        "demote and remove"
+      ],
+      "modules": ["Roll Configuration"],
+      "critical": true
+    },
+    {
+      "name": "Beta",
+      "patterns": [
+        "beta surfaces",
+        "beta menu",
+        "broker transactions",
+        "position p&l",
+        "option overlay"
+      ],
+      "modules": ["Beta", "Roll Configuration"],
+      "critical": false
+    },
+    {
       "name": "Session Security",
       "patterns": ["session", "logout", "protected route"],
       "modules": ["Session Security"],

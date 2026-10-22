@@ -35,6 +35,10 @@ type TestDataFile = {
       email?: string;
       password?: string;
     };
+    e2e?: {
+      email?: string;
+      password?: string;
+    };
   };
   auth?: {
     otpCode?: string;
@@ -187,6 +191,9 @@ const onboarding =
 const subscriber =
   data.users?.subscriber ?? {};
 
+const e2e =
+  data.users?.e2e ?? {};
+
 const auth =
   data.auth ?? {};
 
@@ -325,6 +332,19 @@ export const TEST_USERS = {
     password:
       process.env.SUBSCRIBER_PASSWORD ??
       subscriber.password ??
+      'H@rdik9944'
+  },
+
+  e2e: {
+
+    email:
+      process.env.E2E_EMAIL ??
+      e2e.email ??
+      'imhardikthanki+e2e@gmail.com',
+
+    password:
+      process.env.E2E_PASSWORD ??
+      e2e.password ??
       'H@rdik9944'
   },
 

@@ -12,7 +12,9 @@
       "items": [
         { "label": "Business Journey", "target": "#journey" },
         { "label": "Product Health", "target": "#health" },
-        { "label": "Module Dashboard", "target": "#module-dashboard" }
+        { "label": "Module Dashboard", "target": "#module-dashboard" },
+        { "label": "Roll Configuration", "target": "#module-dashboard-roll-configuration" },
+        { "label": "Beta", "target": "#module-dashboard-beta" }
       ]
     },
     {

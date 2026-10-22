@@ -611,6 +611,42 @@ const userJourneyScenarios: UserJourneyScenario[] = [
     priority: 'Critical',
     status: 'automated',
     automation: 'OverlayStrategistsTrial.spec.ts > without card trial is limited to one verified email and mobile'
+  },
+  {
+    id: 'UJ-064',
+    title: 'Beta menu opens Broker Transactions, Position P&L, Option Overlay P&L, and Roll Configuration',
+    module: 'Beta',
+    journey: 'Beta',
+    priority: 'High',
+    status: 'automated',
+    automation: 'BetaSurfaces.spec.ts'
+  },
+  {
+    id: 'UJ-065',
+    title: 'Roll Configuration lists Income First, Tax-Aware, Balanced, and Custom benchmark templates',
+    module: 'Roll Configuration',
+    journey: 'Roll Configuration',
+    priority: 'Critical',
+    status: 'automated',
+    automation: 'RollConfiguration.spec.ts > Benchmark templates Income Tax-Aware Balanced and Custom are listed'
+  },
+  {
+    id: 'UJ-066',
+    title: 'Roll Configuration enforces field-level validation for each template including empty and zeroed fields',
+    module: 'Roll Configuration',
+    journey: 'Roll Configuration',
+    priority: 'Critical',
+    status: 'automated',
+    automation: 'RollConfiguration.spec.ts > Income First / Tax-Aware / Balanced / Custom field-level validation'
+  },
+  {
+    id: 'UJ-067',
+    title: 'Roll Configuration can draft, activate, demote, and remove AIR strategies from active',
+    module: 'Roll Configuration',
+    journey: 'Roll Configuration',
+    priority: 'Critical',
+    status: 'automated',
+    automation: 'RollConfiguration.spec.ts > Clone Income First draft; Clone Tax-Aware activate then demote and remove'
   }
 ];
 

@@ -21,12 +21,40 @@
       "critical": true
     },
     {
+      "name": "Roll Configuration",
+      "patterns": [
+        "roll configuration",
+        "roll config",
+        "income first",
+        "tax-aware",
+        "tax-aware retention",
+        "balanced strategy",
+        "benchmark templates",
+        "remove from active",
+        "demote and remove"
+      ],
+      "critical": true
+    },
+    {
+      "name": "Beta",
+      "patterns": [
+        "beta surfaces",
+        "beta menu",
+        "broker transactions",
+        "position p&l",
+        "position pnl",
+        "option overlay p&l",
+        "option overlay pnl"
+      ],
+      "critical": false
+    },
+    {
       "name": "Billing",
       "patterns": [
         "billing",
         "subscriber",
         "invoice",
-        "transaction",
+        "transaction history",
         "plan selection",
         "plan cards",
         "plans",

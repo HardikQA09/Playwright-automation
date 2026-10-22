@@ -99,6 +99,14 @@ function getModuleRecommendation(module) {
     return 'Add JWT/session API validation.';
   }
 
+  if (module.name === 'Roll Configuration') {
+    return 'Continue monitoring template field validation and activate/demote lifecycle.';
+  }
+
+  if (module.name === 'Beta') {
+    return 'Continue monitoring Beta menu surfaces.';
+  }
+
   return 'Continue monitoring.';
 }
 

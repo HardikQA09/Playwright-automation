@@ -2485,9 +2485,11 @@ function getModuleRecommendedAction(module) {
   const actionMap = {
     Accessibility: 'No action required',
     Authentication: 'Continue monitoring',
+    Beta: 'Continue monitoring Beta menu surfaces',
     Billing: 'Add API validation next',
     Password: 'Add reset-password expiry checks',
     Profile: 'No action required',
+    'Roll Configuration': 'Continue monitoring template field validation and activate/demote lifecycle',
     'Session Security': 'Add JWT/session API validation',
     Signup: 'Continue monitoring',
     Onboarding: 'Continue monitoring',
@@ -2500,10 +2502,12 @@ function getModuleIcon(moduleName) {
   const iconMap = {
     Accessibility: 'Ax',
     Authentication: 'Au',
+    Beta: 'Be',
     Billing: 'Bi',
     Onboarding: 'On',
     Password: 'Pw',
     Profile: 'Pr',
+    'Roll Configuration': 'Rc',
     'Session Security': 'Ss',
     Signup: 'Su',
     'Access Control': 'Ac',
@@ -2519,10 +2523,19 @@ function getModuleBusinessScenarios(moduleName) {
   const scenarioMap = {
     Accessibility: ['Keyboard navigation', 'Focus order', 'Accessible validation states'],
     Authentication: ['Login', 'Logout', 'Forgot Password', 'JWT', 'Session Timeout'],
+    Beta: ['Beta menu inventory', 'Broker Transactions', 'Position P&L', 'Option Overlay P&L', 'Roll Configuration entry'],
     Billing: ['Billing overview', 'Plans tab', 'Transaction history', 'Invoice page', 'PDF invoice'],
     Onboarding: ['Registration', 'Email verification', 'Mobile verification', 'Risk profile', 'Compliance', 'Stripe payment'],
     Password: ['Reset password', 'Password mismatch', 'Wrong current password', 'Weak password validation'],
     Profile: ['Profile page access', 'Profile data loads', 'Email read-only validation'],
+    'Roll Configuration': [
+      'Benchmark templates',
+      'Income First field validation',
+      'Tax-Aware field validation',
+      'Balanced field validation',
+      'Custom field validation',
+      'Draft / activate / demote lifecycle'
+    ],
     'Session Security': ['Protected routes', 'Logout back-button protection', 'Direct URL after logout'],
     Signup: ['Required fields', 'Email validation', 'Password policy', 'Mobile number', 'OTP validation'],
   };
@@ -2554,9 +2567,11 @@ function getModuleFocus(moduleName) {
   const focusByModule = {
     Accessibility: 'Keyboard navigation, focus order, and accessible validation behavior.',
     Authentication: 'Login, logout, forgot password, JWT/session behavior, and locked-account recovery.',
+    Beta: 'Beta menu destinations including Broker Transactions, Position P&L, Option Overlay P&L, and Roll Configuration entry.',
     Billing: 'Billing overview, plans, transaction history, invoice access, and PDF availability.',
     Password: 'Password reset, mismatch handling, current-password validation, and policy enforcement.',
     Profile: 'Profile page access, profile data loading, and read-only email protection.',
+    'Roll Configuration': 'Benchmark templates, per-template field defaults and min validation, draft/activate, and remove-from-active lifecycle.',
     Signup: 'Registration validation, mobile number handling, OTP flow, and password policy.',
     Onboarding: 'Subscriber registration, verification, risk profile, compliance, and payment handoff.',
     'Session Security': 'Protected-route access, logout behavior, browser back navigation, and session expiry.',
@@ -2574,10 +2589,12 @@ function getModuleBusinessImpact(module) {
     const impactByModule = {
       Accessibility: 'Users relying on keyboard or assistive technology may be blocked from completing key workflows.',
       Authentication: 'Users may be unable to sign in, recover accounts, or maintain secure sessions.',
+      Beta: 'Subscribers may be unable to open Beta research and roll surfaces from the product menu.',
       Billing: 'Subscribers may be unable to manage plans, view transactions, or access invoices.',
       MFA: 'Users may be unable to recover access or manage two-factor authentication without support intervention.',
       Password: 'Users may be unable to reset or change passwords safely.',
       Profile: 'Users may be unable to verify or protect profile data.',
+      'Roll Configuration': 'Subscribers may be unable to configure, validate, activate, or demote roll strategies safely.',
       Signup: 'New customers may be unable to create accounts or complete verification.',
       Onboarding: 'New subscribers may be unable to complete the enrollment journey.',
       'Session Security': 'Protected areas may be exposed or users may stay authenticated longer than intended.',
@@ -2589,9 +2606,11 @@ function getModuleBusinessImpact(module) {
   const healthyImpactByModule = {
     Accessibility: 'Accessible interaction paths remain available for validated workflows.',
     Authentication: 'User sign-in and account-access flows are currently stable.',
+    Beta: 'Beta menu destinations are currently reachable and render usable content.',
     Billing: 'Subscriber billing and invoice access are currently stable.',
     Password: 'Password management validations are currently stable.',
     Profile: 'Profile data access and read-only email protection are currently stable.',
+    'Roll Configuration': 'Roll templates, field validation, and activate/demote lifecycle are currently stable.',
     Signup: 'New-account registration validations are currently stable.',
   };
 

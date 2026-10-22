@@ -16,10 +16,13 @@
     "Access Control",
     "Accessibility",
     "Authentication",
+    "Beta",
     "Billing",
+    "Dashboard",
     "Onboarding",
     "Password",
     "Profile",
+    "Roll Configuration",
     "Session Security",
     "Signup"
   ],
@@ -27,10 +30,13 @@
     "Access Control": ["permission", "permissions", "access control", "rbac", "role", "restricted user", "allowed user", "protected route", "unauthenticated user", "direct access", "blocks direct access"],
     "Accessibility": ["accessibility", "browser", "keyboard", "tab order"],
     "Authentication": ["auth", "login", "forgot", "unlock account"],
-    "Billing": ["billing", "subscriber", "invoice", "transaction", "plans"],
+    "Beta": ["beta surfaces", "beta menu", "broker transactions", "position p&l", "option overlay"],
+    "Billing": ["billing", "subscriber", "invoice", "transaction history", "plans"],
+    "Dashboard": ["dashboard", "dashboard health", "dashboard navigation"],
     "Onboarding": ["onboarding", "register", "verify email", "stripe", "compliance", "risk"],
     "Password": ["password", "reset password", "password policy", "wrong current password"],
     "Profile": ["profile"],
+    "Roll Configuration": ["roll configuration", "roll config", "income first", "tax-aware", "balanced strategy", "benchmark templates"],
     "Session Security": ["session", "protected route", "logout", "back button"],
     "Signup": ["signup", "otp", "mobile number"]
   },
@@ -43,7 +49,9 @@
     "Compliance",
     "Subscription",
     "Payment",
-    "Dashboard"
+    "Dashboard",
+    "Beta",
+    "Roll Configuration"
   ],
   "futureLayers": [
     "API Validation",

@@ -15,6 +15,10 @@
     "subscriber": {
       "email": "imhardikthanki+plantest@gmail.com",
       "password": "H@rdik9944"
+    },
+    "e2e": {
+      "email": "imhardikthanki+e2e@gmail.com",
+      "password": "H@rdik9944"
     }
   },
   "auth": {
