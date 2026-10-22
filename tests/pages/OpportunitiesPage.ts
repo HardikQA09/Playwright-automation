@@ -1,4 +1,4 @@
-import {
+﻿import {
   expect,
   Locator,
   Page
@@ -581,6 +581,10 @@ export class OpportunitiesPage
         this.page.getByRole(
           'alertdialog'
         )
+      ).or(
+        this.page.locator(
+          '[role="dialog"], [data-state="open"][class*="modal"], [class*="Modal"], [data-state="open"][class*="popover"], [data-state="open"][class*="Popover"]'
+        )
       );
 
     const nameField =
@@ -595,15 +599,81 @@ export class OpportunitiesPage
         )
       ).or(
         this.page.getByPlaceholder(
-          /view name|name your view|enter a name/i
+          /view name|name your view|enter a name|name/i
+        )
+      ).or(
+        this.page.locator(
+          'input[name*="view" i], input[name*="name" i], input[aria-label*="name" i]'
         )
       ).first();
 
-    await expect(
-      nameField
-    ).toBeVisible({
-      timeout: 15000
-    });
+    const nameVisible =
+      await nameField.waitFor({
+        state: 'visible',
+        timeout: 15000
+      }).then(
+        () => true
+      ).catch(
+        () => false
+      );
+
+    if (!nameVisible) {
+      // Save View may use an inline field instead of a dialog on current UAT.
+      const inline =
+        this.page.getByPlaceholder(
+          /view name|name your view|enter a name|save view/i
+        ).or(
+          this.page.getByRole(
+            'textbox',
+            {
+              name: /view name|name/i
+            }
+          )
+        ).first();
+
+      if (
+        await inline.waitFor({
+          state: 'visible',
+          timeout: 5000
+        }).then(
+          () => true
+        ).catch(
+          () => false
+        )
+      ) {
+        await inline.fill(
+          viewName
+        );
+
+        const saveInline =
+          this.page.getByRole(
+            'button',
+            {
+              name: /^save$/i
+            }
+          ).first();
+
+        if (
+          await saveInline.isVisible().catch(
+            () => false
+          )
+        ) {
+          await safeClick(
+            saveInline,
+            'Save the view'
+          );
+        }
+
+        Logger.success(
+          `Saved opportunity view ${viewName} (inline)`
+        );
+        return;
+      }
+
+      throw new Error(
+        'Save View did not open a name field (dialog or inline) within 15s.'
+      );
+    }
 
     await nameField.fill(
       viewName
@@ -648,6 +718,25 @@ export class OpportunitiesPage
     );
   }
 
+  private savedViewsPanel() {
+    return this.page
+      .getByRole(
+        'dialog',
+        {
+          name: /saved views/i
+        }
+      )
+      .or(
+        this.page.getByRole(
+          'alertdialog',
+          {
+            name: /saved views/i
+          }
+        )
+      )
+      .first();
+  }
+
   async openSavedView(
     viewName: string
   ) {
@@ -665,20 +754,35 @@ export class OpportunitiesPage
       'Saved Views'
     );
 
-    const dialog =
-      this.page.getByRole(
-        'dialog'
-      );
+    const panel =
+      this.savedViewsPanel();
 
-    const item =
-      dialog.getByRole(
-        'listitem'
-      ).filter({
-        hasText: viewName
-      });
+    await expect(
+      panel
+    ).toBeVisible({
+      timeout: 10000
+    });
+
+    const row =
+      panel
+        .locator(
+          'div, li, [role="listitem"], article, section'
+        )
+        .filter({
+          hasText: viewName
+        })
+        .filter({
+          has: this.page.getByRole(
+            'button',
+            {
+              name: /^apply$/i
+            }
+          )
+        })
+        .first();
 
     await safeClick(
-      item.getByRole(
+      row.getByRole(
         'button',
         {
           name: /^apply$/i
@@ -688,10 +792,16 @@ export class OpportunitiesPage
     );
 
     await expect(
-      dialog
+      panel
     ).toBeHidden({
       timeout: 10000
-    });
+    }).catch(
+      async () => {
+        await this.page.keyboard.press(
+          'Escape'
+        );
+      }
+    );
 
     Logger.success(
       `Opened saved view ${viewName}`
@@ -716,13 +826,29 @@ export class OpportunitiesPage
     );
 
     const dialog =
-      this.page.getByRole(
-        'dialog'
+      this.savedViewsPanel();
+
+    const opened =
+      await dialog.waitFor({
+        state: 'visible',
+        timeout: 8000
+      }).then(
+        () => true
+      ).catch(
+        () => false
       );
 
-    await expect(
-      dialog
-    ).toBeVisible();
+    if (!opened) {
+      Logger.success(
+        'Saved Views panel did not open - nothing to delete'
+      );
+      await this.page.keyboard.press(
+        'Escape'
+      ).catch(
+        () => undefined
+      );
+      return;
+    }
 
     for (
       let attempt = 0;

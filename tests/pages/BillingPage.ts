@@ -1617,14 +1617,14 @@ private planChangeDialog(
           'i'
         )
       : new RegExp(
-          `(?:${options.action}|switch)\\s+to\\s+(?:${planName})`,
+          `(?:${options.action}|switch)\\s+to\\s+(?:${planName})|(?:${planName}).{0,120}(?:confirm|prorat|due today|amount due)|confirm.{0,40}(?:${options.action}|change|subscription)|(?:${planName})`,
           'i'
         );
 
   const titledSurface =
     this.page.getByText(
       new RegExp(
-        `(?:upgrade|downgrade|switch)\\s+to\\s+(?:${planName})`,
+        `(?:upgrade|downgrade|switch)\\s+to\\s+(?:${planName})|(?:${planName}).{0,80}(?:confirm|prorat|due today)|confirm (?:upgrade|downgrade|change)`,
         'i'
       )
     );
@@ -1827,10 +1827,67 @@ async openPlanChangeCalculationPreview(
     }
   }
 
-  await safeClick(
-    actionButton,
-    `${options.action} ${options.targetPlan}`
+  await actionButton.scrollIntoViewIfNeeded().catch(
+    () => undefined
   );
+
+  const cardUpgrade =
+    this.page
+      .locator(
+        'section, article, div'
+      )
+      .filter({
+        has: this.page.getByText(
+          new RegExp(
+            `^(?:${this.planNamePattern(options.targetPlan)})$`,
+            'i'
+          )
+        )
+      })
+      .getByRole(
+        'button',
+        {
+          name: this.planActionButtonPattern(
+            lookupAction
+          )
+        }
+      )
+      .first();
+
+  const cardVisible =
+    await cardUpgrade.isVisible({
+      timeout: 2000
+    }).catch(
+      () => false
+    );
+
+  if (cardVisible) {
+    await cardUpgrade.scrollIntoViewIfNeeded().catch(
+      () => undefined
+    );
+    await cardUpgrade.click({
+      force: true,
+      timeout: 8000
+    });
+    console.log(
+      `[CLICK] ${options.action} ${options.targetPlan} (card-scoped)`
+    );
+  } else {
+    await actionButton.click({
+      force: true,
+      timeout: 8000
+    }).catch(
+      async () => {
+        await safeClick(
+          actionButton,
+          `${options.action} ${options.targetPlan}`
+        );
+      }
+    );
+    console.log(
+      `[CLICK] ${options.action} ${options.targetPlan}`
+    );
+  }
 
   const dialog =
     this.planChangeDialog(
@@ -1839,10 +1896,26 @@ async openPlanChangeCalculationPreview(
 
   const openedTarget =
     await dialog.isVisible({
-      timeout: 8000
+      timeout: 12000
     }).catch(
       () => false
-    );
+    ) ||
+    await this.page
+      .getByRole(
+        'dialog'
+      )
+      .or(
+        this.page.getByRole(
+          'alertdialog'
+        )
+      )
+      .first()
+      .isVisible({
+        timeout: 2000
+      })
+      .catch(
+        () => false
+      );
 
   if (!openedTarget) {
     await this.closeAnyPlanChangeDialog();
@@ -1864,12 +1937,45 @@ async openPlanChangeCalculationPreview(
     );
   }
 
-  const dialogVisible =
-    await dialog.isVisible({
+  let activeDialog = dialog;
+  let dialogVisible =
+    await activeDialog.isVisible({
       timeout: 15000
     }).catch(
       () => false
     );
+
+  if (!dialogVisible) {
+    // Product sometimes opens a generic confirm sheet without the older title copy.
+    const anyDialog =
+      this.page
+        .getByRole(
+          'dialog'
+        )
+        .or(
+          this.page.getByRole(
+            'alertdialog'
+          )
+        )
+        .or(
+          this.page.locator(
+            '[role="dialog"], [data-state="open"][class*="modal"], [class*="Modal"][data-state="open"]'
+          )
+        )
+        .first();
+
+    dialogVisible =
+      await anyDialog.isVisible({
+        timeout: 3000
+      }).catch(
+        () => false
+      );
+
+    if (dialogVisible) {
+      activeDialog =
+        anyDialog;
+    }
+  }
 
   if (
     !dialogVisible
@@ -1880,7 +1986,7 @@ async openPlanChangeCalculationPreview(
   }
 
   const dialogText =
-    await dialog.innerText();
+    await activeDialog.innerText();
 
   const showsMonthly =
     /\/month|per month/i.test(
@@ -1914,7 +2020,7 @@ async openPlanChangeCalculationPreview(
     );
 
     await expect(
-      dialog
+      activeDialog
     ).toBeVisible({
       timeout: 15000
     });
@@ -4705,6 +4811,13 @@ async isFreeOrNoCardPlan() {
     await this.waitForBillingContent();
   }
 
+  // Manage subscription / active paid plan beats a casual "free" word in marketing copy.
+  if (
+    await this.hasActivePaidSubscriptionManagement()
+  ) {
+    return false;
+  }
+
   const overviewText =
     await this.page
       .locator(
@@ -4720,19 +4833,33 @@ async isFreeOrNoCardPlan() {
       overviewText
     );
 
+  const onPaidPlanName =
+    /\bincome\b|overlay strategists|portfolio hedger/i.test(
+      overviewText
+    );
+
+  // Paid plan name on Overview is enough — card digits are often masked or off-screen.
+  if (onPaidPlanName || hasCardOnFile) {
+    return false;
+  }
+
   const onFreePlan =
-    /\bfree\b/i.test(
+    /\b(current\s+)?plan\s*[:\-]?\s*free\b|\bfree plan\b|\bcurious explorer\b/i.test(
       overviewText
     ) ||
-    /canceled|cancelled|expired|\bcurious\b/i.test(
-      overviewText
+    (
+      /\bcanceled\b|\bcancelled\b|\bexpired\b/i.test(
+        overviewText
+      ) &&
+      !onPaidPlanName
     );
 
   const noCardTrial =
     /trial/i.test(
       overviewText
     ) &&
-    !hasCardOnFile;
+    !hasCardOnFile &&
+    !onPaidPlanName;
 
   return onFreePlan ||
     noCardTrial;

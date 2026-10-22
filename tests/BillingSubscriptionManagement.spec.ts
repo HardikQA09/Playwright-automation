@@ -71,6 +71,7 @@ test.describe(
         ) {
           // Shared subscriberAuth cookies would keep plantest on /dashboard.
           await page.context().clearCookies();
+          await page.goto('about:blank').catch(() => undefined);
           await new LoginPage(
             page
           ).login(

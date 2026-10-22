@@ -1,13 +1,14 @@
 /*
- * One command for a scheduled run: tests -> AIR data -> HTML report -> email.
+ * One command for a scheduled run: tests -> AIR data -> HTML report.
  *
  *   node scripts/run-scheduled.js daily
  *   node scripts/run-scheduled.js every2days
  *   node scripts/run-scheduled.js weekly
  *   node scripts/run-scheduled.js group "Billing pages"
  *
- * Options (after the suite):  --no-email
- * The email is sent even when tests fail, so people hear about failures.
+ * Options (after the suite):  --email
+ * Report email is OFF by default. Pass --email (or SEND_REPORT_EMAIL=true)
+ * when you want recipients notified after the run.
  */
 const fs = require('fs');
 const path = require('path');
@@ -33,10 +34,16 @@ const labels = {
 
 if (!suite || (suite === 'group' && !groupName)) {
   console.error(
-    'Usage: node scripts/run-scheduled.js <daily|every2days|weekly|group "<name>"> [--no-email]'
+    'Usage: node scripts/run-scheduled.js <daily|every2days|weekly|group "<name>"> [--email]'
   );
   process.exit(1);
 }
+
+const sendEmail =
+  cliFlags.has('--email') ||
+  ['1', 'true', 'yes', 'on'].includes(
+    String(process.env.SEND_REPORT_EMAIL || '').toLowerCase()
+  );
 
 const label =
   suite === 'group' ? `Group run - ${groupName}` : labels[suite] ?? suite;
@@ -53,7 +60,7 @@ if (!hasGmail) {
   );
 }
 
-if (!cliFlags.has('--no-email')) {
+if (sendEmail) {
   const { recipients, skipped } = collectConfiguredRecipients();
 
   if (skipped.length) {
@@ -67,6 +74,10 @@ if (!cliFlags.has('--no-email')) {
   } else {
     console.log(`Schedule/report email will go to: ${recipients.join(', ')}`);
   }
+} else {
+  console.log(
+    'Report email skipped (default). Pass --email or set SEND_REPORT_EMAIL=true when you want it sent.'
+  );
 }
 
 function run(command, args) {
@@ -113,7 +124,7 @@ try {
   run(q(node), [q('scripts/generate-air-results.js')]);
   run(q(node), [q('scripts/generate-execution-report.js')]);
 
-  if (!cliFlags.has('--no-email')) {
+  if (sendEmail) {
     run(q(node), [
       q('scripts/send-report-email.js'),
       '--label',

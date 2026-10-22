@@ -426,23 +426,10 @@ export class LoginPage
       'Logging in'
     );
 
-    if (
-      /\/(dashboard|onboarding)/.test(
-        this.page.url()
-      )
-    ) {
-      Logger.success(
-        'User already authenticated'
-      );
-
-      console.log(
-        'Current URL:',
-        this.page.url()
-      );
-
-      return;
-    }
-
+    // Never treat a leftover /dashboard URL as "already authenticated".
+    // Paid-fixture helpers clear cookies while the SPA URL can still be
+    // /dashboard, which previously skipped the login form and left Free-session
+    // cascades (Free/no-card preview + Login failed after 3 attempts).
     if (
       await this.completePostLoginMobileVerificationIfVisible()
     ) {
@@ -598,8 +585,60 @@ export class LoginPage
             throw error;
           }
 
+          const pageHint =
+            await this.page
+              .locator(
+                '[role="alert"], [data-sonner-toast], .toast, [class*="toast"]'
+              )
+              .first()
+              .innerText({
+                timeout: 2000
+              })
+              .catch(
+                () => ''
+              );
+
+          const bodyHint =
+            await this.page
+              .locator(
+                'main, body'
+              )
+              .first()
+              .innerText({
+                timeout: 2000
+              })
+              .then(
+                (text) =>
+                  text
+                    .replace(/\s+/g, ' ')
+                    .match(
+                      /invalid|incorrect|wrong password|locked|too many|try again|credentials/i
+                    )?.[0] ??
+                  ''
+              )
+              .catch(
+                () => ''
+              );
+
+          const detail = [
+            pageHint,
+            bodyHint,
+            error instanceof Error
+              ? error.message
+              : ''
+          ]
+            .map(
+              (part) =>
+                String(part || '').trim()
+            )
+            .filter(Boolean)
+            .join(' | ')
+            .slice(0, 240);
+
           throw new Error(
-            'Login failed after 3 attempts'
+            detail
+              ? `Login failed after 3 attempts (${detail}). URL: ${this.page.url()}`
+              : `Login failed after 3 attempts. URL: ${this.page.url()}`
           );
         }
 

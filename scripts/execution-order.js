@@ -580,7 +580,12 @@ function assertAllSpecsAreListed() {
   const testsDir = path.join(__dirname, '..', 'tests');
   const onDisk = fs
     .readdirSync(testsDir)
-    .filter((file) => file.endsWith('.spec.ts'))
+    .filter(
+      (file) =>
+        file.endsWith('.spec.ts') &&
+        // Local preflight / underscore specs are run on demand, not in AIR inventory.
+        !file.startsWith('_')
+    )
     .sort();
   const listed = [...playwrightTestMatch].sort();
   const missing = onDisk.filter((file) => !listed.includes(file));

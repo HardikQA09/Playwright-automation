@@ -1131,7 +1131,21 @@ extends BasePage {
         this.createAccountLink,
         'Open Start 30-Day Free Trial'
       );
-    } else {
+    }
+
+    const onRegister =
+      await this.page.waitForURL(
+        /\/register|\/signup|\/sign-up|\/create/,
+        {
+          timeout: 8000
+        }
+      ).then(
+        () => true
+      ).catch(
+        () => false
+      );
+
+    if (!onRegister) {
       await this.page.goto(
         `${BASE_URL}${URLS.REGISTER}`,
         {

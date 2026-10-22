@@ -188,10 +188,40 @@ export class PlanSelectionPage extends BasePage {
     expectStripe = true
   ) {
     if (expectStripe) {
+      const reachedStripe =
+        await this.page.waitForURL(
+          /checkout\.stripe\.com|billing\.stripe\.com/i,
+          {
+            timeout: 20000,
+            waitUntil: 'commit'
+          }
+        ).then(
+          () => true
+        ).catch(
+          () => false
+        );
+
+      if (reachedStripe) {
+        return;
+      }
+
+      // UAT sometimes swallows the first Complete Setup navigation.
+      if (
+        await this.completeSetupButton.isVisible().catch(
+          () => false
+        )
+      ) {
+        await this.completeSetupButton.click({
+          timeout: 8000
+        }).catch(
+          () => undefined
+        );
+      }
+
       await this.page.waitForURL(
         /checkout\.stripe\.com|billing\.stripe\.com/i,
         {
-          timeout: 30000,
+          timeout: 20000,
           waitUntil: 'commit'
         }
       );

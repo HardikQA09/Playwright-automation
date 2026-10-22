@@ -73,9 +73,79 @@ export class BasePage {
   }
 
   async navigate(url: string) {
-    await this.page.goto(url, {
-      waitUntil: 'domcontentloaded',
-    });
+    let lastError: unknown;
+
+    for (let attempt = 1; attempt <= 3; attempt += 1) {
+      try {
+        await this.page.goto(url, {
+          waitUntil: 'domcontentloaded',
+          timeout: 60000
+        });
+        return;
+      } catch (error) {
+        lastError = error;
+        const message =
+          error instanceof Error
+            ? error.message
+            : String(error);
+
+        if (
+          !/ERR_CONNECTION_RESET|ERR_CONNECTION_TIMED_OUT|ERR_NETWORK|Timeout|net::ERR_/i.test(
+            message
+          ) ||
+          attempt === 3
+        ) {
+          throw error;
+        }
+
+        await this.page.waitForTimeout(
+          1500 * attempt
+        );
+      }
+    }
+
+    throw lastError;
+  }
+
+  async gotoWithRetry(
+    url: string,
+    options: {
+      waitUntil?: 'domcontentloaded' | 'load' | 'commit';
+      timeout?: number;
+    } = {}
+  ) {
+    let lastError: unknown;
+
+    for (let attempt = 1; attempt <= 3; attempt += 1) {
+      try {
+        await this.page.goto(url, {
+          waitUntil: options.waitUntil ?? 'domcontentloaded',
+          timeout: options.timeout ?? 60000
+        });
+        return;
+      } catch (error) {
+        lastError = error;
+        const message =
+          error instanceof Error
+            ? error.message
+            : String(error);
+
+        if (
+          !/ERR_CONNECTION_RESET|ERR_CONNECTION_TIMED_OUT|ERR_NETWORK|Timeout|net::ERR_/i.test(
+            message
+          ) ||
+          attempt === 3
+        ) {
+          throw error;
+        }
+
+        await this.page.waitForTimeout(
+          1500 * attempt
+        );
+      }
+    }
+
+    throw lastError;
   }
 
   async dismissMarketingOverlays() {
@@ -135,13 +205,10 @@ export class BasePage {
       return;
     }
 
-    await this.page.goto(
+    await this.gotoWithRetry(
       this.appUrl(
         URLS.DASHBOARD
-      ),
-      {
-        waitUntil: 'domcontentloaded'
-      }
+      )
     );
   }
 }

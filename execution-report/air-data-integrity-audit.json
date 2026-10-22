@@ -1,44 +1,44 @@
 {
-  "generatedAt": "2026-10-19T06:52:20.173Z",
+  "generatedAt": "2026-10-22T07:25:02.175Z",
   "provenance": {
     "mode": "CURRENT_EXECUTION",
     "sourceArtifact": "test-results/results.json",
     "sourceFramework": "Playwright",
-    "generatedAt": "2026-10-19T06:52:19.790Z",
+    "generatedAt": "2026-10-22T07:25:01.290Z",
     "restoredFromHistory": false,
     "warning": ""
   },
   "sourceExecution": {
     "source": "json-reporter",
-    "total": 726,
-    "rawTestCount": 726,
-    "attempts": 727,
-    "passed": 461,
-    "failed": 14,
-    "skipped": 251,
+    "total": 746,
+    "rawTestCount": 746,
+    "attempts": 746,
+    "passed": 474,
+    "failed": 32,
+    "skipped": 240,
     "flaky": 0,
     "interrupted": 0,
     "statuses": {
-      "expected": 461,
-      "skipped": 251,
-      "unexpected": 14
+      "expected": 474,
+      "skipped": 240,
+      "unexpected": 32
     }
   },
   "airExecution": {
-    "total": 726,
-    "attempts": 727,
-    "passed": 461,
-    "failed": 14,
-    "skipped": 251,
+    "total": 746,
+    "attempts": 746,
+    "passed": 474,
+    "failed": 32,
+    "skipped": 240,
     "flaky": 0,
     "interrupted": 0,
-    "retryCount": 1
+    "retryCount": 0
   },
   "reconciliation": {
     "status": "PASS",
-    "sourceTotal": 726,
-    "expectedAirTotal": 726,
-    "airTotal": 726,
+    "sourceTotal": 746,
+    "expectedAirTotal": 746,
+    "airTotal": 746,
     "difference": 0
   },
   "duplicates": {
@@ -49,10 +49,10 @@
   },
   "orphanEvidence": [],
   "evidenceClassification": {
-    "perTestEvidence": 24,
+    "perTestEvidence": 41,
     "executionArtifacts": 2,
     "rawReports": 2,
-    "totalWithRawReports": 26,
+    "totalWithRawReports": 43,
     "rawReportsCountAsFailureEvidence": false
   },
   "invalidModuleReferences": [],
@@ -61,8 +61,44 @@
   "evidenceTraceability": {
     "failedTests": [
       {
-        "testId": "chromium > DashboardWidgets.spec.ts > Dashboard Widgets > Dashboard shows portfolio score events allocation and opportunities",
-        "testName": "Dashboard Widgets > Dashboard shows portfolio score events allocation and opportunities",
+        "testId": "chromium > SubscriptionLifecycleExecution.spec.ts > Subscription Lifecycle Execution > Prepared paid user can preview monthly and annual upgrade calculations",
+        "testName": "Subscription Lifecycle Execution > Prepared paid user can preview monthly and annual upgrade calculations",
+        "evidenceCount": 2,
+        "status": "Evidence Available"
+      },
+      {
+        "testId": "chromium > SubscriptionLifecycleExecution.spec.ts > Subscription Lifecycle Execution > Prepared paid user can preview downgrade calculations without submitting",
+        "testName": "Subscription Lifecycle Execution > Prepared paid user can preview downgrade calculations without submitting",
+        "evidenceCount": 2,
+        "status": "Evidence Available"
+      },
+      {
+        "testId": "chromium > OptionExpiryOverview.spec.ts > Option Expiry Overview revamp > Dashboard expiry overview has Short and Long tabs and OTM to ITM legend",
+        "testName": "Option Expiry Overview revamp > Dashboard expiry overview has Short and Long tabs and OTM to ITM legend",
+        "evidenceCount": 2,
+        "status": "Evidence Available"
+      },
+      {
+        "testId": "chromium > OptionExpiryOverview.spec.ts > Option Expiry Overview revamp > Dashboard expiry overview footer lists OTM NTM ATM ITM counts",
+        "testName": "Option Expiry Overview revamp > Dashboard expiry overview footer lists OTM NTM ATM ITM counts",
+        "evidenceCount": 2,
+        "status": "Evidence Available"
+      },
+      {
+        "testId": "chromium > OptionExpiryOverview.spec.ts > Option Expiry Overview revamp > Dashboard expiry overview breakdown uses integer contract counts",
+        "testName": "Option Expiry Overview revamp > Dashboard expiry overview breakdown uses integer contract counts",
+        "evidenceCount": 2,
+        "status": "Evidence Available"
+      },
+      {
+        "testId": "chromium > OptionExpiryOverview.spec.ts > Option Expiry Overview revamp > Dashboard expiry overview row opens a drill-down modal",
+        "testName": "Option Expiry Overview revamp > Dashboard expiry overview row opens a drill-down modal",
+        "evidenceCount": 2,
+        "status": "Evidence Available"
+      },
+      {
+        "testId": "chromium > PositionsDynamicGrid.spec.ts > Positions dynamic grid > Dashboard positions call filter shows active filter chips",
+        "testName": "Positions dynamic grid > Dashboard positions call filter shows active filter chips",
         "evidenceCount": 2,
         "status": "Evidence Available"
       },
@@ -73,74 +109,146 @@
         "status": "Evidence Available"
       },
       {
-        "testId": "chromium > DashboardMoreScreens.spec.ts > More dashboard screens > Option chain strike count keeps calls and puts",
-        "testName": "More dashboard screens > Option chain strike count keeps calls and puts",
-        "evidenceCount": 5,
-        "status": "Evidence Available"
-      },
-      {
-        "testId": "chromium > DashboardCoverageDepth.spec.ts > Deeper dashboard controls > News switches portfolio and watchlist, then searches a symbol",
-        "testName": "Deeper dashboard controls > News switches portfolio and watchlist, then searches a symbol",
-        "evidenceCount": 2,
-        "status": "Evidence Available"
-      },
-      {
         "testId": "chromium > DashboardCoverageDepth.spec.ts > Deeper dashboard controls > Support changes ticket fields and status without submitting",
         "testName": "Deeper dashboard controls > Support changes ticket fields and status without submitting",
         "evidenceCount": 2,
         "status": "Evidence Available"
       },
       {
-        "testId": "chromium > BillingEdgeValidation.spec.ts > Billing Edge Validation > Billing overview plans and history in one session",
-        "testName": "Billing Edge Validation > Billing overview plans and history in one session",
+        "testId": "chromium > DashboardScenarioSweep.spec.ts > Remaining dashboard scenarios > Support walks every category, priority, and status without submitting",
+        "testName": "Remaining dashboard scenarios > Support walks every category, priority, and status without submitting",
         "evidenceCount": 2,
         "status": "Evidence Available"
       },
       {
-        "testId": "chromium > forgotpassword.spec.ts > Disposable user resets password from the email link and signs in with the new password",
-        "testName": "Disposable user resets password from the email link and signs in with the new password",
-        "evidenceCount": 2,
-        "status": "Evidence Available"
-      },
-      {
-        "testId": "chromium > OverlayStrategistsTrialMatrix.spec.ts > Overlay Strategists Trial FRD Matrix > SC-03 - Broker account limit is one",
-        "testName": "Overlay Strategists Trial FRD Matrix > SC-03 - Broker account limit is one",
+        "testId": "chromium > UpgradeSubscriptionMatrix.spec.ts > Upgrade Subscription Use Case 3 Matrix > SC-86 - Upgrade starts a new billing cycle and displays next renewal date",
+        "testName": "Upgrade Subscription Use Case 3 Matrix > SC-86 - Upgrade starts a new billing cycle and displays next renewal date",
         "evidenceCount": 1,
         "status": "Evidence Available"
       },
       {
-        "testId": "chromium > OverlayStrategistsTrialMatrix.spec.ts > Overlay Strategists Trial FRD Matrix > SC-07 - Start trial with valid card",
-        "testName": "Overlay Strategists Trial FRD Matrix > SC-07 - Start trial with valid card",
+        "testId": "chromium > UpgradeSubscriptionMatrix.spec.ts > Upgrade Subscription Use Case 3 Matrix > SC-88 - Successful upgrade immediately updates active plan",
+        "testName": "Upgrade Subscription Use Case 3 Matrix > SC-88 - Successful upgrade immediately updates active plan",
         "evidenceCount": 1,
         "status": "Evidence Available"
       },
       {
-        "testId": "chromium > NewSubscriptionPurchaseMatrix.spec.ts > New Subscription Purchase Use Case 2 Matrix > SC-75I - Invoice PDF amount, currency, and plan match the purchased subscription",
-        "testName": "New Subscription Purchase Use Case 2 Matrix > SC-75I - Invoice PDF amount, currency, and plan match the purchased subscription",
+        "testId": "chromium > UpgradeSubscriptionMatrix.spec.ts > Upgrade Subscription Use Case 3 Matrix > SC-91 - Successful upgrade records subscription history entry",
+        "testName": "Upgrade Subscription Use Case 3 Matrix > SC-91 - Successful upgrade records subscription history entry",
         "evidenceCount": 1,
         "status": "Evidence Available"
       },
       {
-        "testId": "chromium > UpgradeSubscriptionMatrix.spec.ts > Upgrade Subscription Use Case 3 Matrix > SC-76 - Current lower-tier paid subscription is displayed before upgrade",
-        "testName": "Upgrade Subscription Use Case 3 Matrix > SC-76 - Current lower-tier paid subscription is displayed before upgrade",
+        "testId": "chromium > UpgradeSubscriptionMatrix.spec.ts > Upgrade Subscription Use Case 3 Matrix > SC-109 - Upgrade is available for subscription scheduled to cancel before end date when allowed",
+        "testName": "Upgrade Subscription Use Case 3 Matrix > SC-109 - Upgrade is available for subscription scheduled to cancel before end date when allowed",
         "evidenceCount": 1,
         "status": "Evidence Available"
       },
       {
-        "testId": "chromium > UpgradeSubscriptionMatrix.spec.ts > Upgrade Subscription Use Case 3 Matrix > SC-95 - Upgrade confirmation email is sent",
-        "testName": "Upgrade Subscription Use Case 3 Matrix > SC-95 - Upgrade confirmation email is sent",
+        "testId": "chromium > DowngradeSubscriptionMatrix.spec.ts > Downgrade Subscription Use Case 4 Matrix > SC-121 - Downgrade confirmation displays lost feature warning",
+        "testName": "Downgrade Subscription Use Case 4 Matrix > SC-121 - Downgrade confirmation displays lost feature warning",
+        "evidenceCount": 0,
+        "status": "Evidence Missing"
+      },
+      {
+        "testId": "chromium > DowngradeSubscriptionMatrix.spec.ts > Downgrade Subscription Use Case 4 Matrix > SC-143 - Downgrade confirmation email is sent",
+        "testName": "Downgrade Subscription Use Case 4 Matrix > SC-143 - Downgrade confirmation email is sent",
         "evidenceCount": 1,
         "status": "Evidence Available"
       },
       {
-        "testId": "chromium > MonthlyAnnualBillingChangeMatrix.spec.ts > Monthly To Annual Billing Change Use Case 5 Matrix > SC-182 - Confirmation email is sent after monthly-to-annual change",
-        "testName": "Monthly To Annual Billing Change Use Case 5 Matrix > SC-182 - Confirmation email is sent after monthly-to-annual change",
+        "testId": "chromium > MonthlyAnnualBillingChangeMatrix.spec.ts > Monthly To Annual Billing Change Use Case 5 Matrix > SC-187 - Browser refresh during monthly-to-annual confirmation does not charge or change the plan",
+        "testName": "Monthly To Annual Billing Change Use Case 5 Matrix > SC-187 - Browser refresh during monthly-to-annual confirmation does not charge or change the plan",
         "evidenceCount": 1,
         "status": "Evidence Available"
       },
       {
         "testId": "chromium > SubscriptionCancellationMatrix.spec.ts > Subscription Cancellation Use Case 7 Matrix > SC-262 - Cancellation confirmation email is sent",
         "testName": "Subscription Cancellation Use Case 7 Matrix > SC-262 - Cancellation confirmation email is sent",
+        "evidenceCount": 1,
+        "status": "Evidence Available"
+      },
+      {
+        "testId": "chromium > FailedPaymentDunningMatrix.spec.ts > Failed Payment And Dunning Use Case 8 Matrix > SC-313 - Add payment method screen opens from Stripe portal",
+        "testName": "Failed Payment And Dunning Use Case 8 Matrix > SC-313 - Add payment method screen opens from Stripe portal",
+        "evidenceCount": 1,
+        "status": "Evidence Available"
+      },
+      {
+        "testId": "chromium > FailedPaymentDunningMatrix.spec.ts > Failed Payment And Dunning Use Case 8 Matrix > SC-314 - Billing information update screen opens from Stripe portal",
+        "testName": "Failed Payment And Dunning Use Case 8 Matrix > SC-314 - Billing information update screen opens from Stripe portal",
+        "evidenceCount": 1,
+        "status": "Evidence Available"
+      },
+      {
+        "testId": "chromium > FailedPaymentDunningMatrix.spec.ts > Failed Payment And Dunning Use Case 8 Matrix > SC-328 - Update payment link opens Stripe portal",
+        "testName": "Failed Payment And Dunning Use Case 8 Matrix > SC-328 - Update payment link opens Stripe portal",
+        "evidenceCount": 1,
+        "status": "Evidence Available"
+      },
+      {
+        "testId": "chromium > SubscriptionLifecycleE2EMatrix.spec.ts > Subscription Lifecycle E2E Matrix > LC-009 - Existing paid subscriber cannot start another Overlay Strategists trial",
+        "testName": "Subscription Lifecycle E2E Matrix > LC-009 - Existing paid subscriber cannot start another Overlay Strategists trial",
+        "evidenceCount": 1,
+        "status": "Evidence Available"
+      },
+      {
+        "testId": "chromium > SubscriptionLifecycleE2EMatrix.spec.ts > Subscription Lifecycle E2E Matrix > LC-018 - Successful paid checkout activates subscription and redirects back to dashboard",
+        "testName": "Subscription Lifecycle E2E Matrix > LC-018 - Successful paid checkout activates subscription and redirects back to dashboard",
+        "evidenceCount": 1,
+        "status": "Evidence Available"
+      },
+      {
+        "testId": "chromium > SubscriptionLifecycleE2EMatrix.spec.ts > Subscription Lifecycle E2E Matrix > LC-023 - Subscribed user can see upgrade action or current plan status controls",
+        "testName": "Subscription Lifecycle E2E Matrix > LC-023 - Subscribed user can see upgrade action or current plan status controls",
+        "evidenceCount": 1,
+        "status": "Evidence Available"
+      },
+      {
+        "testId": "chromium > SubscriptionLifecycleE2EMatrix.spec.ts > Subscription Lifecycle E2E Matrix > LC-024 - Upgrade to higher plan starts immediate Stripe proration checkout",
+        "testName": "Subscription Lifecycle E2E Matrix > LC-024 - Upgrade to higher plan starts immediate Stripe proration checkout",
+        "evidenceCount": 1,
+        "status": "Evidence Available"
+      },
+      {
+        "testId": "chromium > SubscriptionLifecycleE2EMatrix.spec.ts > Subscription Lifecycle E2E Matrix > LC-025 - Upgrade payment starts a new billing cycle immediately",
+        "testName": "Subscription Lifecycle E2E Matrix > LC-025 - Upgrade payment starts a new billing cycle immediately",
+        "evidenceCount": 1,
+        "status": "Evidence Available"
+      },
+      {
+        "testId": "chromium > SubscriptionLifecycleE2EMatrix.spec.ts > Subscription Lifecycle E2E Matrix > LC-026 - Subscribed user can see downgrade action or current plan status controls",
+        "testName": "Subscription Lifecycle E2E Matrix > LC-026 - Subscribed user can see downgrade action or current plan status controls",
+        "evidenceCount": 1,
+        "status": "Evidence Available"
+      },
+      {
+        "testId": "chromium > SubscriptionLifecycleE2EMatrix.spec.ts > Subscription Lifecycle E2E Matrix > LC-031 - Billing interval toggles and interval-specific prices remain visible before change",
+        "testName": "Subscription Lifecycle E2E Matrix > LC-031 - Billing interval toggles and interval-specific prices remain visible before change",
+        "evidenceCount": 1,
+        "status": "Evidence Available"
+      },
+      {
+        "testId": "chromium > SubscriptionLifecycleE2EMatrix.spec.ts > Subscription Lifecycle E2E Matrix > LC-032 - Subscription management portal opens with current subscription details",
+        "testName": "Subscription Lifecycle E2E Matrix > LC-032 - Subscription management portal opens with current subscription details",
+        "evidenceCount": 1,
+        "status": "Evidence Available"
+      },
+      {
+        "testId": "chromium > SubscriptionLifecycleE2EMatrix.spec.ts > Subscription Lifecycle E2E Matrix > LC-033 - Cancel-at-period-end form accepts reason and feedback without immediate cancellation",
+        "testName": "Subscription Lifecycle E2E Matrix > LC-033 - Cancel-at-period-end form accepts reason and feedback without immediate cancellation",
+        "evidenceCount": 1,
+        "status": "Evidence Available"
+      },
+      {
+        "testId": "chromium > SubscriptionLifecycleE2EMatrix.spec.ts > Subscription Lifecycle E2E Matrix > LC-035 - Cancelled subscription shows scheduled cancellation state and renewal/end date",
+        "testName": "Subscription Lifecycle E2E Matrix > LC-035 - Cancelled subscription shows scheduled cancellation state and renewal/end date",
+        "evidenceCount": 1,
+        "status": "Evidence Available"
+      },
+      {
+        "testId": "chromium > SubscriptionLifecycleE2EMatrix.spec.ts > Subscription Lifecycle E2E Matrix > LC-043 - Payment recovery portal allows updating payment method without losing subscription context",
+        "testName": "Subscription Lifecycle E2E Matrix > LC-043 - Payment recovery portal allows updating payment method without losing subscription context",
         "evidenceCount": 1,
         "status": "Evidence Available"
       }
@@ -160,27 +268,47 @@
         "references": [
           {
             "type": "Failure",
-            "name": "Billing Edge Validation > Billing overview plans and history in one session",
+            "name": "Subscription Lifecycle Execution > Prepared paid user can preview monthly and annual upgrade calculations",
             "detail": "Critical failure severity matched release rules."
           },
           {
             "type": "Failure",
-            "name": "Disposable user resets password from the email link and signs in with the new password",
+            "name": "Subscription Lifecycle Execution > Prepared paid user can preview downgrade calculations without submitting",
             "detail": "Critical failure severity matched release rules."
           },
           {
             "type": "Failure",
-            "name": "Overlay Strategists Trial FRD Matrix > SC-03 - Broker account limit is one",
+            "name": "Deeper dashboard controls > Support changes ticket fields and status without submitting",
             "detail": "Critical failure severity matched release rules."
           },
           {
             "type": "Failure",
-            "name": "Upgrade Subscription Use Case 3 Matrix > SC-95 - Upgrade confirmation email is sent",
+            "name": "Upgrade Subscription Use Case 3 Matrix > SC-86 - Upgrade starts a new billing cycle and displays next renewal date",
             "detail": "Critical failure severity matched release rules."
           },
           {
             "type": "Failure",
-            "name": "Monthly To Annual Billing Change Use Case 5 Matrix > SC-182 - Confirmation email is sent after monthly-to-annual change",
+            "name": "Upgrade Subscription Use Case 3 Matrix > SC-88 - Successful upgrade immediately updates active plan",
+            "detail": "Critical failure severity matched release rules."
+          },
+          {
+            "type": "Failure",
+            "name": "Upgrade Subscription Use Case 3 Matrix > SC-91 - Successful upgrade records subscription history entry",
+            "detail": "Critical failure severity matched release rules."
+          },
+          {
+            "type": "Failure",
+            "name": "Upgrade Subscription Use Case 3 Matrix > SC-109 - Upgrade is available for subscription scheduled to cancel before end date when allowed",
+            "detail": "Critical failure severity matched release rules."
+          },
+          {
+            "type": "Failure",
+            "name": "Downgrade Subscription Use Case 4 Matrix > SC-121 - Downgrade confirmation displays lost feature warning",
+            "detail": "Critical failure severity matched release rules."
+          },
+          {
+            "type": "Failure",
+            "name": "Downgrade Subscription Use Case 4 Matrix > SC-143 - Downgrade confirmation email is sent",
             "detail": "Critical failure severity matched release rules."
           },
           {
@@ -189,9 +317,19 @@
             "detail": "Critical failure severity matched release rules."
           },
           {
-            "type": "Business Journey",
-            "name": "Authentication",
-            "detail": "Critical journey status is Critical."
+            "type": "Failure",
+            "name": "Subscription Lifecycle E2E Matrix > LC-009 - Existing paid subscriber cannot start another Overlay Strategists trial",
+            "detail": "Critical failure severity matched release rules."
+          },
+          {
+            "type": "Failure",
+            "name": "Subscription Lifecycle E2E Matrix > LC-024 - Upgrade to higher plan starts immediate Stripe proration checkout",
+            "detail": "Critical failure severity matched release rules."
+          },
+          {
+            "type": "Failure",
+            "name": "Subscription Lifecycle E2E Matrix > LC-025 - Upgrade payment starts a new billing cycle immediately",
+            "detail": "Critical failure severity matched release rules."
           },
           {
             "type": "Business Journey",
@@ -204,13 +342,18 @@
             "detail": "Critical journey status is Critical."
           },
           {
+            "type": "Business Journey",
+            "name": "Dashboard",
+            "detail": "Critical journey status is Critical."
+          },
+          {
             "type": "Module",
             "name": "Billing",
             "detail": "Critical module risk is High."
           },
           {
             "type": "Module",
-            "name": "Password",
+            "name": "Dashboard",
             "detail": "Critical module risk is High."
           }
         ]
@@ -221,27 +364,47 @@
         "references": [
           {
             "type": "Failure",
-            "name": "Billing Edge Validation > Billing overview plans and history in one session",
+            "name": "Subscription Lifecycle Execution > Prepared paid user can preview monthly and annual upgrade calculations",
             "detail": "Critical failure severity matched release rules."
           },
           {
             "type": "Failure",
-            "name": "Disposable user resets password from the email link and signs in with the new password",
+            "name": "Subscription Lifecycle Execution > Prepared paid user can preview downgrade calculations without submitting",
             "detail": "Critical failure severity matched release rules."
           },
           {
             "type": "Failure",
-            "name": "Overlay Strategists Trial FRD Matrix > SC-03 - Broker account limit is one",
+            "name": "Deeper dashboard controls > Support changes ticket fields and status without submitting",
             "detail": "Critical failure severity matched release rules."
           },
           {
             "type": "Failure",
-            "name": "Upgrade Subscription Use Case 3 Matrix > SC-95 - Upgrade confirmation email is sent",
+            "name": "Upgrade Subscription Use Case 3 Matrix > SC-86 - Upgrade starts a new billing cycle and displays next renewal date",
             "detail": "Critical failure severity matched release rules."
           },
           {
             "type": "Failure",
-            "name": "Monthly To Annual Billing Change Use Case 5 Matrix > SC-182 - Confirmation email is sent after monthly-to-annual change",
+            "name": "Upgrade Subscription Use Case 3 Matrix > SC-88 - Successful upgrade immediately updates active plan",
+            "detail": "Critical failure severity matched release rules."
+          },
+          {
+            "type": "Failure",
+            "name": "Upgrade Subscription Use Case 3 Matrix > SC-91 - Successful upgrade records subscription history entry",
+            "detail": "Critical failure severity matched release rules."
+          },
+          {
+            "type": "Failure",
+            "name": "Upgrade Subscription Use Case 3 Matrix > SC-109 - Upgrade is available for subscription scheduled to cancel before end date when allowed",
+            "detail": "Critical failure severity matched release rules."
+          },
+          {
+            "type": "Failure",
+            "name": "Downgrade Subscription Use Case 4 Matrix > SC-121 - Downgrade confirmation displays lost feature warning",
+            "detail": "Critical failure severity matched release rules."
+          },
+          {
+            "type": "Failure",
+            "name": "Downgrade Subscription Use Case 4 Matrix > SC-143 - Downgrade confirmation email is sent",
             "detail": "Critical failure severity matched release rules."
           },
           {
@@ -250,9 +413,19 @@
             "detail": "Critical failure severity matched release rules."
           },
           {
-            "type": "Business Journey",
-            "name": "Authentication",
-            "detail": "Critical journey status is Critical."
+            "type": "Failure",
+            "name": "Subscription Lifecycle E2E Matrix > LC-009 - Existing paid subscriber cannot start another Overlay Strategists trial",
+            "detail": "Critical failure severity matched release rules."
+          },
+          {
+            "type": "Failure",
+            "name": "Subscription Lifecycle E2E Matrix > LC-024 - Upgrade to higher plan starts immediate Stripe proration checkout",
+            "detail": "Critical failure severity matched release rules."
+          },
+          {
+            "type": "Failure",
+            "name": "Subscription Lifecycle E2E Matrix > LC-025 - Upgrade payment starts a new billing cycle immediately",
+            "detail": "Critical failure severity matched release rules."
           },
           {
             "type": "Business Journey",
@@ -265,13 +438,18 @@
             "detail": "Critical journey status is Critical."
           },
           {
+            "type": "Business Journey",
+            "name": "Dashboard",
+            "detail": "Critical journey status is Critical."
+          },
+          {
             "type": "Module",
             "name": "Billing",
             "detail": "Critical module risk is High."
           },
           {
             "type": "Module",
-            "name": "Password",
+            "name": "Dashboard",
             "detail": "Critical module risk is High."
           }
         ]
@@ -282,27 +460,47 @@
         "references": [
           {
             "type": "Failure",
-            "name": "Billing Edge Validation > Billing overview plans and history in one session",
+            "name": "Subscription Lifecycle Execution > Prepared paid user can preview monthly and annual upgrade calculations",
             "detail": "Critical failure severity matched release rules."
           },
           {
             "type": "Failure",
-            "name": "Disposable user resets password from the email link and signs in with the new password",
+            "name": "Subscription Lifecycle Execution > Prepared paid user can preview downgrade calculations without submitting",
             "detail": "Critical failure severity matched release rules."
           },
           {
             "type": "Failure",
-            "name": "Overlay Strategists Trial FRD Matrix > SC-03 - Broker account limit is one",
+            "name": "Deeper dashboard controls > Support changes ticket fields and status without submitting",
             "detail": "Critical failure severity matched release rules."
           },
           {
             "type": "Failure",
-            "name": "Upgrade Subscription Use Case 3 Matrix > SC-95 - Upgrade confirmation email is sent",
+            "name": "Upgrade Subscription Use Case 3 Matrix > SC-86 - Upgrade starts a new billing cycle and displays next renewal date",
             "detail": "Critical failure severity matched release rules."
           },
           {
             "type": "Failure",
-            "name": "Monthly To Annual Billing Change Use Case 5 Matrix > SC-182 - Confirmation email is sent after monthly-to-annual change",
+            "name": "Upgrade Subscription Use Case 3 Matrix > SC-88 - Successful upgrade immediately updates active plan",
+            "detail": "Critical failure severity matched release rules."
+          },
+          {
+            "type": "Failure",
+            "name": "Upgrade Subscription Use Case 3 Matrix > SC-91 - Successful upgrade records subscription history entry",
+            "detail": "Critical failure severity matched release rules."
+          },
+          {
+            "type": "Failure",
+            "name": "Upgrade Subscription Use Case 3 Matrix > SC-109 - Upgrade is available for subscription scheduled to cancel before end date when allowed",
+            "detail": "Critical failure severity matched release rules."
+          },
+          {
+            "type": "Failure",
+            "name": "Downgrade Subscription Use Case 4 Matrix > SC-121 - Downgrade confirmation displays lost feature warning",
+            "detail": "Critical failure severity matched release rules."
+          },
+          {
+            "type": "Failure",
+            "name": "Downgrade Subscription Use Case 4 Matrix > SC-143 - Downgrade confirmation email is sent",
             "detail": "Critical failure severity matched release rules."
           },
           {
@@ -311,9 +509,19 @@
             "detail": "Critical failure severity matched release rules."
           },
           {
-            "type": "Business Journey",
-            "name": "Authentication",
-            "detail": "Critical journey status is Critical."
+            "type": "Failure",
+            "name": "Subscription Lifecycle E2E Matrix > LC-009 - Existing paid subscriber cannot start another Overlay Strategists trial",
+            "detail": "Critical failure severity matched release rules."
+          },
+          {
+            "type": "Failure",
+            "name": "Subscription Lifecycle E2E Matrix > LC-024 - Upgrade to higher plan starts immediate Stripe proration checkout",
+            "detail": "Critical failure severity matched release rules."
+          },
+          {
+            "type": "Failure",
+            "name": "Subscription Lifecycle E2E Matrix > LC-025 - Upgrade payment starts a new billing cycle immediately",
+            "detail": "Critical failure severity matched release rules."
           },
           {
             "type": "Business Journey",
@@ -326,19 +534,24 @@
             "detail": "Critical journey status is Critical."
           },
           {
+            "type": "Business Journey",
+            "name": "Dashboard",
+            "detail": "Critical journey status is Critical."
+          },
+          {
             "type": "Module",
             "name": "Billing",
             "detail": "Critical module risk is High."
           },
           {
             "type": "Module",
-            "name": "Password",
+            "name": "Dashboard",
             "detail": "Critical module risk is High."
           }
         ]
       }
     ],
-    "warnings": 16,
-    "blockers": 11
+    "warnings": 26,
+    "blockers": 18
   }
 }

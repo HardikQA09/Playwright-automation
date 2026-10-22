@@ -1,12 +1,13 @@
 /*
- * Cross-platform complete suite: journey-ordered Playwright run, AIR, email.
+ * Cross-platform complete suite: journey-ordered Playwright run, AIR.
  *
  *   node scripts/run-complete-suite.js
  *   node scripts/run-complete-suite.js --headed
- *   node scripts/run-complete-suite.js --no-email
+ *   node scripts/run-complete-suite.js --email
  *
  * Applies complete-run-flags to this process (does not rewrite .env).
- * Emails every configured REPORT_EMAIL_* address except Rob / REPORT_EMAIL_EXCLUDE.
+ * Report email is OFF by default. Pass --email or SEND_REPORT_EMAIL=true
+ * only when you want REPORT_EMAIL_* recipients notified.
  */
 const { spawnSync } = require('child_process');
 const path = require('path');
@@ -21,7 +22,11 @@ const watch = ['1', 'true', 'yes', 'on'].includes(
   String(process.env.WATCH || '').toLowerCase()
 );
 const headed = argv.includes('--headed') || watch;
-const sendEmail = !argv.includes('--no-email');
+const sendEmail =
+  argv.includes('--email') ||
+  ['1', 'true', 'yes', 'on'].includes(
+    String(process.env.SEND_REPORT_EMAIL || '').toLowerCase()
+  );
 
 process.env.HEADED = headed ? 'true' : 'false';
 process.env.AIR_REPORT_SCOPE = process.env.AIR_REPORT_SCOPE || 'latest';
@@ -102,6 +107,10 @@ if (sendEmail) {
       console.warn('Complete suite finished, but the report email did not send.');
     }
   }
+} else {
+  console.log(
+    'Report email skipped (default). Pass --email or set SEND_REPORT_EMAIL=true when you want it sent.'
+  );
 }
 
 if (playwrightExit !== 0) {

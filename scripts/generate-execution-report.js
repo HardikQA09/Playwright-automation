@@ -3032,7 +3032,7 @@ const failedSourceItems = demoMode
     ...knownDefectSourceTests.map(knownDefectFailure),
   ];
 
-const FAILED_TESTS_INITIAL_VISIBLE = 6;
+const FAILED_TESTS_INITIAL_VISIBLE = 40;
 const FAILURE_LIST_PREVIEW = 4;
 const FAILED_TESTS_LOAD_BATCH = 6;
 const shouldShowFailureLoadMore = failedSourceItems.length > FAILED_TESTS_INITIAL_VISIBLE;
@@ -3253,7 +3253,71 @@ function plainFailureStory(test, index = 0) {
   let repro = `1. Open the app as the same kind of user this check uses. 2. Reproduce: ${scenario}. 3. Confirm the expected result below.`;
   let evidence = 'Open the Picture column for this row, then the Trace / Video / Logs chips below for screenshots and replay.';
 
-  if (lower.includes('reset-password') && (lower.includes('tohaveurl') || lower.includes('/login'))) {
+  const coveringMatch = raw.match(/Covering test "([^"]+)" did not complete this checkpoint \("([^"]+)"\)/i);
+  if (coveringMatch) {
+    happened = `This row depends on covering check "${coveringMatch[1]}", which did not finish checkpoint "${coveringMatch[2]}" in this run (cascade — not a separate product defect).`;
+    wanted = `The covering check should pass first and leave checkpoint "${coveringMatch[2]}" for this row.`;
+    next = `Rerun "${coveringMatch[1]}" until it passes, then rerun: ${scenario}.`;
+    repro = `1. Run "${coveringMatch[1]}" alone and confirm it passes. 2. Rerun this row: ${scenario}. 3. If the covering check fails, fix that failure first — this row will stay red until the checkpoint exists.`;
+    evidence = 'Open Picture / Trace on the covering check first, then this cascaded row.';
+  } else if (lower.includes('qa-cl-005') || (lower.includes('unique-card') && lower.includes('plan selection'))) {
+    happened = 'Overlay Strategists trial with card bounced back to Plan Selection after unique Stripe test-card retries (card/email already used for a trial).';
+    wanted = 'A fresh disposable user with an unused Stripe test card should reach the trial confirmation, not bounce to Plan Selection.';
+    next = 'Create a new disposable user and use an unused Stripe test card (rotate QA-CL-005 cards), then rerun the with-card trial.';
+    repro = '1. Sign up a brand-new disposable user. 2. Start Overlay Strategists trial with card. 3. Pay with an unused Stripe test card. 4. Expect trial confirmation — not Plan Selection.';
+  } else if (lower.includes('err_connection_reset') || lower.includes('err_connection_timed_out') || lower.includes('net::err_')) {
+    happened = receivedHint
+      ? `UAT network error while opening ${receivedHint} (connection reset/timeout — environment flake, not a product assertion).`
+      : 'UAT network error (connection reset/timeout) while loading the app — environment flake, not a product assertion.';
+    wanted = 'https://uat.ooltool.com should load to domcontentloaded within the navigation timeout.';
+    next = 'Confirm UAT is reachable, then rerun this check (and any cascaded covering-checkpoint rows).';
+    repro = '1. Open https://uat.ooltool.com in a browser. 2. If it loads, rerun the failed check. 3. If it still resets, capture the network failure and retry later.';
+  } else if (lower.includes('login failed after 3 attempts') || lower.includes('paid subscriber login did not finish')) {
+    happened = 'Sign-in as the paid billing fixture did not finish (wrong session left on /dashboard after cookie clear, lockout, or UAT auth flake).';
+    wanted = 'Clear cookies, open a fresh login page, sign in as BILLING_MANAGEMENT / SUB_LIFECYCLE_PAID, and reach dashboard.';
+    next = 'Confirm the paid fixture password, unlock the account if locked, then rerun this matrix row alone.';
+    repro = '1. Open a private window to https://uat.ooltool.com/login. 2. Sign in as the paid Income fixture. 3. Open Billing → Plans. 4. Rerun the failed SC/LC id.';
+  } else if (lower.includes('test is skipped')) {
+    happened = 'This row threw a skip inside the scenario pack and was miscounted as failed (delivery/email gap or missing UI control).';
+    wanted = 'Email/control gaps should soft-skip cleanly, not fail.';
+    next = 'Rerun after the pack uses ScenarioSkip for confirmation-email gaps; treat as skip unless the cancel UI itself broke.';
+    repro = '1. Open the SC id title. 2. Check if Subjects seen includes plan-change/cancel mail. 3. If mail arrived with different wording, this is not a product cancel-UI defect.';
+  } else if (lower.includes('free/no-card plan has no paid plan to preview') || (lower.includes('could not find') && lower.includes('control for') && lower.includes('preview'))) {
+    happened = 'Billing did not show the upgrade/downgrade/interval control this preview needed (often because the wrong user session was still Free, or the paid fixture is already on/above that plan).';
+    wanted = 'Sign in as the prepared paid Income subscriber and open a calculation preview for the target plan without submitting.';
+    next = 'Confirm BILLING_MANAGEMENT / SUB_LIFECYCLE_PAID is the Income monthly fixture, clear shared Free-session cookies, open Change Plan, and confirm the target plan control appears.';
+    repro = '1. Sign out. 2. Sign in as the paid fixture email. 3. Open Billing → Plans / Change Plan. 4. Look for the named upgrade or downgrade control. 5. Open preview without confirming payment.';
+  } else if (lower.includes('expected monthly upgrade control') || lower.includes('expected') && lower.includes('upgrade control for')) {
+    happened = locatorHint
+      ? `Plan ladder could not find the monthly upgrade control (${locatorHint}).`
+      : 'Plan ladder could not find the monthly upgrade control for the next plan (for example Overlay Strategists).';
+    wanted = 'From the current paid plan, Change Plan should offer an upgrade control to the next tier on monthly billing.';
+    next = 'On the disposable ladder user, open Change Plan on monthly and confirm the next-tier upgrade control is visible before cancel steps run.';
+    repro = '1. Create/reach the ladder starting plan (Income monthly). 2. Open Change Plan. 3. Expect an upgrade control for Overlay Strategists (or the next tier). 4. Do not submit if only inspecting.';
+  } else if (lower.includes('no gmail message') && (lower.includes('cancellation') || lower.includes('cancel'))) {
+    const subjects = raw.match(/Subjects seen:\s*(\[[^\]]*\])/i)?.[1] || '';
+    happened = subjects
+      ? `No inbox message matched the cancellation-confirmation pattern within 120s. Subjects seen: ${subjects}.`
+      : 'No cancellation confirmation email arrived within 120s after scheduling cancel-at-period-end.';
+    wanted = 'After cancel-at-period-end is scheduled, the disposable user should receive an email whose subject/body mentions cancel, non-renewal, or period-end.';
+    next = 'Schedule cancel-at-period-end, wait up to 2 minutes, and confirm the mailbox gets a cancel/non-renewal notice (product may word the subject as “Your Income plan is…”).';
+    repro = '1. Create a disposable paid Income monthly user. 2. Schedule cancellation at period end. 3. Wait up to 2 minutes. 4. Check Gmail for cancel / won’t renew / period-end wording.';
+  } else if (lower.includes('manual entry') && lower.includes('broker')) {
+    happened = 'Confirmed product gap: adding a manual position is counted toward the broker-integration limit.';
+    wanted = 'Manual entry must not consume the broker-integration limit (SC-03).';
+    next = 'Product fix required — keep this row as a known product defect until manual entry is excluded from the broker limit.';
+    repro = '1. Sign in as a new Overlay trial user. 2. Add a manual position. 3. Attempt a second broker connection. 4. Observe the limit is already consumed by manual entry.';
+  } else if (lower.includes("name: /^open$/i") || (lower.includes('support') && lower.includes('option') && lower.includes('open'))) {
+    happened = 'Support ticket Status control did not expose an “Open” option the check could click within 8s.';
+    wanted = 'Category, Priority, and Status should be changeable on Support without submitting the ticket.';
+    next = 'Open Support, change Status (Open / or current product labels), leave the ticket unsubmitted, then rerun.';
+    repro = '1. Sign in. 2. Open Support. 3. Open the Status control. 4. Select Open (or the current equivalent label). 5. Do not submit.';
+  } else if (lower.includes('call distance') || (lower.includes('option expiry') && lower.includes('dialog') && lower.includes('innertext'))) {
+    happened = 'Option Expiry Overview row click did not leave a readable drill-down dialog/panel, so call-distance text could not be read.';
+    wanted = 'Clicking a Long Options contract row should open a dialog or detail panel that shows underlying last / strike so ((S − K) / K) × 100 can be checked.';
+    next = 'On Dashboard → Option Expiry Overview → Long Options, click a contract row and confirm a detail panel appears with price fields.';
+    repro = '1. Sign in with a subscriber that has long options. 2. Open Dashboard Option Expiry Overview. 3. Choose Long Options. 4. Click a contract row. 5. Expect a drill-down with underlying last and strike.';
+  } else if (lower.includes('reset-password') && (lower.includes('tohaveurl') || lower.includes('/login'))) {
     happened = 'Update Password stayed on the reset page. Sign-in did not open.';
     wanted = 'Update Password should save the new password and open the sign-in page.';
     next = 'Open the reset link from the email, enter the new password twice, click Update Password, and confirm sign-in opens.';
@@ -4453,8 +4517,11 @@ function renderFailureScreenshotEvidence(test, index = 0) {
         </a>
       </div>
       <div class="failure-shot-notes">
-        <p><b>What happened:</b> ${escapeHtml(story.happened)}</p>
-        <p><b>What we wanted:</b> ${escapeHtml(story.wanted)}</p>
+        <p><b>Scenario:</b> ${escapeHtml(story.scenario)}</p>
+        <p><b>Actual:</b> ${escapeHtml(story.happened)}</p>
+        <p><b>Expected:</b> ${escapeHtml(story.wanted)}</p>
+        <p><b>Reproduce:</b> ${escapeHtml(story.repro || story.next)}</p>
+        <p><b>Evidence:</b> ${escapeHtml(story.evidence || 'Picture / Trace / Video on this card.')}</p>
       </div>
     </div>`;
 }
@@ -4678,7 +4745,8 @@ const failedRows = (failedSourceItems.length > 0
       <td title="${escapeHtml(fullTitle)}"><a class="table-evidence-link" href="${failedSourceItems.length ? `#failure-group-${failureGroupKey(test, index).key}` : '#failures'}"><strong>${escapeHtml(title)}</strong></a></td>
       <td>${escapeHtml(moduleName)}</td>
       <td>
-        <strong>${escapeHtml(reason)}</strong>
+        <strong><b>Scenario:</b> ${escapeHtml(story.scenario)}</strong>
+        <small><b>Actual:</b> ${escapeHtml(reason)}</small>
         <small><b>Expected:</b> ${escapeHtml(story.wanted)}</small>
         <small><b>Reproduce:</b> ${escapeHtml(story.repro || nextAction)}</small>
         <small><b>Evidence:</b> ${escapeHtml(story.evidence || 'Open Picture / Trace for this row.')}</small>

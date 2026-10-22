@@ -57,6 +57,7 @@ test('provision paid billing fixture', async ({ page }) => {
   await billing.validateOverview();
   expect(await billing.hasActivePaidSubscriptionManagement()).toBeTruthy();
   await page.context().clearCookies();
+  await page.goto('about:blank').catch(() => undefined);
   await new LoginPage(page).login(email, password);
   await billing.validateOverview();
   expect(await billing.hasActivePaidSubscriptionManagement()).toBeTruthy();
@@ -85,7 +86,10 @@ export default defineConfig({
 `
 );
 
-delete process.env.PLAYWRIGHT_BROWSERS_PATH;
+process.env.PLAYWRIGHT_BROWSERS_PATH = path.join(
+  process.env.LOCALAPPDATA || '',
+  'ms-playwright'
+);
 process.env.SKIP_AIR_REPORT = 'true';
 
 console.log('Provisioning disposable paid Income Builder monthly fixture...');
@@ -111,7 +115,8 @@ upsertEnv('BILLING_MANAGEMENT_PASSWORD', fixture.password);
 upsertEnv('SUB_LIFECYCLE_PAID_EMAIL', fixture.email);
 upsertEnv('SUB_LIFECYCLE_PAID_PASSWORD', fixture.password);
 upsertEnv('SUBSCRIPTION_LIFECYCLE_EXECUTION_ENABLED', 'true');
-upsertEnv('SUB_LIFECYCLE_CREATE_DISPOSABLE_USER', 'true');
+// Prefer the prepared paid fixture for non-mutating previews (faster, stable).
+upsertEnv('SUB_LIFECYCLE_CREATE_DISPOSABLE_USER', 'false');
 upsertEnv('SUB_LIFECYCLE_USE_PREPARED_USER', 'true');
 
 console.log('');

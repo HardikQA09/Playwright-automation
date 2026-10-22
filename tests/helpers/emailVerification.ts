@@ -98,15 +98,42 @@ export async function openFreshLoginPage(
       await page.context().clearCookies();
     }
 
-    await page.goto(
-      `${BASE_URL}${URLS.LOGIN}`,
-      {
-        waitUntil: 'domcontentloaded',
-        timeout: 60000
+    for (let nav = 1; nav <= 3; nav += 1) {
+      const navError =
+        await page.goto(
+          `${BASE_URL}${URLS.LOGIN}`,
+          {
+            waitUntil: 'domcontentloaded',
+            timeout: 60000
+          }
+        ).then(
+          () => null
+        ).catch(
+          (error: unknown) => error
+        );
+
+      if (!navError) {
+        break;
       }
-    ).catch(
-      () => undefined
-    );
+
+      const message =
+        navError instanceof Error
+          ? navError.message
+          : String(navError);
+
+      if (
+        !/ERR_CONNECTION_RESET|ERR_CONNECTION_TIMED_OUT|ERR_NETWORK|Timeout|net::ERR_/i.test(
+          message
+        ) ||
+        nav === 3
+      ) {
+        break;
+      }
+
+      await page.waitForTimeout(
+        1500 * nav
+      );
+    }
 
     const ready =
       await emailField.waitFor({
