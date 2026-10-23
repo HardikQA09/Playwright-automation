@@ -973,12 +973,42 @@ function failureGroupKey(test, index = 0) {
   if (/annual-to-monthly|renewal date|billing interval/.test(title)) {
     return { key: 'annual-monthly', label: 'Switching to monthly is scheduled for the current annual renewal' };
   }
-  if (/cancel|refund|resume cancellation/.test(title)) {
+  // Keep monthly vs yearly cancel separate — they have different refund rules.
+  if (/yearly cancel|cancel at expiry|cancel and refund|annual.*cancel|cancel.*annual|sees yearly cancel/.test(title)) {
+    return {
+      key: 'cancel-yearly-refund',
+      label: 'Yearly cancel: Cancel at expiry (no refund) and Cancel and refund should both appear'
+    };
+  }
+  if (/monthly cancel|refunds apply to annual|cancel.*monthly|monthly.*cancel/.test(title)) {
+    return {
+      key: 'cancel-monthly-no-refund',
+      label: 'Monthly cancel: period-end only — no Cancel and refund option'
+    };
+  }
+  if (/resume cancellation|cancel subscription control|cancel box|cancel-at-period-end/.test(title)) {
     return { key: 'cancel-box', label: 'The cancel box did not show the option this check expected' };
+  }
+  if (/roll configuration|field-level validation|income first|tax-aware|balanced strategy/.test(title)) {
+    return {
+      key: `roll-${moduleSlug(getFailureFullTitle(test, index))}`,
+      label: plainFailureStory(test, index).happened
+    };
+  }
+  if (/scheduled downgrade|downgrade to income|sc-141/.test(title)) {
+    return {
+      key: 'downgrade-scheduled',
+      label: 'Billing overview should show the scheduled downgrade and its effective date'
+    };
   }
 
   const story = plainFailureStory(test, index);
-  return { key: `story-${moduleSlug(story.happened)}`, label: story.happened };
+  // One group per check — never merge unrelated failures that share vague wording
+  // (that previously mixed Roll Configuration screenshots into downgrade cards).
+  return {
+    key: `test-${moduleSlug(getFailureFullTitle(test, index) || story.scenario || String(index))}`,
+    label: story.happened
+  };
 }
 
 function knownDefectNote(test) {
@@ -3266,11 +3296,11 @@ function plainFailureStory(test, index = 0) {
   const locatorHint = extractLocatorHint(raw);
   const receivedHint = extractReceivedHint(raw);
 
-  let happened = 'This check did not finish the way we expected.';
-  let wanted = 'The screen should show the expected result and let the check finish.';
-  let next = 'Fix the screen this check was waiting for, then rerun it.';
+  let happened = `“${scenario}” stopped before the expected result was confirmed${locatorHint ? ` (waiting for ${locatorHint})` : ''}.`;
+  let wanted = `Finish “${scenario}” with the screen/state named in the check title.`;
+  let next = `Open the screen for “${scenario}”, confirm the expected control or message, then rerun this check alone.`;
   let repro = `1. Open the app as the same kind of user this check uses. 2. Reproduce: ${scenario}. 3. Confirm the expected result below.`;
-  let evidence = 'Open the Picture column for this row, then the Trace / Video / Logs chips below for screenshots and replay.';
+  let evidence = 'Open the Picture column for this row only, then Trace / Video / Logs — do not use screenshots from other failed checks.';
 
   const coveringMatch = raw.match(/Covering test "([^"]+)" did not complete this checkpoint \("([^"]+)"\)/i);
   if (coveringMatch) {
@@ -3279,6 +3309,92 @@ function plainFailureStory(test, index = 0) {
     next = `Rerun "${coveringMatch[1]}" until it passes, then rerun: ${scenario}.`;
     repro = `1. Run "${coveringMatch[1]}" alone and confirm it passes. 2. Rerun this row: ${scenario}. 3. If the covering check fails, fix that failure first — this row will stay red until the checkpoint exists.`;
     evidence = 'Open Picture / Trace on the covering check first, then this cascaded row.';
+  } else if (
+    lower.includes('yearly cancel')
+    || lower.includes('cancel at expiry')
+    || lower.includes('cancel and refund')
+    || (lower.includes('sees yearly cancel') && lower.includes('cancel subscription'))
+  ) {
+    happened = locatorHint && /cancel subscription/i.test(locatorHint)
+      ? `After climbing to a yearly plan, Cancel subscription was not available (${locatorHint}). Yearly cancel must show Cancel at expiry (no refund) and Cancel and refund.`
+      : 'Yearly cancel options were missing or wrong after reaching an annual plan.';
+    wanted = 'On a yearly paid plan, Cancel subscription must offer: (1) Cancel at expiry — keep access until renewal, no refund; (2) Cancel and refund — unused annual period with a refund amount. Monthly plans must not show Cancel and refund.';
+    next = 'Reach a yearly paid plan, open Billing → Cancel subscription, and confirm Cancel at expiry (no refund) plus Cancel and refund ($…) appear. Close without submitting unless the scenario says to cancel.';
+    repro = '1. Climb or sign in on a yearly paid plan. 2. Open Billing → Cancel subscription. 3. Expect Cancel at expiry (no refund) and Cancel and refund. 4. Confirm monthly cancel elsewhere never shows Cancel and refund.';
+    evidence = 'Use this check’s own Picture / Trace only — yearly cancel evidence must not be mixed with monthly cancel or Roll Configuration screenshots.';
+  } else if (
+    lower.includes('monthly cancel')
+    || lower.includes('refunds apply to annual')
+    || (lower.includes('monthly') && lower.includes('cancel') && (lower.includes('period') || lower.includes('no refund') || lower.includes('not offer')))
+  ) {
+    happened = 'Monthly cancel options were missing or wrong: monthly plans should only cancel at period end — no Cancel and refund.';
+    wanted = 'On a monthly paid plan, Cancel subscription should keep access until period end (or say refunds apply to annual plans only) and must not offer Cancel and refund / Cancel at expiry.';
+    next = 'Open Cancel subscription on a monthly paid plan and confirm period-end wording only — no refund option. Yearly plans are checked separately.';
+    repro = '1. Sign in on a monthly paid plan. 2. Open Billing → Cancel subscription. 3. Expect keep-access-until / period-end wording. 4. Confirm Cancel and refund is absent.';
+    evidence = 'Use this check’s own Picture / Trace only — monthly cancel evidence must not be mixed with yearly refund options.';
+  } else if (
+    lower.includes('roll configuration')
+    || lower.includes('field-level validation')
+    || lower.includes('same-strike min days')
+    || lower.includes('my balanced roll')
+    || lower.includes('my tax-aware')
+    || lower.includes('my income first')
+  ) {
+    const receivedName = receivedHint
+      && receivedHint.length < 80
+      && /my .+ strategy/i.test(receivedHint)
+      ? receivedHint
+      : '';
+    const missingField = raw.match(/Expected pattern:\s*\/([^/]+)\//i)?.[1]
+      || raw.match(/Expected string:\s*[\"']([^\"']+)[\"']/i)?.[1]
+      || '';
+    if (receivedName) {
+      happened = `Roll Configuration opened the wrong template (name showed "${receivedName}" instead of the template named in this check).`;
+    } else if (missingField) {
+      happened = `Roll Configuration form was missing expected field/label “${compactText(missingField, 80)}” for this template’s field-level validation.`;
+    } else if (locatorHint) {
+      happened = `Roll Configuration field-level validation did not show the expected control or message (${locatorHint}).`;
+    } else {
+      happened = 'Roll Configuration field-level validation did not show the expected template defaults or min-rule messages.';
+    }
+    wanted = 'Clone/open the named template (Income First, Tax-Aware, Balanced, or Custom), confirm its default field values, clear/zero fields, and see the matching min validation messages — still on the Roll Configuration form.';
+    next = 'Open Beta → Roll Configuration → Create New Strategy, clone the template named in this check, confirm the default name/fields, then clear/zero fields and Save Draft to read each min message.';
+    repro = '1. Sign in as the e2e subscriber. 2. Open Beta → Roll Configuration. 3. Clone the template in the check title. 4. Assert defaults, clear/zero fields, Save Draft. 5. Expect Configuration name / DTE / NTM / ATM min messages.';
+    evidence = 'Use only this Roll Configuration row’s Picture / Trace — do not use Billing/downgrade screenshots for this failure.';
+  } else if (
+    lower.includes('scheduled downgrade')
+    || lower.includes('downgrade to income')
+    || lower.includes('sc-141')
+    || lower.includes('cancel scheduled change')
+  ) {
+    happened = receivedHint
+      ? `Scheduled downgrade banner was missing or wording did not match. Page showed: ${receivedHint}`
+      : 'Billing did not show “Downgrade to {Plan} scheduled” with Takes effect {date} and Cancel scheduled change.';
+    wanted = 'After scheduling a downgrade, Change Plan / Overview should show: Downgrade to {Plan} scheduled · Takes effect {date} · Cancel scheduled change (any target plan name, not only Income).';
+    next = 'Schedule a downgrade, open Billing → Change Plan, and confirm the orange scheduled banner matches that copy.';
+    repro = '1. Sign in on a higher paid plan. 2. Schedule a downgrade. 3. Open Billing → Change Plan. 4. Expect “Downgrade to … scheduled”, Takes effect date, Cancel scheduled change.';
+    evidence = 'Use only this SC-141/SC-142 Picture / Trace — scheduled-downgrade evidence must not be a Roll Configuration screenshot.';
+  } else if (
+    lower.includes('password visibility')
+    || lower.includes('show password')
+    || (lower.includes('hide password') && lower.includes('login'))
+  ) {
+    happened = 'Login Show password toggle did not register as changed (input type / Show→Hide label) within the check timeout — product toggle works; automation detection may be stale.';
+    wanted = 'On /login, typing a draft password and clicking Show password should set input type to text and/or switch the control to Hide password without submitting Sign In.';
+    next = 'Open /login, enter a draft password, click Show password, and confirm readable text or Hide password. If that works, update the toggle assertion (type/aria), not the product.';
+    repro = '1. Open /login. 2. Enter a draft password. 3. Click Show password. 4. Expect visible text or a Hide password control.';
+  } else if (lower.includes('footer legal')) {
+    happened = receivedHint
+      ? `Footer legal check stalled while loading ${receivedHint} (often a slow /dashboard reload between links, not a broken footer href).`
+      : 'Footer legal check timed out — usually a slow /dashboard reload between links, not a broken Privacy/Terms href.';
+    wanted = 'Footer Privacy, Terms, Disclosures, Risk Warning, OCC (external), and Contact should open or expose a usable href.';
+    next = 'Confirm each footer link manually; if pages open, treat as UAT/automation timing and rerun the footer check alone.';
+    repro = '1. Sign in. 2. Open the dashboard footer. 3. Open each legal/support link. 4. Expect each internal page to load (OCC may be external).';
+  } else if (lower.includes('strategy library') && (lower.includes('category') || lower.includes('filter'))) {
+    happened = 'Strategy library category/filter walk hit the 240s test time limit before every category and filter finished.';
+    wanted = 'Academy/Strategy library should apply each category and filter and return to a usable list within the test budget.';
+    next = 'Open Strategy library, walk each category/filter once, and confirm the list updates; if UAT is slow, rerun this check alone.';
+    repro = '1. Sign in. 2. Open Strategy library. 3. Apply each category and filter. 4. Expect the list to update without hanging.';
   } else if (lower.includes('qa-cl-005') || (lower.includes('unique-card') && lower.includes('plan selection'))) {
     happened = 'Overlay Strategists trial with card bounced back to Plan Selection after unique Stripe test-card retries (card/email already used for a trial).';
     wanted = 'A fresh disposable user with an unused Stripe test card should reach the trial confirmation, not bounce to Plan Selection.';
@@ -3418,10 +3534,16 @@ function plainFailureStory(test, index = 0) {
     happened = 'The downgrade screen did not show the offer to stay on the current plan.';
     wanted = 'A stay-and-save offer should appear before the plan is changed.';
     next = 'Start a downgrade and confirm the stay-and-save offer appears before the plan changes, then rerun this check.';
-  } else if (lower.includes('billing period') || lower.includes('period-end') || lower.includes('cancel')) {
-    happened = 'The cancel screen did not show the wording this check expected.';
-    wanted = 'The cancel box should say access continues until the end of the billing period.';
-    next = 'Open cancel and confirm it says access lasts until the end of the billing period, then rerun this check.';
+  } else if (
+    lower.includes('billing period')
+    || lower.includes('period-end')
+    || (lower.includes('cancel') && !lower.includes('downgrade') && !lower.includes('roll configuration'))
+  ) {
+    // Fallback only when monthly/yearly branches above did not match.
+    happened = 'Cancel subscription UI did not match this check — confirm whether the plan is monthly (period-end, no refund) or yearly (Cancel at expiry + Cancel and refund).';
+    wanted = 'Monthly: cancel at period end only, no refund option. Yearly: Cancel at expiry (no refund) and Cancel and refund for unused time.';
+    next = 'Open Cancel subscription, note monthly vs yearly plan, and compare options to the rule above before changing product or the check.';
+    repro = '1. Open Billing on the plan under test. 2. Note Monthly vs Yearly. 3. Open Cancel subscription. 4. Monthly → period-end only; Yearly → Cancel at expiry + Cancel and refund.';
   } else if (lower.includes('portal') && lower.includes('stripe')) {
     happened = 'Stripe opened, but the subscription summary was not on the page.';
     wanted = 'The Stripe page should show the current plan and billing details.';

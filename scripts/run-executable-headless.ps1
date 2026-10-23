@@ -55,6 +55,7 @@ $flags = @(
   'SUB_LIFECYCLE_UPGRADE_PREVIEW_ENABLED',
   'SUB_LIFECYCLE_DOWNGRADE_PREVIEW_ENABLED',
   'SUB_LIFECYCLE_INTERVAL_PREVIEW_ENABLED',
+  'SUB_LIFECYCLE_CANCEL_FORM_ENABLED',
   'SUB_LIFECYCLE_PLAN_LADDER_ENABLED'
 )
 
@@ -62,7 +63,6 @@ $offFlags = @(
   'SUB_LIFECYCLE_TRIAL_WITHOUT_CARD_ENABLED',
   'SUB_LIFECYCLE_TRIAL_WITH_CARD_ENABLED',
   'SUB_LIFECYCLE_INCOME_MONTHLY_ENABLED',
-  'SUB_LIFECYCLE_CANCEL_FORM_ENABLED',
   'SUB_LIFECYCLE_OVERLAY_MONTHLY_ENABLED',
   'SUB_LIFECYCLE_PORTFOLIO_MONTHLY_ENABLED',
   'SUB_LIFECYCLE_MARKETPLACE_MONTHLY_ENABLED',
@@ -85,6 +85,17 @@ $env:SLOW_MO = '0'
 $env:HEADED = 'false'
 $env:AIR_REPORT_SCOPE = 'latest'
 $env:AIR_RESTORE_HISTORY = 'true'
+# Prepared fixtures: npm run fixtures:list | fixtures:apply-env
+$env:SUBSCRIPTION_FIXTURE_PASSWORD = 'Test@123456'
+$env:SUB_LIFECYCLE_PAID_EMAIL = 'imhardikthanki+monthly-to-a-mvjn15yr@gmail.com'
+$env:SUB_LIFECYCLE_PAID_PASSWORD = 'Test@123456'
+$env:BILLING_MANAGEMENT_EMAIL = 'imhardikthanki+monthly-to-a-mvjn15yr@gmail.com'
+$env:BILLING_MANAGEMENT_PASSWORD = 'Test@123456'
+$env:SUB_LIFECYCLE_USE_PREPARED_USER = 'true'
+$env:CANCEL_YEARLY_EMAIL = 'imhardikthanki+e2e@gmail.com'
+$env:CANCEL_YEARLY_PASSWORD = 'H@rdik9944'
+$env:CANCEL_MONTHLY_EMAIL = 'imhardikthanki+monthly-to-a-mvjn15yr@gmail.com'
+$env:CANCEL_MONTHLY_PASSWORD = 'Test@123456'
 
 Write-Host 'Clean executable headless run: journey order, Stripe FRD matrix included, SLOW_MO=0.' -ForegroundColor Cyan
 node -e "require('./scripts/execution-order').assertAllSpecsAreListed(); require('./scripts/execution-order').printOrder(require('./scripts/execution-order').executableJourneyOrder)"

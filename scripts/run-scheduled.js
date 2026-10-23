@@ -15,6 +15,7 @@ const path = require('path');
 const { spawnSync } = require('child_process');
 const { applyCompleteRunEnv } = require('./apply-complete-run-env');
 const { collectConfiguredRecipients } = require('./report-recipients');
+const { isAirRunClean } = require('./air-run-clean');
 
 const projectRoot = path.resolve(__dirname, '..');
 const { hasGmail } = applyCompleteRunEnv(projectRoot);
@@ -125,11 +126,22 @@ try {
   run(q(node), [q('scripts/generate-execution-report.js')]);
 
   if (sendEmail) {
-    run(q(node), [
-      q('scripts/send-report-email.js'),
-      '--label',
-      q(label)
-    ]);
+    const cleanCheck = isAirRunClean(projectRoot);
+
+    if (!cleanCheck.clean || testStatus !== 0) {
+      const reason =
+        testStatus !== 0 && cleanCheck.clean
+          ? `Playwright exit code ${testStatus} — report email will not be sent.`
+          : cleanCheck.reason;
+      console.warn(`Report email skipped (run not clean): ${reason}`);
+    } else {
+      run(q(node), [
+        q('scripts/send-report-email.js'),
+        '--label',
+        q(label),
+        '--only-if-clean'
+      ]);
+    }
   }
 } finally {
   fs.rmSync(lockPath, { force: true });

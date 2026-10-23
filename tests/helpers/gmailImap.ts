@@ -104,7 +104,7 @@ function extractAppLinks(rawEmail: string) {
     new RegExp(`${escapedBase}/[^\\s"'<>\\\\]+`, 'ig'),
     /https?:\/\/(?:www\.)?ooltool\.com\/[^\s"'<>\\]+/ig,
     /https?:\/\/[^\s"'<>\\]*uat\.ooltool\.com\/[^\s"'<>\\]*/ig,
-    /https?:\/\/[^\s"'<>\\]*(?:verify-email|email-verif|confirm-email|\/verify|reset-password|type=recovery)[^\s"'<>\\]*/ig
+    /https?:\/\/[^\s"'<>\\]*(?:verify-email|email-verif|confirm-email|\/verify|reset-password|type=recovery|unlock)[^\s"'<>\\]*/ig
   ];
 
   const links: string[] = [];
@@ -139,6 +139,23 @@ function extractPasswordResetLink(rawEmail: string) {
   return extractAppLinks(rawEmail).find((link) =>
     /reset-password|type=recovery/i.test(link) &&
     !/verify-email|confirm-email/i.test(link)
+  );
+}
+
+function extractUnlockLink(rawEmail: string) {
+  const decoded = decodeMime(rawEmail);
+
+  if (
+    !/unlock|temporarily locked|one-time link/i.test(
+      decoded
+    )
+  ) {
+    return undefined;
+  }
+
+  return extractAppLinks(rawEmail).find((link) =>
+    /unlock|token|verify|confirm/i.test(link) &&
+    !/reset-password|type=recovery/i.test(link)
   );
 }
 
@@ -340,7 +357,7 @@ function subscriptionNoticeFound(
 async function fetchLink(
   send: (command: string) => Promise<string>,
   uid: string,
-  kind: 'verification' | 'reset' | 'subscription'
+  kind: 'verification' | 'reset' | 'subscription' | 'unlock'
 ) {
   const body = await send(`UID FETCH ${uid} BODY.PEEK[]`);
 
@@ -350,14 +367,20 @@ async function fetchLink(
       : '';
   }
 
-  return kind === 'reset'
-    ? extractPasswordResetLink(body)
-    : extractVerificationLink(body);
+  if (kind === 'reset') {
+    return extractPasswordResetLink(body) ?? '';
+  }
+
+  if (kind === 'unlock') {
+    return extractUnlockLink(body) ?? '';
+  }
+
+  return extractVerificationLink(body);
 }
 
 async function imapRequest(
   email: string,
-  kind: 'verification' | 'reset' | 'subscription' = 'verification'
+  kind: 'verification' | 'reset' | 'subscription' | 'unlock' = 'verification'
 ) {
   return imapSession(async (send) => {
     for (const mailbox of MAILBOXES) {
@@ -597,6 +620,48 @@ export async function listGmailMessages(
 
     return [...found.values()];
   });
+}
+
+
+export async function waitForGmailUnlockLink(
+  email: string,
+  timeoutMs = envTimeoutMs()
+) {
+  const startedAt = Date.now();
+  let lastError: Error | undefined;
+  let attempt = 0;
+
+  while (Date.now() - startedAt < timeoutMs) {
+    attempt += 1;
+
+    try {
+      return await imapRequest(email, 'unlock');
+    } catch (error) {
+      lastError = error instanceof Error
+        ? error
+        : new Error(String(error));
+
+      const remainingMs = timeoutMs - (Date.now() - startedAt);
+
+      if (attempt === 1 || attempt % 3 === 0) {
+        console.log(
+          `Gmail IMAP unlock attempt ${attempt} for ${email}: ${lastError.message.split('\n')[0]}`
+        );
+      }
+
+      if (remainingMs <= 0) {
+        break;
+      }
+
+      await new Promise((resolve) =>
+        setTimeout(resolve, Math.min(2000, remainingMs))
+      );
+    }
+  }
+
+  throw lastError ?? new Error(
+    `Timed out waiting for Gmail unlock mail to ${email}`
+  );
 }
 
 export async function waitForGmailMessageMatching(

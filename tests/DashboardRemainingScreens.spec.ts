@@ -63,6 +63,22 @@ test.describe(
     test(
       'Footer legal pages open',
       async ({ page }) => {
+        // Product footer works; prior fail was reloading /dashboard
+        // between each link (goto timed out on slow UAT).
+        await openDashboard(
+          page
+        );
+
+        const footerNav =
+          page.getByRole(
+            'contentinfo'
+          ).getByRole(
+            'navigation',
+            {
+              name: /legal and support/i
+            }
+          );
+
         const pages = [
           {
             name: /privacy policy/i,
@@ -73,12 +89,17 @@ test.describe(
             content: /terms/i
           },
           {
-            name: /disclosures/i,
+            name: /^disclosures$/i,
             content: /disclos/i
           },
           {
             name: /risk warning/i,
             content: /risk/i
+          },
+          {
+            name: /occ options disclosure/i,
+            content: null as RegExp | null,
+            external: true
           },
           {
             name: /^contact$/i,
@@ -87,17 +108,73 @@ test.describe(
         ];
 
         for (const item of pages) {
-          await openDashboard(
-            page
-          );
-
-          await safeClick(
-            page.getByRole(
+          let link =
+            footerNav.getByRole(
               'link',
               {
                 name: item.name
               }
-            ).first(),
+            ).first();
+
+          const footerReady =
+            await link.isVisible({
+              timeout: 8000
+            }).catch(
+              () => false
+            );
+
+          if (!footerReady) {
+            await page.goto(
+              `${BASE_URL}/dashboard`,
+              {
+                waitUntil: 'domcontentloaded',
+                timeout: 60000
+              }
+            );
+
+            link =
+              footerNav.getByRole(
+                'link',
+                {
+                  name: item.name
+                }
+              ).first();
+
+            await expect(
+              link
+            ).toBeVisible({
+              timeout: 30000
+            });
+          }
+
+          const href =
+            await link.getAttribute(
+              'href'
+            );
+
+          expect(
+            href,
+            `${String(item.name)} should have a usable href`
+          ).toMatch(
+            /^(\/|https?:\/\/)/i
+          );
+
+          if (
+            item.external ||
+            /^https?:\/\//i.test(
+              href || ''
+            )
+          ) {
+            expect(
+              href
+            ).toMatch(
+              /^https?:\/\//i
+            );
+            continue;
+          }
+
+          await safeClick(
+            link,
             'Open footer page'
           );
 
@@ -106,9 +183,9 @@ test.describe(
               'main, body'
             ).first()
           ).toContainText(
-            item.content,
+            item.content as RegExp,
             {
-              timeout: 20000
+              timeout: 30000
             }
           );
         }

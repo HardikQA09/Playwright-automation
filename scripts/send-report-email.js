@@ -64,12 +64,13 @@ loadEnv(path.join(projectRoot, '.env'));
 loadEnv(path.join(projectRoot, '.env.local'));
 
 function parseArgs(argv) {
-  const args = { label: 'Execution report', dryRun: false, to: '' };
+  const args = { label: 'Execution report', dryRun: false, to: '', onlyIfClean: false };
 
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
 
     if (arg === '--dry-run') args.dryRun = true;
+    else if (arg === '--only-if-clean') args.onlyIfClean = true;
     else if (arg === '--label') args.label = argv[++i] ?? args.label;
     else if (arg === '--to') args.to = argv[++i] ?? '';
   }
@@ -182,6 +183,19 @@ async function main() {
   }
 
   const air = JSON.parse(fs.readFileSync(airPath, 'utf8'));
+
+  if (args.onlyIfClean) {
+    const failed = Number(air.summary?.failed ?? 0);
+    const interrupted = Number(air.summary?.interrupted ?? 0);
+
+    if (failed > 0 || interrupted > 0) {
+      console.warn(
+        `Report email skipped (--only-if-clean): ${failed} failed, ${interrupted} interrupted.`
+      );
+      return;
+    }
+  }
+
   const { subject, html, text } = buildMessage(air, args);
   const { to, skipped } = recipientsFor(args);
 

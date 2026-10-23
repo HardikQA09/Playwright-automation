@@ -67,8 +67,7 @@ const ROLL_FIELD_LABELS = [
   /target annualized roi/i,
   /min credit floor per share/i,
   /max debit % of strike gain/i,
-  /same-strike min days/i,
-  /same-strike max days/i,
+  /same-strike roll \(buy time\)/i,
   /min open interest/i,
   /min daily volume/i,
   /max bid-ask spread/i,
@@ -184,7 +183,7 @@ const ROLL_TEMPLATE_PROFILES: Record<
     key: 'balanced',
     label: 'Balanced Strategy',
     match: /balanced strategy/i,
-    defaultName: /my balanced roll strategy/i,
+    defaultName: /my balanced(?: roll)? strategy/i,
     defaults: [
       {
         placeholder: /e\.g\. 14/i,
@@ -575,6 +574,10 @@ export class RollConfigurationPage {
         detail: /high cash flow|shorter dte|credit income/i
       },
       {
+        name: /strike improvement/i,
+        detail: /upside|defense|basis/i
+      },
+      {
         name: /tax-?aware retention/i,
         detail: /capital gains|assignment|defer/i
       },
@@ -938,31 +941,29 @@ export class RollConfigurationPage {
 
     await this.openCreateFlow();
 
-    // Cards share a parent region; pick Clone by known benchmark order.
-    const cloneIndex =
-      /income/i.test(
-        template.source
-      )
-        ? 0
-        : /tax/i.test(
-          template.source
-        )
-          ? 1
-          : /balanced/i.test(
-            template.source
-          )
-            ? 2
-            : 0;
+    // Cards: Income → Strike Improvement → Tax-Aware → Balanced.
+    // Scope Clone to the button that follows this card's heading.
+    const heading =
+      this.main().getByRole(
+        'heading',
+        {
+          name: template
+        }
+      ).first();
+
+    await expect(
+      heading
+    ).toBeVisible({
+      timeout: 15000
+    });
+
+    const cloneButton =
+      heading.locator(
+        'xpath=following::button[contains(normalize-space(.), "Clone to Edit")][1]'
+      );
 
     await safeClick(
-      this.main().getByRole(
-        'button',
-        {
-          name: /clone to edit/i
-        }
-      ).nth(
-        cloneIndex
-      ),
+      cloneButton,
       `Clone to Edit ${template}`
     );
 
@@ -974,6 +975,48 @@ export class RollConfigurationPage {
         timeout: 10000
       }
     );
+
+    if (
+      /income first/i.test(
+        template.source
+      )
+    ) {
+      await expect(
+        this.nameInput()
+      ).toHaveValue(
+        /income first/i
+      );
+    } else if (
+      /tax-?aware/i.test(
+        template.source
+      )
+    ) {
+      await expect(
+        this.nameInput()
+      ).toHaveValue(
+        /tax-?aware/i
+      );
+    } else if (
+      /balanced/i.test(
+        template.source
+      )
+    ) {
+      await expect(
+        this.nameInput()
+      ).toHaveValue(
+        /balanced/i
+      );
+    } else if (
+      /strike improvement/i.test(
+        template.source
+      )
+    ) {
+      await expect(
+        this.nameInput()
+      ).toHaveValue(
+        /strike improvement/i
+      );
+    }
   }
 
   async setConfigurationName(

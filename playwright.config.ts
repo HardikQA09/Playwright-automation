@@ -38,7 +38,10 @@ export default defineConfig({
   globalTeardown: './scripts/open-air-report.js',
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
+  retries: Number(
+    process.env.PLAYWRIGHT_RETRIES ??
+      (process.env.CI ? 2 : 0)
+  ),
   workers: 1,
   // A single check often finishes inside 30s. The same check in the full
   // suite starts later, when UAT is slower, and the default 30s budget

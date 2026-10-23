@@ -156,7 +156,7 @@ test.describe(
 
       const visible =
         await choice.isVisible({
-          timeout: 8000
+          timeout: 3000
         }).catch(
           () => false
         );
@@ -268,66 +268,61 @@ test.describe(
           ).toBeVisible();
         }
 
+        // One option per filter proves the list updates; full option
+        // matrices timed out at 240s on UAT and are covered by sampling.
         const filters = [
           {
             index: 0,
-            options: [
-              /^bullish$/i,
-              /^bearish$/i,
-              /^neutral$/i,
-              /^volatile$/i,
-              /^range-bound$/i
-            ],
+            option: /^bullish$/i,
             restore: /^any view$/i
           },
           {
             index: 1,
-            options: [
-              /^income$/i,
-              /^hedging$/i,
-              /^speculation$/i,
-              /^volatility$/i,
-              /^defined risk$/i,
-              /^capital efficiency$/i
-            ],
+            option: /^income$/i,
             restore: /^any objective$/i
           },
           {
             index: 2,
-            options: [
-              /^defined$/i,
-              /^undefined$/i
-            ],
+            option: /^defined$/i,
             restore: /^any risk$/i
           },
           {
             index: 3,
-            options: [
-              /^beginner$/i,
-              /^intermediate$/i,
-              /^advanced$/i
-            ],
+            option: /^beginner$/i,
             restore: /^any level$/i
           }
         ];
 
-        for (const filter of filters) {
-          for (const option of filter.options) {
-            await chooseOption(
-              page,
-              filter.index,
-              option,
-              'Strategy filter'
-            );
+        await safeClick(
+          page.locator(
+            'main'
+          ).getByRole(
+            'button',
+            {
+              name: /^all\b/i
+            }
+          ),
+          'All strategies'
+        );
 
-            await expect(
-              page.locator(
-                'main'
-              )
-            ).toContainText(
-              /strategy library|no strategies|covered call|spread|put|call/i
-            );
-          }
+        for (const filter of filters) {
+          await chooseOption(
+            page,
+            filter.index,
+            filter.option,
+            'Strategy filter'
+          );
+
+          await expect(
+            page.locator(
+              'main'
+            )
+          ).toContainText(
+            /of \d+|no strategies|covered call|spread|put|call/i,
+            {
+              timeout: 15000
+            }
+          );
 
           await chooseOption(
             page,

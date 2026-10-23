@@ -89,7 +89,11 @@
     "report:execution": "npm run air:parse && node scripts/generate-execution-report.js && start execution-report/index.html",
     "report:pdf": "node scripts/export-execution-pdf.js",
     "report:execution:pdf": "npm run report:execution && npm run report:pdf",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "fixtures:list": "node scripts/list-prepared-subscription-users.js",
+    "fixtures:apply-env": "node scripts/apply-prepared-subscription-env.js",
+    "fixtures:daily-upgrade": "node scripts/apply-prepared-subscription-env.js --run-daily-upgrade",
+    "complete:email-if-clean": "node scripts/run-complete-suite-no-email.js --email"
   },
   "keywords": [],
   "author": "",

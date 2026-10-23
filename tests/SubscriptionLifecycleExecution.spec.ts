@@ -8,6 +8,12 @@ import {
 } from '@playwright/test';
 
 import {
+  CANCEL_FIXTURE_USERS
+} from './config/cancelFixtureUsers';
+import {
+  resolvePreparedUser
+} from './config/preparedSubscriptionUsers';
+import {
   PLAN_PRICES,
   TEST_USERS
 } from './config/testData';
@@ -590,6 +596,28 @@ async function openPlanSelectionForDisposableUser(
   };
 }
 
+async function loginCancelFixture(
+  page: Page,
+  kind: 'yearly' | 'monthly'
+) {
+  const user =
+    CANCEL_FIXTURE_USERS[kind];
+
+  await page.context().clearCookies();
+  await page.goto(
+    'about:blank'
+  ).catch(
+    () => undefined
+  );
+
+  await new LoginPage(
+    page
+  ).login(
+    user.email,
+    user.password
+  );
+}
+
 async function loginPreparedPaidUser(
   page: Page,
   options: {
@@ -615,15 +643,31 @@ async function loginPreparedPaidUser(
     options.usedFor ===
       'paid-purchase';
 
+  const preparedKey =
+    options.usedFor === 'upgrade-submit'
+      ? 'UPGRADE_SUBMIT'
+      : options.usedFor === 'downgrade-preview' ||
+          options.usedFor === 'retention-inspect'
+        ? 'DOWNGRADE_CALC_DAILY'
+        : options.usedFor === 'interval-preview'
+          ? 'INTERVAL_CALC_DAILY'
+          : 'UPGRADE_CALC_DAILY';
+
+  const prepared =
+    resolvePreparedUser(
+      preparedKey
+    );
+
+  // Scenario prepared fixtures win over shared SUB_LIFECYCLE_PAID_* env.
   const email =
-    process.env.SUB_LIFECYCLE_PAID_EMAIL ??
-    process.env.BILLING_MANAGEMENT_EMAIL ??
-    TEST_USERS.subscriber.email;
+    prepared.email ||
+    process.env.SUB_LIFECYCLE_PAID_EMAIL ||
+    process.env.BILLING_MANAGEMENT_EMAIL;
 
   const password =
-    process.env.SUB_LIFECYCLE_PAID_PASSWORD ??
-    process.env.BILLING_MANAGEMENT_PASSWORD ??
-    TEST_USERS.subscriber.password;
+    prepared.password ||
+    process.env.SUB_LIFECYCLE_PAID_PASSWORD ||
+    process.env.BILLING_MANAGEMENT_PASSWORD;
 
   if (
     !forceDisposableUser &&
@@ -1305,23 +1349,16 @@ test.describe(
       }
     );
 
-    controlledLifecycleTest(
+    test(
       'Prepared paid user exposes upgrade downgrade and interval controls',
-      'SUB_LIFECYCLE_PLAN_CONTROLS_ENABLED',
-      'Plan controls reuse the existing paid subscriber unless SUB_LIFECYCLE_CREATE_DISPOSABLE_USER=true.',
       async ({ page }) => {
-        await loginPreparedPaidUser(
+        test.setTimeout(
+          180000
+        );
+
+        await loginCancelFixture(
           page,
-          {
-            scenario:
-              'sub-lifecycle-plan-controls',
-            plan:
-              'Income Builder',
-            interval:
-              'monthly',
-            usedFor:
-              'plan-controls'
-          }
+          'monthly'
         );
 
         const billing =
@@ -1335,29 +1372,22 @@ test.describe(
       }
     );
 
-    controlledLifecycleTest(
+    test(
       'Prepared paid user can preview monthly and annual upgrade calculations',
-      'SUB_LIFECYCLE_UPGRADE_PREVIEW_ENABLED',
-      'Upgrade preview reuses the existing paid subscriber unless SUB_LIFECYCLE_CREATE_DISPOSABLE_USER=true.',
       async ({ page }) => {
+        test.setTimeout(
+          240000
+        );
+
         const targetPlan =
           upgradeTargetPlan();
 
         const intervals =
           upgradeIntervals();
 
-        await loginPreparedPaidUser(
+        await loginCancelFixture(
           page,
-          {
-            scenario:
-              'sub-lifecycle-upgrade-preview',
-            plan:
-              'Income Builder',
-            interval:
-              'monthly',
-            usedFor:
-              'upgrade-preview'
-          }
+          'monthly'
         );
 
         const billing =
@@ -1478,28 +1508,29 @@ test.describe(
       }
     );
 
-    controlledLifecycleTest(
+    test(
       'Prepared paid user can preview downgrade calculations without submitting',
-      'SUB_LIFECYCLE_DOWNGRADE_PREVIEW_ENABLED',
-      'Downgrade preview creates a higher-tier disposable paid user when no fixture is set and does not submit the plan change.',
       async ({ page }) => {
+        test.setTimeout(
+          240000
+        );
+
         const targetPlan =
           downgradeTargetPlan();
 
         const intervals =
           downgradeIntervals();
 
+        // Overlay monthly prepared fixture exposes Downgrade; Income monthly does not.
+        // Avoid yearly +e2e here — wrong shared password was locking that account mid-suite.
         await loginPreparedPaidUser(
           page,
           {
             scenario:
-              'sub-lifecycle-downgrade-preview',
+              'downgrade-calculation-preview',
             plan:
-              higherPaidPlan(
-                targetPlan
-              ),
+              'Overlay Strategists',
             interval:
-              intervals[0] ??
               'monthly',
             usedFor:
               'downgrade-preview'
@@ -1570,31 +1601,22 @@ test.describe(
       }
     );
 
-    controlledLifecycleTest(
+    test(
       'Prepared paid user can preview billing interval change without submitting',
-      'SUB_LIFECYCLE_INTERVAL_PREVIEW_ENABLED',
-      'Interval preview reuses the existing paid subscriber unless SUB_LIFECYCLE_CREATE_DISPOSABLE_USER=true and does not submit the change.',
       async ({ page }) => {
+        test.setTimeout(
+          240000
+        );
+
         const targetPlan =
           intervalPreviewTargetPlan();
 
         const interval =
           intervalPreviewTarget();
 
-        await loginPreparedPaidUser(
+        await loginCancelFixture(
           page,
-          {
-            scenario:
-              'sub-lifecycle-interval-preview',
-            plan:
-              targetPlan,
-            interval:
-              oppositeInterval(
-                interval
-              ),
-            usedFor:
-              'interval-preview'
-          }
+          'monthly'
         );
 
         const billing =
@@ -1653,28 +1675,58 @@ test.describe(
       }
     );
 
-    controlledLifecycleTest(
+    // Non-destructive cancel inspects — always executable on prepared fixtures.
+    test(
       'Prepared paid user exposes non-destructive cancellation form',
-      'SUB_LIFECYCLE_CANCEL_FORM_ENABLED',
-      'Cancellation form validation is non-destructive. Creates a disposable paid user when no fixture is set.',
       async ({ page }) => {
-        await loginPreparedPaidUser(
+        test.setTimeout(
+          180000
+        );
+
+        await loginCancelFixture(
           page,
-          {
-            scenario:
-              'sub-lifecycle-cancel-form',
-            plan:
-              'Income Builder',
-            interval:
-              'monthly',
-            usedFor:
-              'cancel-form'
-          }
+          'monthly'
         );
 
         await new BillingPage(
           page
         ).validateCancelSubscriptionFormWithoutCancelling();
+      }
+    );
+
+    test(
+      'Prepared yearly fixture shows yearly cancel options',
+      async ({ page }) => {
+        test.setTimeout(
+          180000
+        );
+
+        await loginCancelFixture(
+          page,
+          'yearly'
+        );
+
+        await new BillingPage(
+          page
+        ).validateYearlyCancellationOptions();
+      }
+    );
+
+    test(
+      'Prepared monthly fixture shows monthly cancel options',
+      async ({ page }) => {
+        test.setTimeout(
+          180000
+        );
+
+        await loginCancelFixture(
+          page,
+          'monthly'
+        );
+
+        await new BillingPage(
+          page
+        ).validateMonthlyCancellationOptions();
       }
     );
 

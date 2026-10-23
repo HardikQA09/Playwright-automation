@@ -39,6 +39,14 @@ type TestDataFile = {
       email?: string;
       password?: string;
     };
+    cancelYearly?: {
+      email?: string;
+      password?: string;
+    };
+    cancelMonthly?: {
+      email?: string;
+      password?: string;
+    };
   };
   auth?: {
     otpCode?: string;

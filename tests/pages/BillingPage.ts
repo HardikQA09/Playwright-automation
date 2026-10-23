@@ -2955,137 +2955,111 @@ async validateMonthlyDowngradeRetentionOffer(
 
 async validateYearlyCancellationOptions() {
   Logger.info(
-    'Validating yearly cancel-at-expiry and cancel-immediately-with-refund options'
+    'Validating yearly cancel-at-expiry and cancel-and-refund options'
   );
 
-  await this.validateOverview();
+  // Same open path as monthly — after plan ladder, Cancel can sit under Overview/Plans.
+  const host =
+    await this.openCancelSubscriptionHost();
 
-  const inAppCancel =
-    this.page.getByRole(
-      'button',
-      {
-        name: /cancel subscription/i
-      }
-    ).first();
-
-  let host =
-    this.page;
-
-  if (
-    await inAppCancel.isVisible({
-      timeout: 5000
-    }).catch(
-      () => false
-    )
-  ) {
-    await safeClick(
-      inAppCancel,
-      'Open in-app cancel subscription'
-    );
-  } else {
-    host =
-      await this.openSubscriptionPortal();
-
-    const portalCancel =
-      host.locator(
-        'button, a'
+  try {
+    const dialog =
+      host.page.locator(
+        '[role="dialog"], [role="alertdialog"]'
       ).filter({
         hasText: /cancel subscription/i
       }).first();
 
-    if (
-      await portalCancel.isVisible({
-        timeout: 8000
-      }).catch(
-        () => false
-      )
-    ) {
-      await safeClick(
-        portalCancel,
-        'Open Cancel Subscription'
-      );
-    }
-  }
+    await expect(
+      dialog
+    ).toBeVisible({
+      timeout: 20000
+    });
 
-  const dialog =
-    host.locator(
-      '[role="dialog"], [role="alertdialog"]'
-    ).filter({
-      hasText: /cancel subscription/i
-    }).first();
+    const bodyText =
+      await dialog.innerText();
 
-  await expect(
-    dialog
-  ).toBeVisible({
-    timeout: 15000
-  });
-
-  const bodyText =
-    await dialog.innerText();
-
-  const twoChoices =
-    /cancel at expiry/i.test(
-      bodyText
-    ) &&
-    /cancel and refund/i.test(
-      bodyText
-    );
-
-  const keepUntilDate =
-    /keep access to .{0,80} until \w+ \d{1,2},? \d{4}/i.test(
-      bodyText
-    );
-
-  expect(
-    twoChoices ||
-      keepUntilDate,
-    'Yearly cancel should offer Cancel at expiry and Cancel and refund, or keep access until a renewal date.'
-  ).toBeTruthy();
-
-  if (twoChoices) {
     expect(
       bodyText,
-      'Cancel at expiry should say there is no refund.'
+      'Yearly cancel dialog should say this is an annual plan.'
+    ).toMatch(
+      /annual plan|cancel your annual/i
+    );
+
+    expect(
+      bodyText,
+      'Yearly cancel must offer Cancel at expiry.'
+    ).toMatch(
+      /cancel at expiry/i
+    );
+
+    expect(
+      bodyText,
+      'Cancel at expiry must say No refund.'
     ).toMatch(
       /no refund/i
     );
 
     expect(
       bodyText,
-      'Cancel and refund should show an amount and the unused annual period.'
+      'Yearly cancel must offer Cancel and refund with a dollar amount.'
     ).toMatch(
-      /cancel and refund\s*\$\s*[\d,]+(?:\.\d{2})?[\s\S]{0,240}unused portion|unused (months|time)/i
+      /cancel and refund\s*\$\s*[\d,]+(?:\.\d{2})?/i
     );
+
+    expect(
+      bodyText,
+      'Cancel and refund should mention the unused portion of the annual period.'
+    ).toMatch(
+      /unused portion|unused (months|time|period)/i
+    );
+
+    // Monthly-only copy must not appear on the yearly two-choice dialog.
+    expect(
+      bodyText,
+      'Yearly cancel should not use the monthly-only “refunds apply to annual plans only” single-path copy.'
+    ).not.toMatch(
+      /refunds apply to annual plans only/i
+    );
+
+    const abortCancel =
+      dialog.getByRole(
+        'button',
+        {
+          name: /keep my plan|don'?t cancel|keep subscription|go back|not now/i
+        }
+      ).or(
+        host.page.getByRole(
+          'button',
+          {
+            name: /keep my plan|don'?t cancel|keep subscription|go back|not now/i
+          }
+        )
+      ).first();
+
+    if (
+      await abortCancel.isVisible({
+        timeout: 3000
+      }).catch(
+        () => false
+      )
+    ) {
+      await safeClick(
+        abortCancel,
+        'Leave yearly cancel options without submitting'
+      );
+    } else {
+      await host.page.keyboard.press(
+        'Escape'
+      );
+    }
+
+    Logger.success(
+      'Yearly cancel-at-expiry and refund options validated without cancelling'
+    );
+  } finally {
+    await host.close();
   }
-
-  const abortCancel =
-    host.getByRole(
-      'button',
-      {
-        name: /keep my plan|don'?t cancel|keep subscription|go back|not now/i
-      }
-    ).first();
-
-  if (
-    await abortCancel.isVisible({
-      timeout: 3000
-    }).catch(
-      () => false
-    )
-  ) {
-    await safeClick(
-      abortCancel,
-      'Leave cancel options without submitting'
-    );
-  } else {
-    await host.keyboard.press(
-      'Escape'
-    );
-  }
-
-  Logger.success(
-    'Yearly cancel-at-expiry and refund options validated without cancelling'
-  );
 }
 
 async expectPlanActionAvailable(
@@ -3921,12 +3895,19 @@ async validateMonthlyCancellationOptions() {
       text,
       'Monthly cancel should keep access until a date, then move to the Free plan.'
     ).toMatch(
-      /keep access to .{0,80} until \w+ \d{1,2},? \d{4}|end of (this|the) (current )?billing period|refunds apply to annual plans only/i
+      /keep access to .{0,80} until \w+ \d{1,2},? \d{4}|end of (this|the) (current )?billing period/i
     );
 
     expect(
       text,
-      'Monthly cancel should not offer Cancel and refund.'
+      'Monthly cancel should say refunds apply to annual plans only.'
+    ).toMatch(
+      /refunds apply to annual plans only/i
+    );
+
+    expect(
+      text,
+      'Monthly cancel must not offer Cancel and refund or Cancel at expiry (those are yearly-only).'
     ).not.toMatch(
       /cancel and refund|cancel at expiry/i
     );

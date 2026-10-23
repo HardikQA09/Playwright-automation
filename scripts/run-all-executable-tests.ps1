@@ -72,18 +72,32 @@ Enable-Flag 'SIGNUP_DUPLICATE_EMAIL_VALIDATION_ENABLED'
 Enable-Flag 'OVERLAY_STRATEGISTS_FLOW_ENABLED'
 Enable-Flag 'OVERLAY_STRATEGISTS_TERMS_ENABLED'
 
-# Plan-ladder inspect: disposable Users A/B/D, paid upgrades, cancel/retention
-# copy checks. Creates Stripe test users. Extra submit flags stay off.
+# Prepared-fixture billing inspect (non-destructive). Cancel form + yearly/monthly
+# cancel options always run. Plan-ladder inspect is on (submit flags stay off).
 Enable-Flag 'SUBSCRIPTION_LIFECYCLE_EXECUTION_ENABLED'
 Enable-Flag 'SUB_LIFECYCLE_PLAN_CONTROLS_ENABLED'
 Enable-Flag 'SUB_LIFECYCLE_UPGRADE_PREVIEW_ENABLED'
 Enable-Flag 'SUB_LIFECYCLE_DOWNGRADE_PREVIEW_ENABLED'
 Enable-Flag 'SUB_LIFECYCLE_INTERVAL_PREVIEW_ENABLED'
+Enable-Flag 'SUB_LIFECYCLE_CANCEL_FORM_ENABLED'
 Enable-Flag 'SUB_LIFECYCLE_PLAN_LADDER_ENABLED'
 
+# Prepared fixtures: see tests/config/preparedSubscriptionUsers.data.json
+# npm run fixtures:list   |   npm run fixtures:apply-env
+# Flip SUB_FIXTURE_USE_CANONICAL_EMAILS=true after creating +sub-* accounts.
 Set-DefaultEnv 'AUTH_OTP_CODE' '111111'
+Set-DefaultEnv 'SUBSCRIPTION_FIXTURE_PASSWORD' 'Test@123456'
 Set-DefaultEnv 'PLAN_SELECTION_EXISTING_EMAIL' 'imhardikthanki+plan-selection-prepared@gmail.com'
 Set-DefaultEnv 'PLAN_SELECTION_EXISTING_PASSWORD' 'H@rdik9944'
+Set-DefaultEnv 'SUB_LIFECYCLE_PAID_EMAIL' 'imhardikthanki+monthly-to-a-mvjn15yr@gmail.com'
+Set-DefaultEnv 'SUB_LIFECYCLE_PAID_PASSWORD' 'Test@123456'
+Set-DefaultEnv 'BILLING_MANAGEMENT_EMAIL' 'imhardikthanki+monthly-to-a-mvjn15yr@gmail.com'
+Set-DefaultEnv 'BILLING_MANAGEMENT_PASSWORD' 'Test@123456'
+Set-DefaultEnv 'SUB_LIFECYCLE_USE_PREPARED_USER' 'true'
+Set-DefaultEnv 'CANCEL_YEARLY_EMAIL' 'imhardikthanki+e2e@gmail.com'
+Set-DefaultEnv 'CANCEL_YEARLY_PASSWORD' 'H@rdik9944'
+Set-DefaultEnv 'CANCEL_MONTHLY_EMAIL' 'imhardikthanki+monthly-to-a-mvjn15yr@gmail.com'
+Set-DefaultEnv 'CANCEL_MONTHLY_PASSWORD' 'Test@123456'
 Set-DefaultEnv 'AIR_RESTORE_HISTORY' 'true'
 Set-DefaultEnv 'AIR_INCLUDE_MANUAL_DEFECTS' 'false'
 Set-DefaultEnv 'ADMIN_EMAIL' 'admin@ooltool.com'

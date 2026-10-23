@@ -217,6 +217,50 @@ function getFailureSummary(test = {}) {
     return 'Registration OTP field did not appear after requesting the SMS code.';
   }
 
+  // Prefer product-specific wording so AIR cards are easy to identify.
+  if (
+    title.includes('yearly cancel')
+    || rawText.includes('cancel at expiry')
+    || rawText.includes('cancel and refund')
+    || title.includes('sees yearly cancel')
+  ) {
+    return 'Yearly cancel should show Cancel at expiry (no refund) and Cancel and refund — monthly plans must not show a refund option.';
+  }
+
+  if (
+    title.includes('monthly cancel')
+    || rawText.includes('refunds apply to annual')
+    || (title.includes('monthly') && title.includes('cancel'))
+  ) {
+    return 'Monthly cancel should only offer cancel at period end — no Cancel and refund option.';
+  }
+
+  if (
+    title.includes('roll configuration')
+    || title.includes('field-level validation')
+    || rawText.includes('same-strike min days')
+    || rawText.includes('my balanced roll')
+    || rawText.includes('my tax-aware')
+  ) {
+    return 'Roll Configuration template defaults or field-level min validation messages did not match the template under test.';
+  }
+
+  if (title.includes('scheduled downgrade') || title.includes('sc-141') || rawText.includes('downgrade to income')) {
+    return 'Billing overview did not show the scheduled downgrade banner with its effective date.';
+  }
+
+  if (title.includes('password visibility') || rawText.includes('show password')) {
+    return 'Login Show password toggle did not register Show	oHide / type=text in automation (manual toggle works — update detection).';
+  }
+
+  if (title.includes('footer legal')) {
+    return 'Footer legal check timed out — often a slow /dashboard reload between links, not a broken footer href.';
+  }
+
+  if (title.includes('strategy library') && (title.includes('category') || title.includes('filter'))) {
+    return 'Strategy library category/filter walk hit the test time limit before every filter finished.';
+  }
+
   if (rawText.includes('tohaveurl') || rawText.includes('expect(page).tohaveurl')) {
     return 'The application did not navigate to the expected page after the action.';
   }
@@ -230,7 +274,14 @@ function getFailureSummary(test = {}) {
   }
 
   if (rawText.includes('test timeout') || rawText.includes('timeout') || rawText.includes('timed out')) {
-    return 'The scenario timed out while waiting for the expected UI state, navigation, or response.';
+    const scenario = String(test.title ?? test.testName ?? '')
+      .split('>')
+      .map((part) => part.trim())
+      .filter(Boolean)
+      .pop();
+    return scenario
+      ? `“${scenario}” timed out before the expected screen or control appeared.`
+      : 'The scenario timed out before the expected screen or control appeared.';
   }
 
   if (rawText.includes('invalid email or password') || rawText.includes('login failed after')) {

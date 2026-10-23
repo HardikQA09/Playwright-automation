@@ -19,6 +19,14 @@
     "e2e": {
       "email": "imhardikthanki+e2e@gmail.com",
       "password": "H@rdik9944"
+    },
+    "cancelYearly": {
+      "email": "imhardikthanki+e2e@gmail.com",
+      "password": "H@rdik9944"
+    },
+    "cancelMonthly": {
+      "email": "imhardikthanki+monthly-to-a-mvjn15yr@gmail.com",
+      "password": "Test@123456"
     }
   },
   "auth": {

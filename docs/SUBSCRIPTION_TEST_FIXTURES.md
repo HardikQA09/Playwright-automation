@@ -1,5 +1,46 @@
 # Subscription Test Fixture Users
 
+## Daily reusable roster (remember these)
+
+Source of truth: [`tests/config/preparedSubscriptionUsers.data.json`](../tests/config/preparedSubscriptionUsers.data.json)
+
+```powershell
+npm run fixtures:list
+npm run fixtures:list -- --canonical   # target +sub-* emails
+npm run fixtures:apply-env             # print $env: lines for this session
+```
+
+| Key | Canonical email (easy to spot) | Required state | Daily use |
+| --- | --- | --- | --- |
+| `UPGRADE_CALC_DAILY` | `imhardikthanki+sub-upg-calc-daily@gmail.com` | Income Builder **monthly** + saved card | Upgrade calculation preview every day (same account) |
+| `DOWNGRADE_CALC_DAILY` | `imhardikthanki+sub-dng-calc-daily@gmail.com` | Overlay Strategists **monthly** | Downgrade preview + retention inspect |
+| `INTERVAL_CALC_DAILY` | `imhardikthanki+sub-int-calc-daily@gmail.com` | Income Builder **monthly** | Monthly↔annual interval preview |
+| `CANCEL_MONTHLY_INSPECT` | `imhardikthanki+sub-cx-mo-inspect@gmail.com` | Income Builder **monthly** | Cancel form / Keep my plan |
+| `CANCEL_YEARLY_INSPECT` | `imhardikthanki+sub-cx-yr-inspect@gmail.com` | Overlay (or paid) **annual** | Cancel-at-expiry vs refund **options** (no submit) |
+| `RETENTION_INSPECT` | `imhardikthanki+sub-retention-inspect@gmail.com` | Overlay **monthly**, retention still eligible | Open retention, decline, close |
+| `BILLING_PORTAL` | `imhardikthanki+sub-billing-portal@gmail.com` | Any active paid | Portal / payment method / invoices |
+| `PLAN_SELECTION` | `imhardikthanki+sub-plan-ready@gmail.com` | Verified, on Choose Your Plan | Catalog / trial CTA |
+
+Until those canonical accounts exist on UAT, runners keep using the **legacy** emails listed in the JSON (`monthly-to-a-mvjn15yr`, `e2e`, `plan-selection-prepared`). After you prepare each `+sub-*` account:
+
+```powershell
+$env:SUB_FIXTURE_USE_CANONICAL_EMAILS="true"
+$env:SUBSCRIPTION_FIXTURE_PASSWORD="YourSharedPassword"
+npm run fixtures:apply-env
+```
+
+**Email delivery:** every `+sub-*` alias lands in the same Gmail inbox — IMAP checks do not need a separate mailbox per scenario.
+
+**Daily upgrade calculation (same account):**
+
+```powershell
+npm run fixtures:apply-env
+npm run test:controlled:subscription-lifecycle-execution -- -g "upgrade"
+# or: npm run fixtures:daily-upgrade
+```
+
+Destructive keys (`UPGRADE_SUBMIT`, `REFUND_SUBMIT`) are separate throwaways — never point daily preview at them.
+
 ## Purpose
 
 This document defines the dedicated subscription users needed to safely expand

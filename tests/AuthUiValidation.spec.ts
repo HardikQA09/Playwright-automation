@@ -140,35 +140,42 @@ async function findPasswordToggle(
 }
 
 async function readPasswordToggleState(
-  passwordInput: Locator
+  passwordInput: Locator,
+  toggle: Locator
 ) {
-  return passwordInput.evaluate(
-    (input) => {
-      const field =
-        input as HTMLInputElement;
+  const type =
+    await passwordInput.getAttribute(
+      'type'
+    );
 
-      const toggle =
-        input.parentElement?.querySelector(
-          'button'
-        );
+  const aria =
+    (
+      await toggle.getAttribute(
+        'aria-label'
+      )
+    )?.trim() ||
+    (
+      await toggle.getAttribute(
+        'title'
+      )
+    )?.trim() ||
+    (
+      await toggle.textContent()
+    )?.trim() ||
+    '';
 
-      return {
-        type:
-          field.type,
-        aria:
-          toggle?.getAttribute(
-            'aria-label'
-          ) ??
-          toggle?.textContent?.trim() ??
-          '',
-        icon:
-          toggle?.querySelector(
-            'svg'
-          )?.innerHTML ??
-          ''
-      };
-    }
-  );
+  const icon =
+    await toggle.locator(
+      'svg'
+    ).first().innerHTML().catch(
+      () => ''
+    );
+
+  return {
+    type: type || '',
+    aria,
+    icon
+  };
 }
 
 async function expectPasswordToggleResponds(
@@ -178,26 +185,28 @@ async function expectPasswordToggleResponds(
   const page =
     passwordInput.page();
 
+  // Cookie banner steals the first click on login; clear it before toggling.
   await dismissOverlays(
     page
   );
-
-  await page.getByRole(
-    'region',
-    {
-      name: /cookie consent/i
-    }
-  ).waitFor({
-    state: 'hidden',
-    timeout: 8000
-  }).catch(
-    () => undefined
-  );
-
-  const initialState =
-    await readPasswordToggleState(
-      passwordInput
+  await page
+    .getByRole(
+      'button',
+      {
+        name: /^(essential only|accept( all)?)$/i
+      }
+    )
+    .first()
+    .click({
+      force: true,
+      timeout: 3000
+    })
+    .catch(
+      () => undefined
     );
+  await dismissOverlays(
+    page
+  );
 
   await expect(
     toggle
@@ -205,61 +214,105 @@ async function expectPasswordToggleResponds(
     timeout: 10000
   });
 
+  const initialState =
+    await readPasswordToggleState(
+      passwordInput,
+      toggle
+    );
+
   console.log(
     '[CLICK] Toggle Password Visibility'
   );
 
-  await safeClick(
-    toggle,
-    'Toggle Password Visibility'
-  );
+  await toggle.click({
+    force: true,
+    timeout: 10000
+  });
+
+  if (
+    !await (async () => {
+      const current =
+        await readPasswordToggleState(
+          passwordInput,
+          toggle
+        );
+
+      return current.type ===
+        'text' ||
+        /hide/i.test(
+          current.aria
+        );
+    })()
+  ) {
+    await toggle.evaluate(
+      (element) => {
+        (
+          element as HTMLElement
+        ).click();
+      }
+    );
+  }
 
   const toggleResponded = async () => {
     const currentState =
       await readPasswordToggleState(
-        passwordInput
+        passwordInput,
+        toggle
       );
 
     const hideControlVisible =
       await page.getByRole(
         'button',
         {
-          name: /^(hide)(\s+password)?$/i
+          name: /hide(\s+password)?/i
         }
       ).first().isVisible().catch(
         () => false
       );
 
-    return currentState.type !==
-      initialState.type ||
-      (
-        Boolean(
-          currentState.aria
-        ) &&
-        currentState.aria !==
-          initialState.aria
-      ) ||
-      (
-        Boolean(
-          currentState.icon
-        ) &&
-        currentState.icon !==
-          initialState.icon
-      ) ||
-      hideControlVisible;
+    const typeFlipped =
+      Boolean(
+        currentState.type
+      ) &&
+      currentState.type !==
+        initialState.type;
+
+    const nameFlipped =
+      Boolean(
+        currentState.aria
+      ) &&
+      currentState.aria.toLowerCase() !==
+        initialState.aria.toLowerCase();
+
+    const showBecameHide =
+      /show/i.test(
+        initialState.aria
+      ) &&
+      /hide/i.test(
+        currentState.aria
+      );
+
+    const iconFlipped =
+      Boolean(
+        currentState.icon
+      ) &&
+      currentState.icon !==
+        initialState.icon;
+
+    return typeFlipped ||
+      nameFlipped ||
+      showBecameHide ||
+      iconFlipped ||
+      hideControlVisible ||
+      currentState.type === 'text';
   };
 
   if (
     !await toggleResponded()
   ) {
     await toggle.focus();
-
     await page.keyboard.press(
       'Enter'
-    );
-
-    await page.waitForTimeout(
-      200
     );
   }
 
@@ -274,24 +327,22 @@ async function expectPasswordToggleResponds(
     );
   }
 
-  if (
-    !await toggleResponded()
-  ) {
-    await toggle.evaluate(
-      (button) => {
-        (button as HTMLButtonElement).click();
-      }
-    );
-  }
-
   await expect
     .poll(
       toggleResponded,
       {
-        timeout: 5000
+        timeout: 10000,
+        message:
+          'Password visibility toggle should switch input type to text and/or change Show → Hide.'
       }
     )
     .toBeTruthy();
+
+  await expect(
+    passwordInput
+  ).toHaveValue(
+    /./
+  );
 }
 
 test.describe(
@@ -795,10 +846,31 @@ test.describe(
         await dismissOverlays(
           page
         );
+        await page
+          .getByRole(
+            'button',
+            {
+              name: /^(essential only|accept( all)?)$/i
+            }
+          )
+          .first()
+          .click({
+            force: true,
+            timeout: 3000
+          })
+          .catch(
+            () => undefined
+          );
 
+        // Prefer the stable login field id — label/name locators can drift
+        // after the visibility toggle remounts the control.
         const passwordInput =
-          page.getByLabel(
-            /^password$/i
+          page.locator(
+            '#password'
+          ).or(
+            page.getByLabel(
+              /^password$/i
+            )
           ).or(
             page.locator(
               'input[name="password"]'

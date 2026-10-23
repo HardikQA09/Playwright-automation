@@ -96,13 +96,9 @@ async function requestSignupOtpIfAvailable(
     return false;
   }
 
-  for (
-    let attempt = 1;
-    attempt <= 3;
-    attempt++
-  ) {
-    const existingOtpVisible =
-      await registration.otpInput
+  const otpIsVisible =
+    async () =>
+      registration.otpInput
         .first()
         .isVisible({
           timeout: 1000
@@ -111,19 +107,97 @@ async function requestSignupOtpIfAvailable(
           () => false
         );
 
-    if (existingOtpVisible) {
+  // Filling mobile can auto-send SMS. OTP + cooldown may already be on screen
+  // while "Send code via SMS" stays disabled — do not hard-wait on Send.
+  if (
+    await otpIsVisible()
+  ) {
+    return true;
+  }
+
+  for (
+    let attempt = 1;
+    attempt <= 3;
+    attempt++
+  ) {
+    if (
+      await otpIsVisible()
+    ) {
       return true;
     }
 
-    await expect(
-      registration.sendCodeButton
-    ).toBeEnabled({
-      timeout: 15000
-    });
+    const sendEnabled =
+      await registration.sendCodeButton
+        .isEnabled()
+        .catch(
+          () => false
+        );
+
+    if (
+      !sendEnabled
+    ) {
+      const ready =
+        await expect
+          .poll(
+            async () => {
+              if (
+                await otpIsVisible()
+              ) {
+                return 'otp';
+              }
+
+              if (
+                await registration.sendCodeButton
+                  .isEnabled()
+                  .catch(
+                    () => false
+                  )
+              ) {
+                return 'send';
+              }
+
+              return 'wait';
+            },
+            {
+              timeout: 25000
+            }
+          )
+          .toMatch(
+            /otp|send/
+          )
+          .then(
+            async () =>
+              (
+                await otpIsVisible()
+              )
+                ? 'otp'
+                : 'send'
+          )
+          .catch(
+            () => 'fail'
+          );
+
+      if (
+        ready ===
+        'otp'
+      ) {
+        return true;
+      }
+
+      if (
+        ready !==
+        'send'
+      ) {
+        await registration.page.waitForTimeout(
+          1000
+        );
+        continue;
+      }
+    }
 
     await registration.sendCodeButton.click();
 
-    const otpVisible =
+    if (
       await registration.otpInput
         .first()
         .isVisible({
@@ -131,9 +205,8 @@ async function requestSignupOtpIfAvailable(
         })
         .catch(
           () => false
-        );
-
-    if (otpVisible) {
+        )
+    ) {
       return true;
     }
 

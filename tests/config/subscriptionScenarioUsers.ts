@@ -1,21 +1,21 @@
 /* =============================================================================
-CONFIG: Named subscription scenario users
+CONFIG: Named subscription scenario users (DISPOSABLE)
 
 PURPOSE
 -------
-Every lifecycle scenario that needs a paid user gets its own NEW disposable
-user, created on demand through registration, email verification and Stripe
-test checkout. Each user has a specific scenario name so the same flow can be
-re-run or referenced later (run log: test-results/scenario-users.json).
+Matrix packs that need a fresh purchase / submit create ONE disposable user
+per scenario per Playwright process (plus-tag + timestamp). Run log:
+test-results/scenario-users.json.
+
+For DAILY reusable accounts (upgrade calc, cancel inspect, retention, email
+on the same inbox), use preparedSubscriptionUsers.data.json instead:
+  npm run fixtures:list
+  imhardikthanki+sub-<scenario>@gmail.com
 
 HOW MATRIX ROWS USE THESE
 -------------------------
 A matrix row sets   automation: 'scenario:<NAME>:<step>'
 Example             automation: 'scenario:UPGRADE_INCOME_MONTHLY_TO_OVERLAY_MONTHLY:confirmation-email'
-
-The first row that needs a scenario runs the whole flow once on its user.
-Every other row of the same scenario reuses that run and reports its own
-step result, so one user is created per scenario per Playwright process.
 
 NAMING
 ------

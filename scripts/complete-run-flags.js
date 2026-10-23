@@ -47,13 +47,16 @@ module.exports = {
   SUB_LIFECYCLE_UPGRADE_PREVIEW_ENABLED: 'true',
   SUB_LIFECYCLE_DOWNGRADE_PREVIEW_ENABLED: 'true',
   SUB_LIFECYCLE_INTERVAL_PREVIEW_ENABLED: 'true',
+  // Cancel form / yearly+monthly cancel options are always-on prepared fixtures.
+  SUB_LIFECYCLE_CANCEL_FORM_ENABLED: 'true',
+  // Plan-ladder inspect (non-destructive cancel options + upgrade previews).
+  // Needed to stay near the Oct 12 ~157-skip baseline; submit flags stay off.
   SUB_LIFECYCLE_PLAN_LADDER_ENABLED: 'true',
 
   // Explicit false so a leftover .env true cannot re-enable them.
   SUB_LIFECYCLE_TRIAL_WITHOUT_CARD_ENABLED: 'false',
   SUB_LIFECYCLE_TRIAL_WITH_CARD_ENABLED: 'false',
   SUB_LIFECYCLE_INCOME_MONTHLY_ENABLED: 'false',
-  SUB_LIFECYCLE_CANCEL_FORM_ENABLED: 'false',
   SUB_LIFECYCLE_OVERLAY_MONTHLY_ENABLED: 'false',
   SUB_LIFECYCLE_PORTFOLIO_MONTHLY_ENABLED: 'false',
   SUB_LIFECYCLE_MARKETPLACE_MONTHLY_ENABLED: 'false',

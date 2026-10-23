@@ -28,6 +28,11 @@ import {
   waitForManualEmailVerification
 } from '../helpers/emailVerification';
 
+import {
+  isGmailAutomationEnabled,
+  waitForGmailUnlockLink
+} from '../helpers/gmailImap';
+
 /* =============================================================================
 PAGE OBJECT: LoginPage
 
@@ -346,6 +351,55 @@ export class LoginPage
     );
   }
 
+  private async readLoginFailureHint() {
+    const toast =
+      await this.page
+        .locator(
+          '[role="alert"], [data-sonner-toast], .toast, [class*="toast"]'
+        )
+        .first()
+        .innerText({
+          timeout: 1500
+        })
+        .catch(
+          () => ''
+        );
+
+    const body =
+      await this.page
+        .locator(
+          'main, body'
+        )
+        .first()
+        .innerText({
+          timeout: 1500
+        })
+        .then(
+          (text) =>
+            text
+              .replace(/\s+/g, ' ')
+              .match(
+                /invalid|incorrect|wrong password|locked|too many|try again|credentials|unable to (sign|log) in/i
+              )?.[0] ??
+            ''
+        )
+        .catch(
+          () => ''
+        );
+
+    return [
+      toast,
+      body
+    ]
+      .map(
+        (part) =>
+          String(part || '').trim()
+      )
+      .filter(Boolean)
+      .join(' | ')
+      .slice(0, 240);
+  }
+
   async handleLockedAccount(
     email: string
   ) {
@@ -364,6 +418,41 @@ export class LoginPage
           this.emailUnlockLinkButton,
           'Email Unlock Link'
         );
+      }
+
+      if (
+        isGmailAutomationEnabled()
+      ) {
+        Logger.info(
+          `Waiting for Gmail unlock link for ${email}`
+        );
+
+        const unlockLink =
+          await waitForGmailUnlockLink(
+            email,
+            120000
+          );
+
+        await this.page.goto(
+          unlockLink,
+          {
+            waitUntil: 'domcontentloaded'
+          }
+        );
+
+        await this.page.waitForTimeout(
+          2000
+        );
+
+        await openFreshLoginPage(
+          this.page
+        );
+
+        Logger.success(
+          `Unlock link opened for ${email}; login can continue`
+        );
+
+        return;
       }
 
       throw new Error(
@@ -483,8 +572,10 @@ export class LoginPage
       }
 
       console.log(
-        `Login Attempt ${attempt}`
+        `Login Attempt ${attempt} as ${email}`
       );
+
+      await this.dismissMarketingOverlays();
 
       await this.fillLoginCredentials(
         email,
@@ -499,6 +590,19 @@ export class LoginPage
       await this.handleLockedAccount(
         email
       );
+
+      const failureHint =
+        await this.readLoginFailureHint();
+
+      if (
+        /invalid|incorrect|wrong password|credentials|unable to (sign|log) in/i.test(
+          failureHint
+        )
+      ) {
+        throw new Error(
+          `Login rejected for ${email}: ${failureHint}`
+        );
+      }
 
       try {
         const outcome =
