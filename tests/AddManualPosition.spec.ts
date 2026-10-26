@@ -112,16 +112,36 @@ test.describe(
     async function openDashboard(
       page: Page
     ) {
-      await page.goto(
-        `${BASE_URL}/dashboard`,
-        {
-          waitUntil: 'domcontentloaded'
-        }
-      );
+      const dashboard =
+        new DashboardPage(
+          page
+        );
 
-      await new DashboardPage(
-        page
-      ).validateLoaded();
+      let lastError: unknown;
+
+      for (
+        let attempt = 0;
+        attempt < 3;
+        attempt += 1
+      ) {
+        try {
+          await page.goto(
+            `${BASE_URL}/dashboard`,
+            {
+              waitUntil: 'domcontentloaded',
+              timeout: 90000
+            }
+          );
+
+          await dashboard.validateLoaded();
+
+          return;
+        } catch (error) {
+          lastError = error;
+        }
+      }
+
+      throw lastError;
     }
 
     /**

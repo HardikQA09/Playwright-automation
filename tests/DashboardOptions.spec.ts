@@ -48,14 +48,31 @@ test.describe(
           page
         );
 
-      await page.goto(
-        `${BASE_URL}/dashboard`,
-        {
-          waitUntil: 'domcontentloaded'
-        }
-      );
+      let lastError: unknown;
 
-      await dashboard.validateLoaded();
+      for (
+        let attempt = 0;
+        attempt < 3;
+        attempt += 1
+      ) {
+        try {
+          await page.goto(
+            `${BASE_URL}/dashboard`,
+            {
+              waitUntil: 'domcontentloaded',
+              timeout: 90000
+            }
+          );
+
+          await dashboard.validateLoaded();
+
+          return;
+        } catch (error) {
+          lastError = error;
+        }
+      }
+
+      throw lastError;
     }
 
     function skipOption(

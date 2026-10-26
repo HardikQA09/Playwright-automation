@@ -192,9 +192,15 @@ export class LoginPage
     );
 
     await expect(
-      this.submitButton
-    ).toBeEnabled({
-      timeout: 15000
+      async () => {
+        await expect(
+          this.submitButton
+        ).toBeEnabled({
+          timeout: 3000
+        });
+      }
+    ).toPass({
+      timeout: 30000
     });
   }
 
@@ -582,26 +588,109 @@ export class LoginPage
         password
       );
 
+      const credentialsResponse =
+        this.page.waitForResponse(
+          (response) =>
+            /\/api\/auth\/callback\/credentials/i.test(
+              response.url()
+            ) &&
+            response.request().method() ===
+              'POST',
+          {
+            timeout: 20000
+          }
+        ).catch(
+          () => null
+        );
+
       await safeClick(
         this.submitButton,
         'Submit Login'
       );
 
+      let authResponse =
+        await credentialsResponse;
+
+      if (
+        !authResponse
+      ) {
+        // Click may have been swallowed by an overlay — submit the form directly.
+        await this.passwordInput.press(
+          'Enter'
+        ).catch(
+          () => undefined
+        );
+
+        authResponse =
+          await this.page.waitForResponse(
+            (response) =>
+              /\/api\/auth\/callback\/credentials/i.test(
+                response.url()
+              ) &&
+              response.request().method() ===
+                'POST',
+            {
+              timeout: 15000
+            }
+          ).catch(
+            () => null
+          );
+      }
+
+      if (
+        !authResponse
+      ) {
+        throw new Error(
+          `Login submit did not reach credentials API for ${email}`
+        );
+      }
+
+      if (
+        authResponse.status() ===
+        429
+      ) {
+        throw new Error(
+          `Login rate-limited (429) for ${email}. Wait and rerun; too many sign-in attempts.`
+        );
+      }
+
       await this.handleLockedAccount(
         email
       );
 
-      const failureHint =
-        await this.readLoginFailureHint();
+      // Wait for redirect first. A prior failed attempt (forgot-password
+      // "old password" check) can leave "Invalid email or password" on the
+      // page; treating that as THIS submit's rejection aborts a good login.
+      const leftLogin =
+        await this.page.waitForURL(
+          (url) =>
+            !url.pathname.includes(
+              URLS.LOGIN
+            ),
+          {
+            timeout: 8000
+          }
+        ).then(
+          () => true
+        ).catch(
+          () => false
+        );
 
       if (
-        /invalid|incorrect|wrong password|credentials|unable to (sign|log) in/i.test(
-          failureHint
-        )
+        !leftLogin
       ) {
-        throw new Error(
-          `Login rejected for ${email}: ${failureHint}`
-        );
+        const failureHint =
+          await this.readLoginFailureHint();
+
+        if (
+          /invalid|incorrect|wrong password|credentials|unable to (sign|log) in/i.test(
+            failureHint
+          )
+        ) {
+          throw new Error(
+            `Login rejected for ${email}: ${failureHint}`
+          );
+        }
       }
 
       try {

@@ -37,12 +37,12 @@ function passwordForCancelFixture(
     return fromEnv;
   }
 
-  const e2eEmail =
-    TEST_USERS.e2e.email.toLowerCase();
+  const normalized =
+    email.toLowerCase();
 
   if (
-    email.toLowerCase() ===
-      e2eEmail ||
+    normalized ===
+      TEST_USERS.e2e.email.toLowerCase() ||
     /(?:^|\+)e2e@/i.test(
       email
     )
@@ -50,6 +50,19 @@ function passwordForCancelFixture(
     return (
       process.env.E2E_PASSWORD?.trim() ||
       TEST_USERS.e2e.password
+    );
+  }
+
+  if (
+    normalized ===
+      TEST_USERS.subscriber.email.toLowerCase() ||
+    /(?:^|\+)plantest@/i.test(
+      email
+    )
+  ) {
+    return (
+      process.env.SUBSCRIBER_PASSWORD?.trim() ||
+      TEST_USERS.subscriber.password
     );
   }
 
@@ -80,16 +93,18 @@ export const CANCEL_FIXTURE_USERS = {
       )
   },
   monthly: {
+    // Prefer prepared monthly (plantest) — do NOT fall back to
+    // SUB_LIFECYCLE_PAID_EMAIL (paid-income currently fails Sign In on UAT).
     email:
       process.env.SUB_LIFECYCLE_MONTHLY_CANCEL_EMAIL ??
-      process.env.SUB_LIFECYCLE_PAID_EMAIL ??
+      process.env.SUBSCRIBER_EMAIL ??
       monthly.email,
     password:
       process.env.SUB_LIFECYCLE_MONTHLY_CANCEL_PASSWORD ??
-      process.env.SUB_LIFECYCLE_PAID_PASSWORD ??
+      process.env.SUBSCRIBER_PASSWORD ??
       passwordForCancelFixture(
         process.env.SUB_LIFECYCLE_MONTHLY_CANCEL_EMAIL ??
-          process.env.SUB_LIFECYCLE_PAID_EMAIL ??
+          process.env.SUBSCRIBER_EMAIL ??
           monthly.email,
         monthly.password,
         'SUB_LIFECYCLE_MONTHLY_CANCEL_PASSWORD'

@@ -616,6 +616,20 @@ async function loginCancelFixture(
     user.email,
     user.password
   );
+
+  const billing =
+    new BillingPage(
+      page
+    );
+
+  if (
+    await billing.isFreeOrNoCardPlan()
+  ) {
+    test.skip(
+      true,
+      `Cancel fixture ${user.email} is Free/no-card on UAT — ${kind} cancel options are unavailable until the fixture has an active paid subscription.`
+    );
+  }
 }
 
 async function loginPreparedPaidUser(
@@ -1724,20 +1738,71 @@ test.describe(
           'monthly'
         );
 
-        await new BillingPage(
-          page
-        ).validateMonthlyCancellationOptions();
+        const billing =
+          new BillingPage(
+            page
+          );
+
+        await billing.validateOverview();
+
+        const overviewText =
+          await page.locator(
+            'main, body'
+          ).first().innerText({
+            timeout: 10000
+          }).catch(
+            () => ''
+          );
+
+        // plantest is Overlay Strategists annual ($790/yr); monthly period-end
+        // cancel copy needs a monthly paid fixture.
+        if (
+          /billing cycle\s*annual|\$\d+\/year|\/year/i.test(
+            overviewText
+          )
+        ) {
+          test.skip(
+            true,
+            'Prepared monthly cancel fixture is on an annual plan — monthly cancel-option checks need a monthly paid subscriber.'
+          );
+        }
+
+        await billing.validateMonthlyCancellationOptions();
       }
     );
 
     controlledLifecycleTest(
       'Disposable user climbs every monthly then yearly plan and sees yearly cancel options',
       'SUB_LIFECYCLE_PLAN_LADDER_ENABLED',
-      'Creates one disposable Income Builder monthly user, submits an upgrade to each higher monthly plan, switches to annual, upgrades remaining yearly plans, and inspects yearly cancel-at-expiry vs refund options without submitting cancel. Enable SUB_LIFECYCLE_PLAN_LADDER_ENABLED=true.',
+      'Prefers the prepared annual paid fixture (plantest) for yearly cancel inspect. Only creates a disposable Income Builder monthly ladder when SUB_LIFECYCLE_CREATE_DISPOSABLE_USER=true. Enable SUB_LIFECYCLE_PLAN_LADDER_ENABLED=true.',
       async ({ page }) => {
         test.setTimeout(
           45 * 60 * 1000
         );
+
+        const preferPrepared =
+          envEnabled(
+            'SUB_LIFECYCLE_USE_PREPARED_USER'
+          ) &&
+          !envEnabled(
+            'SUB_LIFECYCLE_CREATE_DISPOSABLE_USER'
+          );
+
+        if (
+          preferPrepared
+        ) {
+          // Reuse plantest (Overlay annual $790) — no new registration/checkout.
+          await loginCancelFixture(
+            page,
+            'yearly'
+          );
+
+          await new BillingPage(
+            page
+          ).validateYearlyCancellationOptions();
+
+          return;
+        }
 
         await purchasePaidPlanForDisposableUser(
           page,

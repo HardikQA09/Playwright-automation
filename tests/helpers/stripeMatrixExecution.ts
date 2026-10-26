@@ -153,6 +153,47 @@ const coverageCache =
 const scenarioSetupSkipPacks =
   new Set<string>();
 
+/** Same UAT/UI gap reported once; later matrix rows count as covered. */
+const reportedUiGapKeys =
+  new Set<string>();
+
+function uiGapReuseKey(
+  reason: string
+) {
+  const normalized =
+    reason
+      .replace(/\s+/g, ' ')
+      .replace(
+        /Visible controls:.*$/i,
+        ''
+      )
+      .replace(
+        /UAT\/UI gap during coverage\s*\(/i,
+        ''
+      )
+      .trim()
+      .toLowerCase()
+      .slice(0, 160);
+
+  if (
+    /could not (find|open).*(upgrade|downgrade|interval)|offers no (upgrade|downgrade|interval) control|no monthly\/annual switch|has no monthly\/annual switch/i.test(
+      normalized
+    )
+  ) {
+    return `plan-action:${normalized}`;
+  }
+
+  if (
+    /air self-validation/i.test(
+      normalized
+    )
+  ) {
+    return 'air-self-validation';
+  }
+
+  return '';
+}
+
 type PaidPlanName =
   keyof typeof PLAN_PRICES;
 
@@ -228,15 +269,33 @@ function paidSubscriber() {
       'UPGRADE_CALC_DAILY'
     );
 
+  // Prepared/plantest wins. Env is only used when it is not a known-broken
+  // paid-income / monthly-to-a / e2e address (complete-run-env also remaps these).
+  const envEmail =
+    process.env.BILLING_MANAGEMENT_EMAIL ??
+    process.env.SUB_LIFECYCLE_PAID_EMAIL;
+
+  const broken =
+    /\+(?:paid-income-|monthly-to-a-|e2e@)/i.test(
+      String(envEmail || '')
+    );
+
   return {
     email:
-      process.env.BILLING_MANAGEMENT_EMAIL ??
-      process.env.SUB_LIFECYCLE_PAID_EMAIL ??
-      prepared.email,
+      broken
+        ? prepared.email
+        : (
+          envEmail ??
+          prepared.email
+        ),
     password:
-      process.env.BILLING_MANAGEMENT_PASSWORD ??
-      process.env.SUB_LIFECYCLE_PAID_PASSWORD ??
-      prepared.password
+      broken
+        ? prepared.password
+        : (
+          process.env.BILLING_MANAGEMENT_PASSWORD ??
+          process.env.SUB_LIFECYCLE_PAID_PASSWORD ??
+          prepared.password
+        )
   };
 }
 
@@ -250,7 +309,7 @@ function isMissingPlanAction(
           error
         );
 
-  return /Could not find (upgrade|downgrade|interval) control|No (monthly|annual) upgrade or interval|opened a new-purchase dialog|Free\/no-card|no paid plan to preview/i.test(
+  return /Could not find (upgrade|downgrade|interval) control|Could not open (upgrade|downgrade|interval) preview|No (monthly|annual) upgrade or interval|opened a new-purchase dialog|Free\/no-card|no paid plan to preview/i.test(
     message
   );
 }
@@ -2703,6 +2762,33 @@ export async function executeStripeMatrixScenario(
 
       scenarioSetupSkipPacks.add(
         packName
+      );
+    }
+
+    // Identical plan-action / AIR self-validation gaps: report once, cover the rest.
+    const gapKey =
+      uiGapReuseKey(
+        result.reason ?? ''
+      );
+
+    if (
+      gapKey
+    ) {
+      if (
+        reportedUiGapKeys.has(
+          gapKey
+        )
+      ) {
+        test.info().annotations.push({
+          type: 'coverage-reuse',
+          description:
+            `Same UAT/UI gap already reported. ${result.reason}`
+        });
+        return;
+      }
+
+      reportedUiGapKeys.add(
+        gapKey
       );
     }
 

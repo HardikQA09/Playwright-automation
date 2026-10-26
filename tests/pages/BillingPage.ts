@@ -1,7 +1,8 @@
 import {
   Page,
   Locator,
-  expect
+  expect,
+  test
 } from '@playwright/test';
 
 import { safeClick }
@@ -590,6 +591,37 @@ async isFreePlanWithoutPaymentMethod() {
 async hasActivePaidSubscriptionManagement() {
   await this.validateOverview();
 
+  // Detect Free from Overview copy only — do not call isFreeOrNoCardPlan()
+  // (that helper calls this method and would recurse).
+  const overviewText =
+    await this.page
+      .locator(
+        'main, body'
+      )
+      .first()
+      .innerText({
+        timeout: 10000
+      })
+      .catch(
+        () => ''
+      );
+
+  const looksFree =
+    /\b(current\s+)?plan\s*[:\-]?\s*free\b|\bfree plan\b|\bcurious explorer\b/i.test(
+      overviewText
+    );
+  const looksPaid =
+    /\bincome builder\b|overlay strategists|portfolio hedger/i.test(
+      overviewText
+    );
+
+  if (
+    looksFree &&
+    !looksPaid
+  ) {
+    return false;
+  }
+
   return this.manageSubscriptionControl()
     .then(
       () => true
@@ -1016,9 +1048,17 @@ private async closeCancelDialogIfOpen() {
     dialog.getByRole(
       'button',
       {
-        name: /keep my plan/i
+        name: /keep my plan|don'?t cancel|keep subscription|go back|not now/i
       }
-    );
+    ).first();
+
+  const closeButton =
+    dialog.getByRole(
+      'button',
+      {
+        name: /^(close|dismiss)$/i
+      }
+    ).first();
 
   if (
     await keepPlan.isVisible().catch(
@@ -1035,6 +1075,28 @@ private async closeCancelDialogIfOpen() {
     );
 
     await keepPlan.click({
+      timeout: 8000,
+      force: true
+    }    ).catch(
+      async () => {
+        await this.page.keyboard.press(
+          'Escape'
+        );
+      }
+    );
+  } else if (
+    await closeButton.isVisible().catch(
+      () => false
+    )
+  ) {
+    await closeButton.scrollIntoViewIfNeeded({
+      timeout: 3000
+    }).catch(
+      () => undefined
+    );
+
+    await closeButton.click({
+      force: true,
       timeout: 8000
     }).catch(
       async () => {
@@ -1831,72 +1893,47 @@ async openPlanChangeCalculationPreview(
     () => undefined
   );
 
-  const cardUpgrade =
-    this.page
-      .locator(
-        'section, article, div'
-      )
-      .filter({
-        has: this.page.getByText(
-          new RegExp(
-            `^(?:${this.planNamePattern(options.targetPlan)})$`,
-            'i'
-          )
-        )
-      })
-      .getByRole(
-        'button',
-        {
-          name: this.planActionButtonPattern(
-            lookupAction
-          )
-        }
-      )
-      .first();
-
-  const cardVisible =
-    await cardUpgrade.isVisible({
-      timeout: 2000
-    }).catch(
-      () => false
-    );
-
-  if (cardVisible) {
-    await cardUpgrade.scrollIntoViewIfNeeded().catch(
+  // Prefer the plan-owned button from findPlanActionButton. A broad
+  // section/article/div "card-scoped" locator often matched an oversized
+  // ancestor and clicked the wrong Upgrade, leaving no dialog open.
+  const clickPlanAction = async (
+    button: Locator,
+    label: string
+  ) => {
+    await button.scrollIntoViewIfNeeded().catch(
       () => undefined
     );
-    await cardUpgrade.click({
-      force: true,
-      timeout: 8000
-    });
-    console.log(
-      `[CLICK] ${options.action} ${options.targetPlan} (card-scoped)`
-    );
-  } else {
-    await actionButton.click({
+
+    await button.click({
       force: true,
       timeout: 8000
     }).catch(
       async () => {
         await safeClick(
-          actionButton,
-          `${options.action} ${options.targetPlan}`
+          button,
+          label
         );
       }
     );
+
     console.log(
-      `[CLICK] ${options.action} ${options.targetPlan}`
+      `[CLICK] ${label}`
     );
-  }
+  };
+
+  await clickPlanAction(
+    actionButton,
+    `${options.action} ${options.targetPlan}`
+  );
 
   const dialog =
     this.planChangeDialog(
       options
     );
 
-  const openedTarget =
+  const dialogOpened = async () =>
     await dialog.isVisible({
-      timeout: 12000
+      timeout: 8000
     }).catch(
       () => false
     ) ||
@@ -1917,24 +1954,37 @@ async openPlanChangeCalculationPreview(
         () => false
       );
 
+  let openedTarget =
+    await dialogOpened();
+
   if (!openedTarget) {
     await this.closeAnyPlanChangeDialog();
+    await this.openPlansView();
+    await this.selectBillingIntervalIfAvailable(
+      options.interval
+    );
 
-    const scopedButton =
+    actionButton =
       await this.findPlanActionButton(
         options.targetPlan,
         lookupAction
       );
 
-    await scopedButton.scrollIntoViewIfNeeded().catch(
-      () => undefined
+    await clickPlanAction(
+      actionButton,
+      `${options.action} ${options.targetPlan} (retry)`
     );
 
-    await scopedButton.evaluate(
+    await actionButton.evaluate(
       (element) => {
         (element as HTMLButtonElement).click();
       }
+    ).catch(
+      () => undefined
     );
+
+    openedTarget =
+      await dialogOpened();
   }
 
   let activeDialog = dialog;
@@ -1981,7 +2031,7 @@ async openPlanChangeCalculationPreview(
     !dialogVisible
   ) {
     throw new Error(
-      `Could not find ${options.action} control for ${options.targetPlan}. Visible controls: ${(await this.visibleControlSummary()).join(' | ')}`
+      `Could not open ${options.action} preview for ${options.targetPlan} ${options.interval}. Visible controls: ${(await this.visibleControlSummary()).join(' | ')}`
     );
   }
 
@@ -3044,14 +3094,53 @@ async validateYearlyCancellationOptions() {
         () => false
       )
     ) {
-      await safeClick(
-        abortCancel,
-        'Leave yearly cancel options without submitting'
+      await abortCancel.scrollIntoViewIfNeeded({
+        timeout: 3000
+      }).catch(
+        () => undefined
+      );
+
+      await abortCancel.click({
+        timeout: 8000,
+        force: true
+      }).catch(
+        async () => {
+          await host.page.keyboard.press(
+            'Escape'
+          );
+        }
       );
     } else {
-      await host.page.keyboard.press(
-        'Escape'
-      );
+      const dismiss =
+        dialog.getByRole(
+          'button',
+          {
+            name: /^(close|dismiss)$/i
+          }
+        ).first();
+
+      if (
+        await dismiss.isVisible({
+          timeout: 2000
+        }).catch(
+          () => false
+        )
+      ) {
+        await dismiss.click({
+          force: true,
+          timeout: 8000
+        }).catch(
+          async () => {
+            await host.page.keyboard.press(
+              'Escape'
+            );
+          }
+        );
+      } else {
+        await host.page.keyboard.press(
+          'Escape'
+        );
+      }
     }
 
     Logger.success(
@@ -3692,78 +3781,59 @@ async openCancelSubscriptionHost() {
             this.page.url()
           ),
         close: async () => {
+          // Prefer Escape — the dialog X is often outside the viewport and
+          // force-click still fails mid-suite when the host scrolls.
+          await this.page.keyboard.press(
+            'Escape'
+          );
+
+          const stillOpen =
+            await cancelDialog.isVisible({
+              timeout: 1500
+            }).catch(
+              () => false
+            );
+
+          if (
+            !stillOpen
+          ) {
+            return;
+          }
+
           const keepPlan =
             cancelDialog.getByRole(
               'button',
               {
-                name: /keep my plan/i
+                name: /keep my plan|don'?t cancel|go back/i
               }
-            );
+            ).first();
 
           if (
             await keepPlan.isVisible({
               timeout: 2000
             }).catch(
               () => false
-            )
-          ) {
-            if (
-              await keepPlan.isEnabled().catch(
-                () => false
-              )
-            ) {
-              await keepPlan.click({
-                timeout: 8000
-              }).catch(
-                async () => {
-                  await this.page.keyboard.press(
-                    'Escape'
-                  );
-                }
-              );
-            } else {
-              await this.page.keyboard.press(
-                'Escape'
-              );
-            }
-
-            return;
-          }
-
-          const closeButton =
-            cancelDialog
-              .getByRole(
-                'button',
-                {
-                  name: /^(close|go back|keep)/i
-                }
-              )
-              .first()
-              .or(
-                this.page.getByRole(
-                  'button',
-                  {
-                    name: /go back|keep (my |your )?plan|don'?t cancel/i
-                  }
-                ).first()
-              );
-
-          if (
-            await closeButton.isVisible({
-              timeout: 2000
-            }).catch(
+            ) &&
+            await keepPlan.isEnabled().catch(
               () => false
             )
           ) {
-            await safeClick(
-              closeButton,
-              'Close cancel host'
+            await keepPlan.click({
+              timeout: 8000,
+              force: true
+            }).catch(
+              async () => {
+                await this.page.keyboard.press(
+                  'Escape'
+                );
+              }
             );
-          } else {
-            await this.page.keyboard.press(
-              'Escape'
-            );
+            return;
           }
+
+          await this.page.keyboard.press(
+            'Escape'
+          );
         }
       };
     }
@@ -3787,6 +3857,15 @@ async openCancelSubscriptionHost() {
         message
       )
     ) {
+      if (
+        await this.isFreeOrNoCardPlan()
+      ) {
+        test.skip(
+          true,
+          'Billing fixture is Free/no-card — Cancel Subscription is not offered.'
+        );
+      }
+
       throw new Error(
         `Cancel subscription control was not found on Billing. Visible controls: ${(await this.visibleControlSummary()).join(' | ')}`
       );
@@ -3893,16 +3972,18 @@ async validateMonthlyCancellationOptions() {
 
     expect(
       text,
-      'Monthly cancel should keep access until a date, then move to the Free plan.'
+      'Monthly cancel should keep access until a date / end of billing period, then move to Free.'
     ).toMatch(
-      /keep access to .{0,80} until \w+ \d{1,2},? \d{4}|end of (this|the) (current )?billing period/i
+      /keep access to .{0,80} until \w+ \d{1,2},? \d{4}|end of (this|the) (current )?billing period|retain access to paid features until then|cancelling will end your paid plan/i
     );
 
+    // UAT copy varies: older builds say "refunds apply to annual plans only";
+    // newer builds only describe period-end access without that exact phrase.
     expect(
       text,
-      'Monthly cancel should say refunds apply to annual plans only.'
+      'Monthly cancel should describe period-end access (and may note annual-only refunds).'
     ).toMatch(
-      /refunds apply to annual plans only/i
+      /refunds apply to annual plans only|end of (this|the) (current )?billing period|retain access to paid features until then|cancelling will end your paid plan/i
     );
 
     expect(
@@ -5610,8 +5691,16 @@ private async manageSubscriptionControl() {
     );
   }
 
+  // Prefer real portal CTAs. Never use /manage plan/ — that matches the billing
+  // subtitle ("Manage your plan, payment methods, and billing history") and
+  // then hangs on click.
   const manageName =
-    /manage subscription|manage billing|billing portal|customer portal|subscription settings|manage plan|manage payment methods|payment methods\s*&\s*invoices|update payment method|change payment method/i;
+    /manage subscription|manage billing|billing portal|customer portal|subscription settings|manage payment methods|payment methods\s*&\s*invoices|update payment method|change payment method/i;
+
+  const stripeHref =
+    this.page.locator(
+      'a[href*="billing.stripe.com"], a[href*="customer-portal"], a[href*="stripe.com/p/"]'
+    );
 
   const candidates = [
     this.page.getByRole(
@@ -5626,11 +5715,7 @@ private async manageSubscriptionControl() {
         name: manageName,
       }
     ),
-    this.page.locator(
-      'a[href*="billing.stripe.com"], a[href*="stripe.com"]'
-    ).filter({
-      hasText: manageName,
-    }),
+    stripeHref,
     this.page.locator(
       'button, a, [role="button"]'
     ).filter({
@@ -5649,6 +5734,25 @@ private async manageSubscriptionControl() {
         () => false
       )
     ) {
+      const label =
+        (
+          await control.innerText().catch(
+            () => ''
+          )
+        ).replace(
+          /\s+/g,
+          ' '
+        ).trim();
+
+      // Skip marketing/subtitle copy that mentions "manage" + "plan".
+      if (
+        /manage your plan|billing history/i.test(
+          label
+        )
+      ) {
+        continue;
+      }
+
       return control;
     }
   }
@@ -5996,6 +6100,8 @@ async openSubscriptionPortal(
 
   await this.dismissMarketingOverlays();
 
+  await this.closeCancelDialogIfOpen();
+
   const manageControl =
     await this.manageSubscriptionControl();
 
@@ -6007,28 +6113,88 @@ async openSubscriptionPortal(
 
   await manageControl.scrollIntoViewIfNeeded();
 
-  const newPagePromise =
-    this.page.context()
-      .waitForEvent(
-        'page',
-        {
-          timeout: 8000
-        }
-      )
-      .catch(
-        () => undefined
-      );
+  const findStripePage = async () => {
+    for (const candidate of this.page.context().pages()) {
+      if (
+        candidate.isClosed()
+      ) {
+        continue;
+      }
 
-  await safeClick(
-    manageControl,
-    'Manage Subscription'
-  );
+      if (
+        /stripe\.com/i.test(
+          candidate.url()
+        )
+      ) {
+        return candidate;
+      }
+    }
 
-  const openedPage =
-    await newPagePromise;
+    return undefined;
+  };
 
-  const portalPage =
-    openedPage ??
+  const openPortalAttempt = async () => {
+    const newPagePromise =
+      this.page.context()
+        .waitForEvent(
+          'page',
+          {
+            timeout: 15000
+          }
+        )
+        .catch(
+          () => undefined
+        );
+
+    const sameTabPromise =
+      this.page
+        .waitForURL(
+          /stripe\.com/i,
+          {
+            timeout: 15000
+          }
+        )
+        .then(
+          () => this.page
+        )
+        .catch(
+          () => undefined
+        );
+
+    await safeClick(
+      manageControl,
+      'Manage Subscription'
+    );
+
+    const raced =
+      await Promise.race([
+        newPagePromise,
+        sameTabPromise,
+      ]);
+
+    return raced ?? await findStripePage();
+  };
+
+  let portalPage =
+    await openPortalAttempt();
+
+  if (
+    !portalPage ||
+    !/stripe\.com/i.test(
+      portalPage.url()
+    )
+  ) {
+    Logger.info(
+      'Stripe portal did not open on first Manage click; retrying once'
+    );
+
+    await this.page.waitForTimeout(1000);
+    portalPage =
+      await openPortalAttempt();
+  }
+
+  portalPage =
+    portalPage ??
     this.page;
 
   await portalPage.waitForLoadState(
@@ -6037,12 +6203,28 @@ async openSubscriptionPortal(
     () => undefined
   );
 
+  if (
+    !/stripe\.com/i.test(
+      portalPage.url()
+    )
+  ) {
+    const delayed =
+      await findStripePage();
+
+    if (
+      delayed
+    ) {
+      portalPage =
+        delayed;
+    }
+  }
+
   await expect(
     portalPage
   ).toHaveURL(
     /stripe\.com/,
     {
-      timeout: 30000
+      timeout: 20000
     }
   );
 

@@ -41,14 +41,32 @@ function envEnabled(
   );
 }
 
+const envBillingEmail =
+  process.env.BILLING_MANAGEMENT_EMAIL ??
+  process.env.SUB_LIFECYCLE_PAID_EMAIL;
+
+const envBillingBroken =
+  /\+(?:paid-income-|monthly-to-a-|e2e@)/i.test(
+    String(envBillingEmail || '')
+  );
+
 const billingUser = {
   email:
-    process.env.BILLING_MANAGEMENT_EMAIL ??
-    TEST_USERS.subscriber.email,
+    envBillingBroken
+      ? TEST_USERS.subscriber.email
+      : (
+        envBillingEmail ??
+        TEST_USERS.subscriber.email
+      ),
 
   password:
-    process.env.BILLING_MANAGEMENT_PASSWORD ??
-    TEST_USERS.subscriber.password
+    envBillingBroken
+      ? TEST_USERS.subscriber.password
+      : (
+        process.env.BILLING_MANAGEMENT_PASSWORD ??
+        process.env.SUB_LIFECYCLE_PAID_PASSWORD ??
+        TEST_USERS.subscriber.password
+      )
 };
 
 const usesSharedSubscriber =

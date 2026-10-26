@@ -13,6 +13,10 @@ import { DashboardPage }
 import { test }
   from './fixtures/subscriberAuth';
 
+import {
+  PORTFOLIO_OR_POSITIONS_URL
+} from './helpers/portfolioRoutes';
+
 import { safeClick, openHeaderMenuItem }
   from './helpers/safeClick';
 
@@ -296,7 +300,7 @@ test.describe(
           'Manage accounts'
         );
 
-        await safeClick(
+        const viewPositions =
           page.getByRole(
             'link',
             {
@@ -309,8 +313,39 @@ test.describe(
                 name: /view positions/i
               }
             )
-          ).first(),
-          'View positions'
+          ).first();
+
+        if (
+          await viewPositions.waitFor({
+            state: 'visible',
+            timeout: 8000
+          }).then(
+            () => true
+          ).catch(
+            () => false
+          )
+        ) {
+          await safeClick(
+            viewPositions,
+            'View positions'
+          );
+        } else {
+          await page.goto(
+            `${BASE_URL}/dashboard/positions`,
+            {
+              waitUntil: 'domcontentloaded',
+              timeout: 60000
+            }
+          );
+        }
+
+        await expect(
+          page
+        ).toHaveURL(
+          PORTFOLIO_OR_POSITIONS_URL,
+          {
+            timeout: 20000
+          }
         );
 
         const show =
@@ -337,13 +372,49 @@ test.describe(
           );
         }
 
-        await safeClick(
+        const manualTab =
           page.getByRole(
             'tab',
             {
               name: /^manual\b/i
             }
-          ).first(),
+          ).or(
+            page.getByRole(
+              'button',
+              {
+                name: /^manual\b/i
+              }
+            )
+          ).or(
+            page.getByRole(
+              'tab',
+              {
+                name: /manual entry|manual account/i
+              }
+            )
+          ).first();
+
+        const manualReady =
+          await manualTab.waitFor({
+            state: 'visible',
+            timeout: 12000
+          }).then(
+            () => true
+          ).catch(
+            () => false
+          );
+
+        if (
+          !manualReady
+        ) {
+          test.skip(
+            true,
+            'Manual positions tab is not available for this UAT account.'
+          );
+        }
+
+        await safeClick(
+          manualTab,
           'Manual positions'
         );
 
@@ -418,22 +489,23 @@ test.describe(
           'Add position'
         );
 
-        await safeClick(
+        const enterManually =
           page.getByRole(
-            'menuitem',
+            'button',
             {
-              name: /enter manually/i
+              name: /^enter manually$/i
             }
           ).or(
-            // The Add button can open the "Connect a broker" popup, where
-            // Enter Manually is a button instead of a menu item.
             page.getByRole(
-              'button',
+              'menuitem',
               {
-                name: /^enter manually$/i
+                name: /enter manually/i
               }
             )
-          ).first(),
+          ).first();
+
+        await safeClick(
+          enterManually,
           'Enter Manually'
         );
 

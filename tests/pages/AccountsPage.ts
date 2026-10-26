@@ -6,6 +6,10 @@ import {
 import { BasePage }
   from './BasePage';
 
+import {
+  PORTFOLIO_OR_POSITIONS_URL
+} from '../helpers/portfolioRoutes';
+
 import { safeClick }
   from '../helpers/safeClick';
 
@@ -276,6 +280,15 @@ export class AccountsPage
         )
       ).first(),
       'View positions'
+    );
+
+    await expect(
+      this.page
+    ).toHaveURL(
+      PORTFOLIO_OR_POSITIONS_URL,
+      {
+        timeout: 20000
+      }
     );
   }
 }

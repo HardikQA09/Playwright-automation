@@ -122,13 +122,22 @@ export class ResetPasswordPage
 
     await this.waitForFormReady();
 
-    await this.newPasswordInput.fill(
-      password
-    );
-
-    await this.confirmPasswordInput.fill(
-      password
-    );
+    for (const input of [
+      this.newPasswordInput,
+      this.confirmPasswordInput
+    ]) {
+      await input.click();
+      await input.fill(
+        ''
+      );
+      await input.pressSequentially(
+        password,
+        {
+          delay: 15
+        }
+      );
+      await input.blur();
+    }
 
     Logger.success(
       'Password Fields Completed'
@@ -136,213 +145,181 @@ export class ResetPasswordPage
   }
 
   async updatePassword() {
-    const cookieButton =
-      this.page.getByRole(
-        'button',
+    await this.dismissMarketingOverlays();
+
+    // pressSequentially so React controlled inputs actually receive state.
+    // plain fill() can leave the DOM value set while onClick still sees "".
+    for (const input of [
+      this.newPasswordInput,
+      this.confirmPasswordInput
+    ]) {
+      await input.click();
+      await input.fill(
+        ''
+      );
+      await input.pressSequentially(
+        this.pendingPassword,
         {
-          name: /^(essential only|accept( all)?)$/i
+          delay: 15
         }
       );
-
-    if (
-      await cookieButton.first().waitFor({
-        state: 'visible',
-        timeout: 3000
-      }).then(
-        () => true
-      ).catch(
-        () => false
-      )
-    ) {
-      await cookieButton.first().click({
-        timeout: 3000
-      }).catch(
-        () => undefined
-      );
+      await input.blur();
     }
 
-    const submitReset =
-      async () => {
-        await this.dismissMarketingOverlays();
+    await expect(
+      this.newPasswordInput
+    ).toHaveValue(
+      this.pendingPassword
+    );
+    await expect(
+      this.confirmPasswordInput
+    ).toHaveValue(
+      this.pendingPassword
+    );
 
-        await this.page.waitForTimeout(
-          1000
+    await expect(
+      this.updatePasswordButton
+    ).toBeEnabled({
+      timeout: 15000
+    });
+
+    const isResetPost =
+      (response: {
+        request: () => {
+          method: () => string;
+          url: () => string;
+          headers: () => Record<string, string>;
+        };
+        url: () => string;
+      }) => {
+        const method =
+          response.request().method();
+        if (
+          method !== 'POST' &&
+          method !== 'PUT' &&
+          method !== 'PATCH'
+        ) {
+          return false;
+        }
+
+        const url =
+          response.url();
+        const headers =
+          response.request().headers();
+        const action =
+          headers['next-action'] ||
+          headers['Next-Action'] ||
+          '';
+
+        return (
+          /ooltool\.com/i.test(
+            url
+          ) &&
+          (
+            /reset-password|resetPassword|password|forgot|set-password|confirm-reset|auth/i.test(
+              url
+            ) ||
+            Boolean(
+              action
+            )
+          )
+        );
+      };
+
+    const posted: string[] = [];
+    const onRequest =
+      (request: {
+        method: () => string;
+        url: () => string;
+      }) => {
+        if (
+          /POST|PUT|PATCH/i.test(
+            request.method()
+          )
+        ) {
+          posted.push(
+            `${request.method()} ${request.url()}`
+          );
+        }
+      };
+
+    this.page.on(
+      'request',
+      onRequest
+    );
+
+    try {
+      const responsePromise =
+        this.page.waitForResponse(
+          isResetPost,
+          {
+            timeout: 20000
+          }
+        ).catch(
+          () => null
         );
 
-        await this.newPasswordInput.fill(
-          this.pendingPassword
+      await safeClick(
+        this.updatePasswordButton,
+        'Update Password'
+      );
+
+      let response =
+        await responsePromise;
+
+      if (
+        !response
+      ) {
+        await this.confirmPasswordInput.press(
+          'Enter'
+        ).catch(
+          () => undefined
         );
 
-        await this.confirmPasswordInput.fill(
-          this.pendingPassword
-        );
-
-        await expect(
-          this.newPasswordInput
-        ).toHaveValue(
-          this.pendingPassword
-        );
-
-        await this.newPasswordInput.evaluate(
-          (input, value) => {
-            const setter =
-              Object.getOwnPropertyDescriptor(
-                window.HTMLInputElement.prototype,
-                'value'
-              )?.set;
-
-            setter?.call(
-              input,
-              value
-            );
-
-            input.dispatchEvent(
-              new Event(
-                'input',
-                {
-                  bubbles: true
-                }
-              )
-            );
-
-            input.dispatchEvent(
-              new Event(
-                'change',
-                {
-                  bubbles: true
-                }
-              )
-            );
-          },
-          this.pendingPassword
-        );
-
-        await this.confirmPasswordInput.evaluate(
-          (input, value) => {
-            const setter =
-              Object.getOwnPropertyDescriptor(
-                window.HTMLInputElement.prototype,
-                'value'
-              )?.set;
-
-            setter?.call(
-              input,
-              value
-            );
-
-            input.dispatchEvent(
-              new Event(
-                'input',
-                {
-                  bubbles: true
-                }
-              )
-            );
-
-            input.dispatchEvent(
-              new Event(
-                'change',
-                {
-                  bubbles: true
-                }
-              )
-            );
-          },
-          this.pendingPassword
-        );
-
-        const resetRequest =
-          /reset-password|resetPassword|password\/reset|forgot-password|update-password|change-password/i;
-
-        const responsePromise =
-          this.page.waitForResponse(
-            (response) =>
-              response.request().method() === 'POST' &&
-              resetRequest.test(
-                response.url()
-              ),
+        response =
+          await this.page.waitForResponse(
+            isResetPost,
             {
-              timeout: 15000
+              timeout: 10000
             }
           ).catch(
             () => null
           );
+      }
 
-        const requestStarted =
-          this.page.waitForRequest(
-            (request) =>
-              request.method() === 'POST' &&
-              resetRequest.test(
-                request.url()
-              ),
-            {
-              timeout: 15000
-            }
-          ).then(
-            () => true
-          ).catch(
+      if (
+        !response
+      ) {
+        const successVisible =
+          await this.page.getByText(
+            /password (has been )?(updated|reset|changed)|successfully/i
+          ).first().isVisible({
+            timeout: 5000
+          }).catch(
             () => false
           );
 
-        await this.updatePasswordButton.click({
-          noWaitAfter: true,
-          timeout: 8000
-        });
-
-        const started =
-          await Promise.race([
-            requestStarted,
-            this.page.waitForTimeout(
-              3000
-            ).then(
-              () => false
-            )
-          ]);
-
-        if (!started) {
-          await this.page.locator(
-            'form'
-          ).first().evaluate(
-            (form) => {
-              (form as HTMLFormElement).requestSubmit();
-            }
-          ).catch(
-            () => undefined
+        if (
+          successVisible
+        ) {
+          Logger.success(
+            'Update Password Clicked'
           );
-
-          await this.updatePasswordButton.evaluate(
-            (button) => {
-              (button as HTMLButtonElement).click();
-            }
-          ).catch(
-            () => undefined
-          );
+          return;
         }
 
-        return responsePromise;
-      };
+        throw new Error(
+          `Password reset submit did not reach a reset API on ${this.page.url()}. POSTs seen: ${posted.slice(-8).join(' | ') || 'none'}`
+        );
+      }
 
-    let response =
-      await submitReset();
-
-    for (
-      let attempt = 1;
-      attempt < 3 &&
-      !response;
-      attempt++
-    ) {
-      response =
-        await submitReset();
-    }
-
-    if (response) {
       const body =
         await response.text().catch(
           () => ''
         );
 
       console.log(
-        `Reset response ${response.status()} ${body.slice(0, 180)}`
+        `Reset response ${response.status()} ${response.url()} ${body.slice(0, 180)}`
       );
 
       if (
@@ -352,81 +329,83 @@ export class ResetPasswordPage
           `Password reset was rejected (${response.status()}). ${body.slice(0, 240)}`
         );
       }
-    }
 
-    Logger.success(
-      'Update Password Clicked'
-    );
+      Logger.success(
+        'Update Password Clicked'
+      );
+    } finally {
+      this.page.off(
+        'request',
+        onRequest
+      );
+    }
   }
 
   async validateSuccess() {
-
+    // Require a real success signal. "Back to Login" alone is NOT proof the
+    // password changed — clicking it after a failed submit left disposable
+    // reset accounts unable to sign in with the new password.
     const confirmed =
       await this.page.getByText(
         /password (has been )?(updated|reset|changed)|successfully/i
       ).first().waitFor({
         state: 'visible',
-        timeout: 8000
+        timeout: 15000
       }).then(
         () => true
       ).catch(
         () => false
       );
 
-    if (!confirmed) {
-      const leftResetPage =
-        await this.page.waitForURL(
-          (url) =>
-            !/reset-password/i.test(
-              url.href
-            ),
-          {
-            timeout: 15000
-          }
-        ).then(
-          () => true
-        ).catch(
-          () => false
+    const leftResetPage =
+      !/reset-password/i.test(
+        this.page.url()
+      ) ||
+      await this.page.waitForURL(
+        (url) =>
+          !/reset-password/i.test(
+            url.href
+          ),
+        {
+          timeout: confirmed ? 5000 : 15000
+        }
+      ).then(
+        () => true
+      ).catch(
+        () => false
+      );
+
+    if (
+      !confirmed &&
+      !leftResetPage
+    ) {
+      const pageText =
+        await this.page.locator(
+          'body'
+        ).innerText().catch(
+          () => ''
+        );
+      const alertText =
+        await this.page.getByRole(
+          'alert'
+        ).innerText().catch(
+          () => ''
         );
 
-      if (!leftResetPage) {
-        const pageText =
-          await this.page.locator(
-            'body'
-          ).innerText().catch(
-            () => ''
-          );
-        const alertText =
-          await this.page.getByRole(
-            'alert'
-          ).innerText().catch(
-            () => ''
-          );
+      throw new Error(
+        `Password reset did not confirm success on ${this.page.url()}. Alert: ${alertText.slice(0, 160)}. Page: ${pageText.replace(/\s+/g, ' ').slice(0, 400)}`
+      );
+    }
 
-        if (
-          /invalid|incorrect|do not match|too weak|could not reset/i.test(
-            alertText
-          )
-        ) {
-          throw new Error(
-            `Password reset stayed on ${this.page.url()}. Page text: ${pageText.replace(/\s+/g, ' ').slice(0, 400)}`
-          );
-        }
-
-        if (
-          await this.backToLoginLink.isVisible({
-            timeout: 3000
-          }).catch(
-            () => false
-          )
-        ) {
-          await this.backToLogin();
-        } else {
-          throw new Error(
-            `Password reset stayed on ${this.page.url()}. Page text: ${pageText.replace(/\s+/g, ' ').slice(0, 400)}`
-          );
-        }
-      }
+    if (
+      confirmed &&
+      await this.backToLoginLink.isVisible({
+        timeout: 2000
+      }).catch(
+        () => false
+      )
+    ) {
+      await this.backToLogin();
     }
 
     Logger.success(

@@ -148,7 +148,10 @@ function passwordForEmail(
 
   if (
     normalized ===
-      TEST_USERS.subscriber.email.toLowerCase()
+      TEST_USERS.subscriber.email.toLowerCase() ||
+    /(?:^|\+)plantest@/i.test(
+      email
+    )
   ) {
     return (
       process.env.SUBSCRIBER_PASSWORD?.trim() ||

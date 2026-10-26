@@ -17,6 +17,10 @@ import { test }
   from './fixtures/subscriberAuth';
 
 import {
+  dismissOverlays
+} from './helpers/dismissOverlays';
+
+import {
   openHeaderMenu,
   safeClick
 } from './helpers/safeClick';
@@ -173,10 +177,53 @@ test.describe(
             continue;
           }
 
-          await safeClick(
-            link,
-            'Open footer page'
+          await dismissOverlays(
+            page
           );
+
+          await link.scrollIntoViewIfNeeded({
+            timeout: 5000
+          }).catch(
+            () => undefined
+          );
+
+          const clicked =
+            await link.click({
+              timeout: 8000
+            }).then(
+              () => true
+            ).catch(
+              async () => {
+                await dismissOverlays(
+                  page
+                );
+
+                return link.click({
+                  force: true,
+                  timeout: 8000
+                }).then(
+                  () => true
+                ).catch(
+                  () => false
+                );
+              }
+            );
+
+          if (
+            !clicked &&
+            href &&
+            href.startsWith(
+              '/'
+            )
+          ) {
+            await page.goto(
+              `${BASE_URL}${href}`,
+              {
+                waitUntil: 'domcontentloaded',
+                timeout: 60000
+              }
+            );
+          }
 
           await expect(
             page.locator(

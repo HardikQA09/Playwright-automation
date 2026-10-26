@@ -38,7 +38,7 @@ export class DashboardPage
     },
     {
       label: 'Portfolio',
-      url: /\/portfolio|\/dashboard/
+      url: /\/portfolio|\/dashboard\/positions|\/positions|\/dashboard/
     },
     {
       label: 'Research',
