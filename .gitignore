@@ -12,6 +12,12 @@ node_modules/
 /playwright/.auth/
 logs/
 
+# Local scratch / one-off probes (never commit)
+/tmp/
+*.tmp
+*.bak
+*.patching
+
 # Generated AIR / report noise (regenerate with npm run report:execution)
 /execution-report/kept-evidence/
 /execution-report/annotated-evidence/
@@ -21,3 +27,7 @@ logs/
 Playwright-automation-main/
 scripts/_provision-paid*
 *.log
+
+# Archived Playwright HTML dumps
+/playwright-report*.zip
+

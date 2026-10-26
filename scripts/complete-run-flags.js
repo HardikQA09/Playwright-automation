@@ -54,6 +54,7 @@ module.exports = {
   SUB_LIFECYCLE_PLAN_LADDER_ENABLED: 'true',
 
   // Explicit false so a leftover .env true cannot re-enable them.
+  // Override with MINIMIZE_SKIPS=true / --minimize-skips (see minimizeSkipFlags).
   SUB_LIFECYCLE_TRIAL_WITHOUT_CARD_ENABLED: 'false',
   SUB_LIFECYCLE_TRIAL_WITH_CARD_ENABLED: 'false',
   SUB_LIFECYCLE_INCOME_MONTHLY_ENABLED: 'false',
@@ -71,4 +72,29 @@ module.exports = {
 
   AIR_REPORT_SCOPE: 'latest',
   AIR_RESTORE_HISTORY: 'true'
+};
+
+/**
+ * Flags forced ON when MINIMIZE_SKIPS=true / --minimize-skips.
+ * Converts ~11+ lifecycle skips into live Stripe executions (slower, more failures).
+ * Does NOT convert matrix blocked/future/known-bug rows (~140+ intentional AIR skips).
+ */
+module.exports.minimizeSkipFlags = {
+  SUB_LIFECYCLE_TRIAL_WITHOUT_CARD_ENABLED: 'true',
+  SUB_LIFECYCLE_TRIAL_WITH_CARD_ENABLED: 'true',
+  SUB_LIFECYCLE_INCOME_MONTHLY_ENABLED: 'true',
+  SUB_LIFECYCLE_OVERLAY_MONTHLY_ENABLED: 'true',
+  SUB_LIFECYCLE_PORTFOLIO_MONTHLY_ENABLED: 'true',
+  SUB_LIFECYCLE_MARKETPLACE_MONTHLY_ENABLED: 'true',
+  SUB_LIFECYCLE_PAID_ANNUAL_ENABLED: 'true',
+  SUB_LIFECYCLE_UPGRADE_SUBMIT_ENABLED: 'true',
+  SUB_LIFECYCLE_FREE_LADDER_ENABLED: 'true',
+  SUB_LIFECYCLE_MONTHLY_CANCEL_SUBMIT_ENABLED: 'true',
+  SUB_LIFECYCLE_YEARLY_CANCEL_EXPIRY_SUBMIT_ENABLED: 'true',
+  SUB_LIFECYCLE_YEARLY_REFUND_SUBMIT_ENABLED: 'true',
+  SUB_LIFECYCLE_RETENTION_ACCEPT_ENABLED: 'true',
+  SUB_LIFECYCLE_DOWNGRADE_SUBMIT_ENABLED: 'true',
+  // Fresh Stripe users when prepared fixtures are Free / missing on UAT.
+  SUB_LIFECYCLE_CREATE_DISPOSABLE_USER: 'true',
+  SUB_LIFECYCLE_USE_PREPARED_USER: 'true'
 };

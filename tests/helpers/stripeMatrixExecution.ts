@@ -10,7 +10,6 @@ import {
   CARDHOLDER_NAME,
   PLAN_PRICES,
   STRIPE_CVC,
-  STRIPE_DECLINED_CARD,
   STRIPE_EXPIRY,
   STRIPE_INCOMPLETE_CARD,
   STRIPE_PROCESSING_ERROR_CARD,
@@ -309,7 +308,7 @@ function isMissingPlanAction(
           error
         );
 
-  return /Could not find (upgrade|downgrade|interval) control|Could not open (upgrade|downgrade|interval) preview|No (monthly|annual) upgrade or interval|opened a new-purchase dialog|Free\/no-card|no paid plan to preview/i.test(
+  return /Could not find (upgrade|downgrade|interval) control|Could not open (upgrade|downgrade|interval) preview|No (monthly|annual) upgrade or interval|opened a (?:new-purchase|downgrade|upgrade) dialog|Free\/no-card|no paid plan to preview/i.test(
     message
   );
 }
@@ -1297,26 +1296,13 @@ async function executeOverlayWithCardCheckout(
   );
 }
 
-async function previewPlanChange(
+async function runPlanChangePreviewAssertions(
   page: Page,
+  billing: BillingPage,
   action: 'upgrade' | 'downgrade' | 'interval',
   targetPlan: PaidPlanName,
   interval: BillingInterval
 ) {
-  await loginPaidSubscriber(
-    page
-  );
-
-  const billing =
-    new BillingPage(
-      page
-    );
-
-  await requireActivePaidSubscriptionFixture(
-    billing,
-    `${action} calculation-preview coverage`
-  );
-
   try {
     await billing.openPlanChangeCalculationPreview({
       targetPlan,
@@ -1393,6 +1379,35 @@ async function previewPlanChange(
   );
 }
 
+async function previewPlanChange(
+  page: Page,
+  action: 'upgrade' | 'downgrade' | 'interval',
+  targetPlan: PaidPlanName,
+  interval: BillingInterval
+) {
+  await loginPaidSubscriber(
+    page
+  );
+
+  const billing =
+    new BillingPage(
+      page
+    );
+
+  await requireActivePaidSubscriptionFixture(
+    billing,
+    `${action} calculation-preview coverage`
+  );
+
+  await runPlanChangePreviewAssertions(
+    page,
+    billing,
+    action,
+    targetPlan,
+    interval
+  );
+}
+
 async function executeUpgradePreview(
   page: Page
 ) {
@@ -1404,25 +1419,183 @@ async function executeUpgradePreview(
     'Opens upgrade calculation preview without submitting.'
   );
 
-  const targetPlan =
+  const preferredTarget =
     (
       process.env.SUB_LIFECYCLE_UPGRADE_TARGET_PLAN as PaidPlanName | undefined
     ) ??
     'Portfolio Hedger';
-  const interval: BillingInterval =
-    /annual/i.test(
-      process.env.SUB_LIFECYCLE_UPGRADE_INTERVALS ??
-        ''
-    )
-      ? 'annual'
-      : 'monthly';
 
-  await previewPlanChange(
-    page,
-    'upgrade',
-    targetPlan,
-    interval
+  // plantest is annual Overlay: selecting Monthly makes PH "Upgrade" open a
+  // Downgrade dialog. Prefer annual first, then fall back to monthly.
+  const envIntervals =
+    process.env.SUB_LIFECYCLE_UPGRADE_INTERVALS ??
+    '';
+  const intervalsToTry: BillingInterval[] =
+    /annual/i.test(
+      envIntervals
+    ) &&
+    !/monthly/i.test(
+      envIntervals
+    )
+      ? [
+          'annual'
+        ]
+      : /monthly/i.test(
+            envIntervals
+          ) &&
+          !/annual/i.test(
+            envIntervals
+          )
+        ? [
+            'monthly',
+            'annual'
+          ]
+        : [
+            'annual',
+            'monthly'
+          ];
+
+  const upgradeCandidates: PaidPlanName[] = [
+    ...new Set<PaidPlanName>([
+      preferredTarget,
+      'Portfolio Hedger',
+      'Overlay Strategists',
+      'Income Builder'
+    ])
+  ];
+
+  await loginPaidSubscriber(
+    page
   );
+
+  const billing =
+    new BillingPage(
+      page
+    );
+
+  await requireActivePaidSubscriptionFixture(
+    billing,
+    'upgrade calculation-preview coverage'
+  );
+
+  const isRecoverableUpgradeMiss = (
+    error: unknown
+  ) => {
+    const message =
+      error instanceof Error
+        ? error.message
+        : String(
+          error
+        );
+
+    return (
+      (
+        error instanceof CoverageSkip &&
+        /no upgrade control|downgrade dialog|new-purchase dialog|Could not open upgrade/i.test(
+          message
+        )
+      ) ||
+      isMissingPlanAction(
+        error
+      ) ||
+      /expected:[\s\S]{0,120}upgrade[\s\S]{0,120}received:[\s\S]{0,120}downgrade|downgrade\s+to\s+(?:portfolio|overlay|income)/i.test(
+        message
+      )
+    );
+  };
+
+  const tryUpgradeMatrix = async (
+    activeBilling: BillingPage,
+    plans: PaidPlanName[],
+    intervals: BillingInterval[],
+    label: string
+  ) => {
+    for (const interval of intervals) {
+      for (const plan of plans) {
+        try {
+          console.log(
+            `[upgrade-preview] Using target ${plan} ${interval} (${label})`
+          );
+
+          await runPlanChangePreviewAssertions(
+            page,
+            activeBilling,
+            'upgrade',
+            plan,
+            interval
+          );
+
+          return true;
+        } catch (error) {
+          if (
+            !isRecoverableUpgradeMiss(
+              error
+            )
+          ) {
+            throw error;
+          }
+
+          console.log(
+            `[upgrade-preview] ${label} upgrade to ${plan} ${interval} failed (${(error instanceof Error ? error.message : String(error)).split('\n')[0]}); trying next`
+          );
+        }
+      }
+    }
+
+    return false;
+  };
+
+  if (
+    await tryUpgradeMatrix(
+      billing,
+      upgradeCandidates,
+      intervalsToTry,
+      'Shared fixture'
+    )
+  ) {
+    return;
+  }
+
+  console.log(
+    '[upgrade-preview] Purchasing disposable Income Builder for a reliable Upgrade CTA'
+  );
+
+  const disposableBilling =
+    await purchaseDisposablePlan(
+      page,
+      'stripe-matrix-upgrade-preview',
+      'Income Builder',
+      'monthly'
+    );
+
+  const disposableTargets: PaidPlanName[] = [
+    ...new Set<PaidPlanName>([
+      'Overlay Strategists',
+      preferredTarget ===
+        'Income Builder'
+        ? 'Overlay Strategists'
+        : preferredTarget,
+      'Portfolio Hedger'
+    ])
+  ];
+
+  if (
+    !(
+      await tryUpgradeMatrix(
+        disposableBilling,
+        disposableTargets,
+        [
+          'monthly',
+          'annual'
+        ],
+        'Disposable'
+      )
+    )
+  ) {
+    throw new CoverageSkip(
+      'No usable Upgrade calculation preview on the shared fixture or disposable Income Builder.'
+    );
+  }
 }
 
 async function executeDowngradePreview(
@@ -1791,12 +1964,35 @@ async function submitCheckoutCard(
 async function executeCheckoutDecline(
   page: Page
 ) {
-  await submitCheckoutCard(
+  const planPage =
+    new PlanSelectionPage(
+      page
+    );
+
+  await registerAndReachPlanSelection(
     page,
-    'checkout-decline',
-    STRIPE_DECLINED_CARD,
-    /declin|insufficient|do not honor|card was declined|try another|not successful/i
+    'checkout-decline'
   );
+
+  await planPage.selectMonthlyBilling();
+  await planPage.selectPlan(
+    'Income Builder'
+  );
+
+  await expect(
+    page
+  ).toHaveURL(
+    /checkout\.stripe\.com/,
+    {
+      timeout: 60000
+    }
+  );
+
+  // Prefer the shared Stripe page object — same decline path as PaymentNegative
+  // and more resilient to checkout copy / field readiness than raw fills.
+  await new StripePaymentPage(
+    page
+  ).validateDeclinedCardRejected();
 }
 
 async function executeStolenCard(

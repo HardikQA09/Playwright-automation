@@ -151,9 +151,16 @@ constructor(page: Page) {
       page.getByRole(
         'button',
         {
-          name: /change number|change mobile|update mobile/i
+          name: /change number|change mobile|update mobile|edit (mobile|phone)|update number/i
         }
-      );
+      ).or(
+        page.getByRole(
+          'link',
+          {
+            name: /change number|change mobile|update mobile|edit (mobile|phone)/i
+          }
+        )
+      ).first();
 
     this.mobileNumberInput =
       page.locator(
@@ -581,11 +588,42 @@ async openMobileNumberChange() {
     return;
   }
 
-  await expect(
-    this.changeMobileNumberButton
-  ).toBeVisible({
-    timeout: 10000
-  });
+  // Profile mobile accordion can be collapsed or below the fold after
+  // earlier steps; scroll and reopen section once before failing.
+  for (let attempt = 1; attempt <= 2; attempt += 1) {
+    await this.mobileSectionHeading
+      .scrollIntoViewIfNeeded()
+      .catch(
+        () => undefined
+      );
+
+    await this.mobileSectionHeading
+      .click({
+        timeout: 5000
+      })
+      .catch(
+        () => undefined
+      );
+
+    const buttonVisible =
+      await this.changeMobileNumberButton.isVisible({
+        timeout: 8000
+      }).catch(
+        () => false
+      );
+
+    if (buttonVisible) {
+      break;
+    }
+
+    if (attempt === 2) {
+      await expect(
+        this.changeMobileNumberButton
+      ).toBeVisible({
+        timeout: 5000
+      });
+    }
+  }
 
   await safeClick(
     this.changeMobileNumberButton,
@@ -595,7 +633,7 @@ async openMobileNumberChange() {
   await expect(
     this.mobileNumberInput
   ).toBeVisible({
-    timeout: 10000
+    timeout: 15000
   });
 
   Logger.success(

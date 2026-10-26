@@ -4,8 +4,11 @@
  *   node scripts/run-complete-suite-no-email.js
  *   node scripts/run-complete-suite-no-email.js --headed
  *   node scripts/run-complete-suite-no-email.js --email
+ *   node scripts/run-complete-suite-no-email.js --minimize-skips
  *
  * Applies complete-run-flags to this process (does not rewrite .env).
+ * --minimize-skips / MINIMIZE_SKIPS=true turns lifecycle purchase+submit
+ * flags ON (fewer skips, slower, more Stripe mutations).
  * Report email is OFF by default. Pass --email to notify REPORT_EMAIL_* /
  * default recipients — but only when the run is clean (0 failed).
  * After the main pass, failed tests are re-run once (--last-failed) and merged
@@ -22,6 +25,16 @@ const { collectConfiguredRecipients } = require('./report-recipients');
 const { isAirRunClean } = require('./air-run-clean');
 
 const projectRoot = path.resolve(__dirname, '..');
+const argv = process.argv.slice(2);
+const minimizeSkips =
+  argv.includes('--minimize-skips') ||
+  ['1', 'true', 'yes', 'on'].includes(
+    String(process.env.MINIMIZE_SKIPS || '').toLowerCase()
+  );
+if (minimizeSkips) {
+  process.env.MINIMIZE_SKIPS = 'true';
+}
+
 const { hasGmail } = applyCompleteRunEnv(projectRoot);
 
 // If an agent/sandbox left PLAYWRIGHT_BROWSERS_PATH pointing at an empty cache,
@@ -38,7 +51,6 @@ if (
   );
 }
 
-const argv = process.argv.slice(2);
 const watch = ['1', 'true', 'yes', 'on'].includes(
   String(process.env.WATCH || '').toLowerCase()
 );
@@ -76,7 +88,9 @@ const playwrightCli = path.join(
 );
 
 console.log(
-  'Complete suite: user-journey file order, Oct 12 554-pass flag profile, destructive Stripe submits off, then AIR.'
+  minimizeSkips
+    ? 'Complete suite: MINIMIZE_SKIPS — lifecycle purchase/submit ON (fewer skips, slower), then AIR.'
+    : 'Complete suite: user-journey file order, Oct 12 554-pass flag profile, destructive Stripe submits off, then AIR.'
 );
 
 if (!hasGmail) {
@@ -101,6 +115,37 @@ if (headed) {
 
 const resultsPath = path.join(projectRoot, 'test-results', 'results.json');
 const healPath = path.join(projectRoot, 'test-results', 'results-heal.json');
+const resultsBackupPath = path.join(
+  projectRoot,
+  'test-results',
+  'results-pre-heal.json'
+);
+
+function preserveMainResults() {
+  if (!fs.existsSync(resultsPath)) {
+    return false;
+  }
+
+  fs.mkdirSync(path.dirname(resultsBackupPath), { recursive: true });
+  fs.copyFileSync(resultsPath, resultsBackupPath);
+  return true;
+}
+
+function restoreMainResultsIfMissing() {
+  if (fs.existsSync(resultsPath)) {
+    return true;
+  }
+
+  if (fs.existsSync(resultsBackupPath)) {
+    fs.copyFileSync(resultsBackupPath, resultsPath);
+    console.warn(
+      'Restored test-results/results.json from pre-heal backup (heal pass wiped outputDir).'
+    );
+    return true;
+  }
+
+  return false;
+}
 
 let playwrightExit = run(node, [
   playwrightCli,
@@ -114,6 +159,10 @@ if (
   console.log(
     '\n--- Heal pass: re-running failed tests in this same suite run ---'
   );
+
+  // Playwright cleans test-results/ at the start of every run, which deletes
+  // the main results.json the AIR builder needs. Snapshot it first.
+  const hadMainResults = preserveMainResults();
 
   if (fs.existsSync(healPath)) {
     fs.rmSync(healPath, { force: true });
@@ -141,6 +190,10 @@ if (
         stdio: 'inherit'
       }
     ).status ?? 1;
+
+  if (hadMainResults) {
+    restoreMainResultsIfMissing();
+  }
 
   if (
     fs.existsSync(resultsPath) &&
@@ -178,6 +231,16 @@ if (
   !healEnabled
 ) {
   console.log('Heal pass disabled (--no-heal).');
+}
+
+if (!fs.existsSync(resultsPath) && fs.existsSync(resultsBackupPath)) {
+  restoreMainResultsIfMissing();
+}
+
+if (!fs.existsSync(resultsPath)) {
+  console.warn(
+    'WARNING: test-results/results.json is missing after the suite. AIR may restore history or stay empty — re-run without aborting mid-suite.'
+  );
 }
 
 run(node, [path.join(projectRoot, 'scripts', 'generate-air-results.js')]);

@@ -616,7 +616,8 @@ export class StripePaymentPage
   }
 
   async completeTrialPayment() {
-    await this.submitUniqueTrialCard();
+    const firstCard =
+      await this.submitUniqueTrialCard();
 
     // Stripe keeps the form disabled and the page open while it confirms
     // the card, so give the redirect time before deciding the card failed.
@@ -639,7 +640,22 @@ export class StripePaymentPage
         'Stripe checkout still open after trial card; trying another unused test card'
       );
 
-      await this.submitUniqueTrialCard();
+      // Never retry the same fingerprint — SC-07 hung on ...0008 twice.
+      await this.submitUniqueTrialCard(
+        firstCard
+      );
+
+      await this.page.waitForURL(
+        (url) =>
+          !/checkout\.stripe\.com/i.test(
+            url.toString()
+          ),
+        {
+          timeout: 45000
+        }
+      ).catch(
+        () => undefined
+      );
     }
   }
 
@@ -649,9 +665,14 @@ export class StripePaymentPage
     );
   }
 
-  private async submitUniqueTrialCard() {
+  private async submitUniqueTrialCard(
+    excludeCard?: string
+  ) {
     const trialCard =
-      uniqueStripeTrialCard();
+      uniqueStripeTrialCard(
+        undefined,
+        excludeCard
+      );
 
     console.log(
       'With-card trial Stripe card:',
@@ -661,5 +682,7 @@ export class StripePaymentPage
     await this.completePayment(
       trialCard
     );
+
+    return trialCard;
   }
 }

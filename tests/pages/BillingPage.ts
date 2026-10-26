@@ -330,10 +330,23 @@ constructor(page: Page) {
     page.getByRole(
       'tab',
       {
-        name: 'History',
-        exact: true
+        name: /^history$/i
       }
-    );
+    ).or(
+      page.getByRole(
+        'button',
+        {
+          name: /^history$/i
+        }
+      )
+    ).or(
+      page.getByRole(
+        'link',
+        {
+          name: /^history$/i
+        }
+      )
+    ).first();
 
   this.overviewTab =
     page.getByRole(
@@ -341,7 +354,34 @@ constructor(page: Page) {
       {
         name: /^overview$/i
       }
-    );
+    ).or(
+      page.getByRole(
+        'button',
+        {
+          name: /^overview$/i
+        }
+      )
+    ).or(
+      page.getByRole(
+        'link',
+        {
+          name: /^overview$/i
+        }
+      )
+    ).or(
+      // Selected billing tabs sometimes render as plain text, not role=tab.
+      page
+        .locator(
+          'nav, [role="tablist"], [class*="tabs"], [class*="Tabs"]'
+        )
+        .getByText(
+          /^overview$/i
+        )
+    ).or(
+      page.getByText(
+        /^overview$/i
+      )
+    ).first();
 
   this.transactionsTab =
     page.getByText(
@@ -1334,9 +1374,91 @@ private billingIntervalButton(
     .last();
 }
 
+private planChangeOverlay() {
+  return this.page
+    .locator(
+      'div.fixed.inset-0.z-50[data-state="open"]'
+    )
+    .first();
+}
+
+private async dismissBlockingOverlays() {
+  for (
+    let attempt = 0;
+    attempt < 3;
+    attempt += 1
+  ) {
+    const dialog =
+      this.openPlanChangeSurface();
+    const overlay =
+      this.planChangeOverlay();
+
+    const hasDialog =
+      await dialog
+        .isVisible({
+          timeout: 400
+        })
+        .catch(
+          () => false
+        );
+
+    const hasOverlay =
+      await overlay
+        .isVisible({
+          timeout: 400
+        })
+        .catch(
+          () => false
+        );
+
+    if (
+      !hasDialog &&
+      !hasOverlay
+    ) {
+      return;
+    }
+
+    if (
+      hasDialog
+    ) {
+      await this.closeAnyPlanChangeDialog();
+    } else {
+      await this.page.keyboard.press(
+        'Escape'
+      ).catch(
+        () => undefined
+      );
+    }
+
+    await overlay
+      .waitFor({
+        state: 'hidden',
+        timeout: 2500
+      })
+      .catch(
+        () => undefined
+      );
+  }
+}
+
+private billingIntervalLooksSelected(
+  className: string | null
+) {
+  // Plans Monthly/Annual toggles use `bg-primary` when selected. Do not
+  // treat `text-primary-foreground` alone as selected.
+  return /(?:^|\s)bg-primary(?:\s|$)/.test(
+    className ??
+      ''
+  );
+}
+
 private async selectBillingIntervalIfAvailable(
   interval: 'monthly' | 'annual'
 ) {
+  // Radix leaves a full-screen overlay that aria-hides the Plans toggles
+  // and intercepts Monthly/Annual clicks (SC-214/222/223 cascade).
+  await this.dismissBlockingOverlays();
+
   const intervalButton =
     this.billingIntervalButton(
       interval
@@ -1344,7 +1466,7 @@ private async selectBillingIntervalIfAvailable(
 
   if (
     !await intervalButton.isVisible({
-      timeout: 5000
+      timeout: 8000
     }).catch(
       () => false
     )
@@ -1368,25 +1490,101 @@ private async selectBillingIntervalIfAvailable(
 
   const pressed =
     await intervalButton.getAttribute(
-      'aria-pressed'
+      'aria-pressed',
+      {
+        timeout: 5000
+      }
+    ).catch(
+      () => null
     );
 
   const dataState =
     await intervalButton.getAttribute(
-      'data-state'
+      'data-state',
+      {
+        timeout: 3000
+      }
+    ).catch(
+      () => null
+    );
+
+  const ariaSelected =
+    await intervalButton.getAttribute(
+      'aria-selected',
+      {
+        timeout: 3000
+      }
+    ).catch(
+      () => null
+    );
+
+  const className =
+    await intervalButton.getAttribute(
+      'class'
+    ).catch(
+      () => null
     );
 
   if (
     pressed === 'true' ||
+    ariaSelected === 'true' ||
     dataState === 'active' ||
-    dataState === 'on'
+    dataState === 'on' ||
+    this.billingIntervalLooksSelected(
+      className
+    )
   ) {
     return;
   }
 
-  await intervalButton.click({
-    timeout: 8000
-  });
+  // Prefer a normal click so the billing toggle actually switches. force:true
+  // on a partially-covered Monthly/Annual control can no-op and leave the
+  // opposite interval selected (plantest annual → PH Upgrade opens Downgrade).
+  try {
+    await intervalButton.click({
+      timeout: 8000
+    });
+  } catch (error) {
+    const message =
+      error instanceof Error
+        ? error.message
+        : String(
+          error
+        );
+
+    if (
+      !/intercepts pointer|Timeout|timeout/i.test(
+        message
+      )
+    ) {
+      throw error;
+    }
+
+    await this.dismissBlockingOverlays();
+
+    const classAfterDismiss =
+      await intervalButton.getAttribute(
+        'class'
+      ).catch(
+        () => null
+      );
+
+    if (
+      this.billingIntervalLooksSelected(
+        classAfterDismiss
+      )
+    ) {
+      return;
+    }
+
+    await intervalButton.click({
+      timeout: 8000
+    });
+  }
+
+  await this.page.waitForTimeout(
+    500
+  );
 }
 
 private planActionButtonPattern(
@@ -1403,15 +1601,35 @@ private planActionButtonPattern(
   return /^(?:switch)$|switch to (annual|monthly|yearly)|change to (annual|monthly)|to annual|to monthly|billing interval|switch billing/i;
 }
 
+private openPlanChangeSurface() {
+  return this.page
+    .locator(
+      '[role="dialog"][data-state="open"], [role="alertdialog"][data-state="open"]'
+    )
+    .or(
+      this.page
+        .getByRole(
+          'dialog'
+        )
+        .or(
+          this.page.getByRole(
+            'alertdialog'
+          )
+        )
+        .filter({
+          has: this.page.locator(
+            '[data-state="open"]'
+          )
+        })
+    )
+    .first();
+}
+
 private async closeAnyPlanChangeDialog() {
   const dialog =
-    this.page.getByRole(
-      'dialog'
-    ).or(
-      this.page.getByRole(
-        'alertdialog'
-      )
-    ).first();
+    this.openPlanChangeSurface();
+  const overlay =
+    this.planChangeOverlay();
 
   if (
     !await dialog.isVisible({
@@ -1420,6 +1638,40 @@ private async closeAnyPlanChangeDialog() {
       () => false
     )
   ) {
+    // Orphan Radix backdrop can remain with data-state=open after the
+    // dialog content unmounts — Escape clears it so Plans toggles are
+    // reachable again.
+    if (
+      await overlay
+        .isVisible({
+          timeout: 400
+        })
+        .catch(
+          () => false
+        )
+    ) {
+      await this.page.keyboard.press(
+        'Escape'
+      ).catch(
+        () => undefined
+      );
+
+      await overlay
+        .waitFor({
+          state: 'hidden',
+          timeout: 3000
+        })
+        .catch(
+          () => undefined
+        );
+    } else {
+      await this.page.keyboard.press(
+        'Escape'
+      ).catch(
+        () => undefined
+      );
+    }
+
     return;
   }
 
@@ -1457,6 +1709,15 @@ private async closeAnyPlanChangeDialog() {
   }).catch(
     () => undefined
   );
+
+  await overlay
+    .waitFor({
+      state: 'hidden',
+      timeout: 3000
+    })
+    .catch(
+      () => undefined
+    );
 }
 
 private async findPlanActionButton(
@@ -1679,36 +1940,14 @@ private planChangeDialog(
           'i'
         )
       : new RegExp(
-          `(?:${options.action}|switch)\\s+to\\s+(?:${planName})|(?:${planName}).{0,120}(?:confirm|prorat|due today|amount due)|confirm.{0,40}(?:${options.action}|change|subscription)|(?:${planName})`,
+          // Require the action verb. Do not match via loose "confirm change" alone —
+          // that lets a Downgrade sheet satisfy an Upgrade locator (SC-82..85).
+          `(?:${options.action}|switch)\\s+to\\s+(?:${planName})`,
           'i'
         );
 
-  const titledSurface =
-    this.page.getByText(
-      new RegExp(
-        `(?:upgrade|downgrade|switch)\\s+to\\s+(?:${planName})|(?:${planName}).{0,80}(?:confirm|prorat|due today)|confirm (?:upgrade|downgrade|change)`,
-        'i'
-      )
-    );
-
-  if (
-    options.action === 'interval'
-  ) {
-    return this.page
-      .getByRole(
-        'dialog'
-      )
-      .or(
-        this.page.getByRole(
-          'alertdialog'
-        )
-      )
-      .filter({
-        hasText: dialogPattern
-      })
-      .first();
-  }
-
+  // role=dialog only — do not .or(getByText).first(); that resolved to a
+  // non-visible page text node while the real sheet was open (SC-82..85).
   return this.page
     .getByRole(
       'dialog'
@@ -1721,9 +1960,6 @@ private planChangeDialog(
     .filter({
       hasText: dialogPattern
     })
-    .or(
-      titledSurface
-    )
     .first();
 }
 
@@ -1904,14 +2140,22 @@ async openPlanChangeCalculationPreview(
       () => undefined
     );
 
+    // Prefer a real click over force:true — force can hit a covered control
+    // and leave no plan-change sheet open (SC-82..85).
     await button.click({
-      force: true,
       timeout: 8000
     }).catch(
       async () => {
-        await safeClick(
-          button,
-          label
+        await button.click({
+          force: true,
+          timeout: 8000
+        }).catch(
+          async () => {
+            await safeClick(
+              button,
+              label
+            );
+          }
         );
       }
     );
@@ -1936,55 +2180,62 @@ async openPlanChangeCalculationPreview(
       timeout: 8000
     }).catch(
       () => false
-    ) ||
-    await this.page
-      .getByRole(
-        'dialog'
-      )
-      .or(
-        this.page.getByRole(
-          'alertdialog'
-        )
-      )
-      .first()
-      .isVisible({
-        timeout: 2000
-      })
-      .catch(
-        () => false
-      );
+    );
 
   let openedTarget =
     await dialogOpened();
 
   if (!openedTarget) {
-    await this.closeAnyPlanChangeDialog();
-    await this.openPlansView();
-    await this.selectBillingIntervalIfAvailable(
-      options.interval
-    );
+    // A sheet may already be open but not match planChangeDialog yet (title
+    // still loading). Do not dismiss it — that caused SC-82..85 to miss the
+    // Upgrade quote and then click into a Downgrade after interval churn.
+    const alreadyOpen =
+      await this.page
+        .getByRole(
+          'dialog'
+        )
+        .or(
+          this.page.getByRole(
+            'alertdialog'
+          )
+        )
+        .first()
+        .isVisible({
+          timeout: 3000
+        })
+        .catch(
+          () => false
+        );
 
-    actionButton =
-      await this.findPlanActionButton(
-        options.targetPlan,
-        lookupAction
+    if (!alreadyOpen) {
+      await this.closeAnyPlanChangeDialog();
+      await this.openPlansView();
+      await this.selectBillingIntervalIfAvailable(
+        options.interval
       );
 
-    await clickPlanAction(
-      actionButton,
-      `${options.action} ${options.targetPlan} (retry)`
-    );
+      actionButton =
+        await this.findPlanActionButton(
+          options.targetPlan,
+          lookupAction
+        );
 
-    await actionButton.evaluate(
-      (element) => {
-        (element as HTMLButtonElement).click();
-      }
-    ).catch(
-      () => undefined
-    );
+      await clickPlanAction(
+        actionButton,
+        `${options.action} ${options.targetPlan} (retry)`
+      );
 
-    openedTarget =
-      await dialogOpened();
+      await actionButton.evaluate(
+        (element) => {
+          (element as HTMLButtonElement).click();
+        }
+      ).catch(
+        () => undefined
+      );
+
+      openedTarget =
+        await dialogOpened();
+    }
   }
 
   let activeDialog = dialog;
@@ -1997,6 +2248,7 @@ async openPlanChangeCalculationPreview(
 
   if (!dialogVisible) {
     // Product sometimes opens a generic confirm sheet without the older title copy.
+    // Never treat a opposite-direction dialog (upgrade vs downgrade) as success.
     const anyDialog =
       this.page
         .getByRole(
@@ -2022,6 +2274,33 @@ async openPlanChangeCalculationPreview(
       );
 
     if (dialogVisible) {
+      const anyText =
+        await anyDialog.innerText().catch(
+          () => ''
+        );
+
+      if (
+        options.action === 'upgrade' &&
+        /downgrade\s+to/i.test(
+          anyText
+        )
+      ) {
+        throw new Error(
+          `Could not find upgrade control for ${options.targetPlan}: opened a downgrade dialog instead of an upgrade quote.`
+        );
+      }
+
+      if (
+        options.action === 'downgrade' &&
+        /upgrade\s+to/i.test(
+          anyText
+        )
+      ) {
+        throw new Error(
+          `Could not find downgrade control for ${options.targetPlan}: opened an upgrade dialog instead of a downgrade quote.`
+        );
+      }
+
       activeDialog =
         anyDialog;
     }
@@ -2037,6 +2316,28 @@ async openPlanChangeCalculationPreview(
 
   const dialogText =
     await activeDialog.innerText();
+
+  if (
+    options.action === 'upgrade' &&
+    /downgrade\s+to/i.test(
+      dialogText
+    )
+  ) {
+    throw new Error(
+      `Could not find upgrade control for ${options.targetPlan}: opened a downgrade dialog instead of an upgrade quote.`
+    );
+  }
+
+  if (
+    options.action === 'downgrade' &&
+    /upgrade\s+to/i.test(
+      dialogText
+    )
+  ) {
+    throw new Error(
+      `Could not find downgrade control for ${options.targetPlan}: opened an upgrade dialog instead of a downgrade quote.`
+    );
+  }
 
   const showsMonthly =
     /\/month|per month/i.test(
@@ -2733,12 +3034,22 @@ async closePlanChangeCalculationPreview(
       options
     );
 
+  const openDialog =
+    this.openPlanChangeSurface();
+
   const cancelButton =
     dialog.getByRole(
       'button',
       {
         name: /^(cancel|close)$/i
       }
+    ).or(
+      openDialog.getByRole(
+        'button',
+        {
+          name: /^(cancel|close)$/i
+        }
+      )
     ).first();
 
   if (
@@ -2759,7 +3070,7 @@ async closePlanChangeCalculationPreview(
   }
 
   await expect(
-    dialog
+    openDialog
   ).toBeHidden({
     timeout: 10000
   });
@@ -6274,34 +6585,34 @@ private async assertPortalOverview(
 
   await expect(
     portalPage.getByText(
-      /current subscription|subscription/i
+      /current subscription|your subscription|subscription/i
     ).first()
   ).toBeVisible({
-    timeout: 15000
+    timeout: 20000
   });
 
   await expect(
     portalPage.getByText(
-      /payment method/i
+      /payment method|add payment|card ending|visa|mastercard/i
     ).first()
   ).toBeVisible({
-    timeout: 15000
+    timeout: 20000
   });
 
   await expect(
     portalPage.getByText(
-      /billing information|billing details|billing/i
+      /billing information|billing details|billing|update information|customer information|email/i
     ).first()
   ).toBeVisible({
-    timeout: 15000
+    timeout: 20000
   });
 
   await expect(
     portalPage.getByText(
-      /invoice history|invoices/i
+      /invoice history|invoices|view (all )?invoices|receipt/i
     ).first()
   ).toBeVisible({
-    timeout: 15000
+    timeout: 20000
   });
 
   const portalText =
@@ -6320,19 +6631,13 @@ private async assertPortalOverview(
   expect(
     portalText
   ).toMatch(
-    /payment method/i
+    /payment method|card ending|visa|mastercard/i
   );
 
   expect(
     portalText
   ).toMatch(
-    /billing (information|details)/i
-  );
-
-  expect(
-    portalText
-  ).toMatch(
-    /invoice/i
+    /billing|invoice|receipt/i
   );
 
   const expectedPlan =

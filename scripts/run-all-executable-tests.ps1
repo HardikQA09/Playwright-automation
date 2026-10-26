@@ -87,7 +87,7 @@ Enable-Flag 'SUB_LIFECYCLE_PLAN_LADDER_ENABLED'
 # Flip SUB_FIXTURE_USE_CANONICAL_EMAILS=true after creating +sub-* accounts.
 Set-DefaultEnv 'AUTH_OTP_CODE' '111111'
 Set-DefaultEnv 'SUBSCRIPTION_FIXTURE_PASSWORD' 'Test@123456'
-Set-DefaultEnv 'PLAN_SELECTION_EXISTING_EMAIL' 'imhardikthanki+plan-selection-prepared@gmail.com'
+Set-DefaultEnv 'PLAN_SELECTION_EXISTING_EMAIL' 'imhardikthanki+plantest@gmail.com'
 Set-DefaultEnv 'PLAN_SELECTION_EXISTING_PASSWORD' 'H@rdik9944'
 Set-DefaultEnv 'SUB_LIFECYCLE_PAID_EMAIL' 'imhardikthanki+monthly-to-a-mvjn15yr@gmail.com'
 Set-DefaultEnv 'SUB_LIFECYCLE_PAID_PASSWORD' 'Test@123456'

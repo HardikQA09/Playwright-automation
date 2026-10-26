@@ -1006,7 +1006,8 @@ function trialCardAlreadyUsed(
 }
 
 export function uniqueStripeTrialCard(
-  _seed?: string
+  _seed?: string,
+  excludeCard?: string
 ) {
   const configuredCard =
     process.env.STRIPE_TRIAL_CARD?.replace(
@@ -1017,7 +1018,9 @@ export function uniqueStripeTrialCard(
   if (
     configuredCard &&
     configuredCard !==
-      '4242424242424242'
+      '4242424242424242' &&
+    configuredCard !==
+      excludeCard
   ) {
     return configuredCard;
   }
@@ -1028,6 +1031,14 @@ export function uniqueStripeTrialCard(
   ) {
     console.warn(
       'STRIPE_TRIAL_CARD=4242424242424242 is already_redeemed for Overlay with-card trial. Rotating an unused country test card. Paid checkout may still use STRIPE_CARD 4242. Follow-up: clear 4242 reuse in Stripe test mode.'
+    );
+  }
+
+  if (
+    excludeCard
+  ) {
+    rememberTrialCard(
+      excludeCard
     );
   }
 
@@ -1052,7 +1063,9 @@ export function uniqueStripeTrialCard(
 
     if (
       card ===
-      '4242424242424242'
+        '4242424242424242' ||
+      card ===
+        excludeCard
     ) {
       continue;
     }
@@ -1063,7 +1076,16 @@ export function uniqueStripeTrialCard(
     }
   }
 
+  // Pool exhausted in used-trial-cards.json — still avoid the excluded
+  // fingerprint so a hung checkout (SC-07 ...0008) is not retried with itself.
   const fallback =
+    STRIPE_TRIAL_CARDS.find(
+      (candidate) =>
+        candidate !==
+          '4242424242424242' &&
+        candidate !==
+          excludeCard
+    ) ??
     STRIPE_TRIAL_CARDS.find(
       (candidate) =>
         candidate !==

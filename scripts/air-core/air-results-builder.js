@@ -790,12 +790,24 @@ function writeAirResults(projectRoot = path.resolve(__dirname, '..', '..')) {
     airResults.source.hasResults &&
     (airResults.summary.total ?? 0) > 0;
 
+  // Prefer current results.json. If the latest suite left no usable JSON
+  // (aborted run / heal wiped outputDir), fall back to history so AIR still
+  // generates instead of writing an empty report.
   if (
-    !useLatestRunOnly &&
     existingExecutions.length > 0 &&
     (
-      forceHistoryRestore ||
       (
+        !useLatestRunOnly &&
+        (
+          forceHistoryRestore ||
+          (
+            !currentRunHasUsableResults &&
+            bestHistoryTotal > 0
+          )
+        )
+      ) ||
+      (
+        useLatestRunOnly &&
         !currentRunHasUsableResults &&
         bestHistoryTotal > 0
       )

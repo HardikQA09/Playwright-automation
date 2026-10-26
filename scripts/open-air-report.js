@@ -154,10 +154,23 @@ async function globalTeardown() {
   );
 
   if (!fs.existsSync(resultsPath)) {
-    console.log(
-      'No test-results/results.json. AIR report was not generated.'
+    const backupPath = path.join(
+      projectRoot,
+      'test-results',
+      'results-pre-heal.json'
     );
-    return;
+
+    if (fs.existsSync(backupPath)) {
+      fs.copyFileSync(backupPath, resultsPath);
+      console.warn(
+        'Restored test-results/results.json from results-pre-heal.json before AIR generation.'
+      );
+    } else {
+      console.log(
+        'No test-results/results.json. AIR report was not generated.'
+      );
+      return;
+    }
   }
 
   const stats = JSON.parse(

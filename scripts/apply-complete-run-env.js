@@ -5,6 +5,15 @@
 const fs = require('fs');
 const path = require('path');
 const flags = require('./complete-run-flags');
+const { minimizeSkipFlags } = flags;
+
+function wantsMinimizeSkips(argv = process.argv) {
+  return (
+    ['1', 'true', 'yes', 'on'].includes(
+      String(process.env.MINIMIZE_SKIPS || '').toLowerCase()
+    ) || argv.includes('--minimize-skips')
+  );
+}
 
 function loadEnvFile(filePath) {
   if (!fs.existsSync(filePath)) {
@@ -54,13 +63,29 @@ function applyCompleteRunEnv(projectRoot = path.resolve(__dirname, '..')) {
   loadEnvFile(path.join(projectRoot, '.env.local'));
 
   for (const [key, value] of Object.entries(flags)) {
+    if (key === 'minimizeSkipFlags') {
+      continue;
+    }
     process.env[key] = value;
   }
 
+  const minimizeSkips = wantsMinimizeSkips();
+
+  if (minimizeSkips) {
+    for (const [key, value] of Object.entries(minimizeSkipFlags || {})) {
+      process.env[key] = value;
+    }
+    console.warn(
+      '[complete-run-env] MINIMIZE_SKIPS: lifecycle submit/purchase flags ON + disposable users when fixtures gap'
+    );
+  }
+
   setDefaultEnv('AUTH_OTP_CODE', '111111');
+  // plan-selection-prepared is rejected by UAT (CredentialsSignin).
+  // Use the working plantest account so plan-selection login can proceed.
   setDefaultEnv(
     'PLAN_SELECTION_EXISTING_EMAIL',
-    'imhardikthanki+plan-selection-prepared@gmail.com'
+    'imhardikthanki+plantest@gmail.com'
   );
   setDefaultEnv('PLAN_SELECTION_EXISTING_PASSWORD', 'H@rdik9944');
   setDefaultEnv('ADMIN_EMAIL', 'admin@ooltool.com');
@@ -103,12 +128,16 @@ function applyCompleteRunEnv(projectRoot = path.resolve(__dirname, '..')) {
   process.env.SUBSCRIBER_PASSWORD = workingPaidPassword;
   // Prefer prepared plantest over registering a new Stripe user every run.
   process.env.SUB_LIFECYCLE_USE_PREPARED_USER = 'true';
-  process.env.SUB_LIFECYCLE_CREATE_DISPOSABLE_USER = 'false';
+  if (!minimizeSkips) {
+    process.env.SUB_LIFECYCLE_CREATE_DISPOSABLE_USER = 'false';
+  }
   console.warn(
     '[complete-run-env] SUB_LIFECYCLE_PAID / BILLING_MANAGEMENT / SUBSCRIBER pinned to plantest'
   );
   console.warn(
-    '[complete-run-env] prepared users ON (CREATE_DISPOSABLE_USER=false) for faster runs'
+    minimizeSkips
+      ? '[complete-run-env] MINIMIZE_SKIPS: CREATE_DISPOSABLE_USER=true (slower; fewer fixture skips)'
+      : '[complete-run-env] prepared users ON (CREATE_DISPOSABLE_USER=false) for faster runs'
   );
   setDefaultEnv(
     'REPORT_EMAIL_TO',
@@ -138,5 +167,6 @@ function applyCompleteRunEnv(projectRoot = path.resolve(__dirname, '..')) {
 module.exports = {
   applyCompleteRunEnv,
   loadEnvFile,
-  setDefaultEnv
+  setDefaultEnv,
+  wantsMinimizeSkips
 };

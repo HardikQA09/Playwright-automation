@@ -1423,7 +1423,7 @@ test.describe(
                 : String(error);
 
             if (
-              /Could not find upgrade control|Free\/no-card|opened a new-purchase dialog/i.test(
+              /Could not find upgrade control|Free\/no-card|opened a (?:new-purchase|downgrade) dialog/i.test(
                 message
               )
             ) {

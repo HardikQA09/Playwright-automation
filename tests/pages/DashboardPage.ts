@@ -175,19 +175,23 @@ export class DashboardPage
     );
   }
 
+  private profileMenuTrigger() {
+    return this.page.getByRole(
+      'banner'
+    ).getByRole(
+      'button',
+      {
+        name: /^[A-Z]{2}$/
+      }
+    ).first();
+  }
+
   async openProfileMenu() {
 
     await this.dismissMarketingOverlays();
 
     const menuTrigger =
-      this.page.getByRole(
-        'banner'
-      ).getByRole(
-        'button',
-        {
-          name: /^[A-Z]{2}$/
-        }
-      ).first();
+      this.profileMenuTrigger();
 
     const accountMenu =
       this.profileMenuItem(
@@ -201,23 +205,8 @@ export class DashboardPage
         )
       ).first();
 
-    for (let attempt = 1; attempt <= 2; attempt += 1) {
-      await menuTrigger.hover();
-
-      const openedByHover =
-        await accountMenu.waitFor({
-          state: 'visible',
-          timeout: 1500
-        }).then(
-          () => true
-        ).catch(
-          () => false
-        );
-
-      if (openedByHover) {
-        break;
-      }
-
+    // Prefer click over hover so Radix focuses the menu and Escape dismiss works.
+    for (let attempt = 1; attempt <= 3; attempt += 1) {
       const expanded =
         await menuTrigger.getAttribute(
           'aria-expanded'
@@ -228,20 +217,40 @@ export class DashboardPage
       if (expanded !== 'true') {
         await menuTrigger.click({
           timeout: 8000
-        });
+        }).catch(
+          async () => {
+            await menuTrigger.hover();
+          }
+        );
       }
 
       const opened =
         await accountMenu.waitFor({
           state: 'visible',
-          timeout: 5000
+          timeout: 4000
         }).then(
           () => true
         ).catch(
           () => false
         );
 
-      if (opened || expanded === 'true') {
+      if (opened) {
+        break;
+      }
+
+      await menuTrigger.hover();
+
+      const openedByHover =
+        await accountMenu.waitFor({
+          state: 'visible',
+          timeout: 2000
+        }).then(
+          () => true
+        ).catch(
+          () => false
+        );
+
+      if (openedByHover) {
         break;
       }
     }
@@ -255,6 +264,107 @@ export class DashboardPage
         )
       ).first()
     ).toBeVisible({
+      timeout: 10000
+    });
+  }
+
+  private async dismissOpenProfileMenu(
+    billingMenuItem = this.profileMenuItem(
+      'Billing'
+    )
+  ) {
+    if (
+      !(
+        await billingMenuItem.isVisible().catch(
+          () => false
+        )
+      )
+    ) {
+      return;
+    }
+
+    // Focus a menu item so Escape is handled by the Radix dropdown.
+    await billingMenuItem.focus().catch(
+      () => undefined
+    );
+
+    await this.page.keyboard.press(
+      'Escape'
+    );
+
+    if (
+      await billingMenuItem.isVisible({
+        timeout: 1500
+      }).catch(
+        () => false
+      )
+    ) {
+      await this.page.keyboard.press(
+        'Escape'
+      );
+    }
+
+    if (
+      await billingMenuItem.isVisible({
+        timeout: 1500
+      }).catch(
+        () => false
+      )
+    ) {
+      const menuTrigger =
+        this.profileMenuTrigger();
+
+      if (
+        (
+          await menuTrigger.getAttribute(
+            'aria-expanded'
+          ).catch(
+            () => null
+          )
+        ) === 'true'
+      ) {
+        await menuTrigger.click({
+          timeout: 8000
+        });
+      }
+    }
+
+    if (
+      await billingMenuItem.isVisible({
+        timeout: 1500
+      }).catch(
+        () => false
+      )
+    ) {
+      // Last resort: click empty main content away from the avatar.
+      const main =
+        this.page.locator(
+          'main'
+        ).first();
+
+      if (
+        await main.isVisible().catch(
+          () => false
+        )
+      ) {
+        await main.click({
+          position: {
+            x: 48,
+            y: 48
+          },
+          force: true
+        });
+      } else {
+        await this.page.mouse.click(
+          640,
+          400
+        );
+      }
+    }
+
+    await expect(
+      billingMenuItem
+    ).not.toBeVisible({
       timeout: 10000
     });
   }
@@ -937,21 +1047,7 @@ export class DashboardPage
 
   private async reopenProfileMenu() {
     // Some menu items close the menu, others leave it open.
-    if (
-      await this.profileMenuItem(
-        'Billing'
-      ).isVisible().catch(
-        () => false
-      )
-    ) {
-      await this.page.keyboard.press(
-        'Escape'
-      );
-
-      await this.page.waitForTimeout(
-        400
-      );
-    }
+    await this.dismissOpenProfileMenu();
 
     await this.openProfileMenu();
   }
@@ -985,8 +1081,6 @@ export class DashboardPage
       'Validating profile-menu dark/light theme switch'
     );
 
-    await this.openProfileMenu();
-
     const lightItem =
       this.profileMenuToggle(
         /^light theme$/i
@@ -997,12 +1091,32 @@ export class DashboardPage
         /^dark theme$/i
       );
 
-    const startsDark =
-      await lightItem.isVisible({
-        timeout: 3000
-      }).catch(
-        () => false
-      );
+    // Menu can race with dashboard chrome; reopen once if theme items are late.
+    let startsDark = false;
+    for (let attempt = 1; attempt <= 2; attempt += 1) {
+      await this.openProfileMenu();
+
+      startsDark =
+        await lightItem.isVisible({
+          timeout: 4000
+        }).catch(
+          () => false
+        );
+
+      const hasTheme =
+        startsDark ||
+        await darkItem.isVisible({
+          timeout: 4000
+        }).catch(
+          () => false
+        );
+
+      if (hasTheme) {
+        break;
+      }
+
+      await this.dismissOpenProfileMenu();
+    }
 
     // The menu offers the theme it will switch TO.
     const firstItem =
@@ -1205,15 +1319,9 @@ export class DashboardPage
       timeout: 10000
     });
 
-    await this.page.keyboard.press(
-      'Escape'
-    );
-
-    await expect(
+    await this.dismissOpenProfileMenu(
       billingMenuItem
-    ).not.toBeVisible({
-      timeout: 10000
-    });
+    );
 
     await this.openProfileMenu();
 
@@ -1223,16 +1331,48 @@ export class DashboardPage
       timeout: 10000
     });
 
-    await this.page.mouse.click(
-      20,
-      20
-    );
+    // Avoid (20,20): sticky header/logo can steal the click or navigate away.
+    const main =
+      this.page.locator(
+        'main'
+      ).first();
 
-    await expect(
-      billingMenuItem
-    ).not.toBeVisible({
-      timeout: 10000
-    });
+    if (
+      await main.isVisible().catch(
+        () => false
+      )
+    ) {
+      await main.click({
+        position: {
+          x: 40,
+          y: 40
+        },
+        force: true
+      });
+    } else {
+      await this.page.mouse.click(
+        640,
+        360
+      );
+    }
+
+    if (
+      await billingMenuItem.isVisible({
+        timeout: 1500
+      }).catch(
+        () => false
+      )
+    ) {
+      await this.dismissOpenProfileMenu(
+        billingMenuItem
+      );
+    } else {
+      await expect(
+        billingMenuItem
+      ).not.toBeVisible({
+        timeout: 10000
+      });
+    }
 
     await this.validateNoLoadError();
 

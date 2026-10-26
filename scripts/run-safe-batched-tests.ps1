@@ -83,7 +83,7 @@ Enable-Flag 'SUB_LIFECYCLE_PAID_ANNUAL_ENABLED'
 Enable-Flag 'SUB_LIFECYCLE_UPGRADE_SUBMIT_ENABLED'
 
 Set-DefaultEnv 'AUTH_OTP_CODE' '111111'
-Set-DefaultEnv 'PLAN_SELECTION_EXISTING_EMAIL' 'imhardikthanki+plan-selection-prepared@gmail.com'
+Set-DefaultEnv 'PLAN_SELECTION_EXISTING_EMAIL' 'imhardikthanki+plantest@gmail.com'
 Set-DefaultEnv 'PLAN_SELECTION_EXISTING_PASSWORD' 'H@rdik9944'
 Set-DefaultEnv 'AIR_RESTORE_HISTORY' 'true'
 Set-DefaultEnv 'AIR_INCLUDE_MANUAL_DEFECTS' 'false'
