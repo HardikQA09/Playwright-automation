@@ -17,6 +17,8 @@ logs/
 *.tmp
 *.bak
 *.patching
+/.air-publish-site/
+/execution-report/published-url.txt
 
 # Generated AIR / report noise (regenerate with npm run report:execution)
 /execution-report/kept-evidence/
@@ -31,3 +33,21 @@ scripts/_provision-paid*
 # Archived Playwright HTML dumps
 /playwright-report*.zip
 
+
+# Extra generated AIR / zip noise
+/execution-report/dashboard/
+/execution-report/details.html
+/execution-report/summary.html
+/execution-report/air-only.json
+/execution-report/*.zip
+/execution-report/air-index-and-json/
+/air-results.json
+/air-only.json
+/air-data-integrity-audit.json
+/final-engineering-ui-audit.json
+/data.json
+/details.html
+/summary.html
+/index.html
+/index-*.html
+/*.zip

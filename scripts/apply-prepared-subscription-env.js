@@ -44,11 +44,25 @@ const domain =
   (process.env.ONBOARDING_EMAIL_BASE || `${roster.emailLocalBase}@${roster.emailDomain}`)
     .split('@')[1] || roster.emailDomain;
 
-const password =
+const sharedPassword =
   process.env.SUBSCRIPTION_FIXTURE_PASSWORD ||
   process.env.SUB_LIFECYCLE_PAID_PASSWORD ||
   process.env.ONBOARDING_PASSWORD ||
   'Test@123456';
+
+function passwordForEmail(email) {
+  const normalized = String(email || '').toLowerCase();
+  if (/(?:^|\+)e2e@/i.test(normalized)) {
+    return process.env.E2E_PASSWORD || process.env.CANCEL_YEARLY_PASSWORD || 'H@rdik9944';
+  }
+  if (/(?:^|\+)plantest@/i.test(normalized)) {
+    return process.env.SUBSCRIBER_PASSWORD || 'H@rdik9944';
+  }
+  if (/monthly-to-a/i.test(normalized)) {
+    return process.env.CANCEL_MONTHLY_PASSWORD || 'Test@123456';
+  }
+  return sharedPassword;
+}
 
 function setLine(name, value) {
   if (bash) {
@@ -61,7 +75,7 @@ function setLine(name, value) {
 const lines = [];
 
 lines.push(setLine('SUB_LIFECYCLE_USE_PREPARED_USER', 'true'));
-lines.push(setLine('SUBSCRIPTION_FIXTURE_PASSWORD', password));
+lines.push(setLine('SUBSCRIPTION_FIXTURE_PASSWORD', sharedPassword));
 
 if (preferCanonical) {
   lines.push(setLine('SUB_FIXTURE_USE_CANONICAL_EMAILS', 'true'));
@@ -78,13 +92,13 @@ for (const row of roster.users) {
     (preferCanonical ? canonicalEmail : row.legacyEmail || canonicalEmail);
   const pass =
     (process.env[row.envPassword] && process.env[row.envPassword].trim()) ||
-    password;
+    passwordForEmail(email);
 
   lines.push(setLine(row.envEmail, email));
   lines.push(setLine(row.envPassword, pass));
 }
 
-// Align common aliases with daily upgrade + portal accounts.
+// Align common aliases with daily upgrade + portal + cancel accounts.
 const upgrade = roster.users.find((u) => u.key === 'UPGRADE_CALC_DAILY');
 const portal = roster.users.find((u) => u.key === 'BILLING_PORTAL');
 const yearly = roster.users.find((u) => u.key === 'CANCEL_YEARLY_INSPECT');
@@ -99,23 +113,31 @@ function activeEmail(row) {
 }
 
 if (upgrade) {
-  lines.push(setLine('SUB_LIFECYCLE_PAID_EMAIL', activeEmail(upgrade)));
-  lines.push(setLine('SUB_LIFECYCLE_PAID_PASSWORD', password));
+  const email = activeEmail(upgrade);
+  lines.push(setLine('SUB_LIFECYCLE_PAID_EMAIL', email));
+  lines.push(setLine('SUB_LIFECYCLE_PAID_PASSWORD', passwordForEmail(email)));
 }
 
 if (portal) {
-  lines.push(setLine('BILLING_MANAGEMENT_EMAIL', activeEmail(portal)));
-  lines.push(setLine('BILLING_MANAGEMENT_PASSWORD', password));
+  const email = activeEmail(portal);
+  lines.push(setLine('BILLING_MANAGEMENT_EMAIL', email));
+  lines.push(setLine('BILLING_MANAGEMENT_PASSWORD', passwordForEmail(email)));
 }
 
 if (yearly) {
-  lines.push(setLine('SUB_LIFECYCLE_YEARLY_CANCEL_EMAIL', activeEmail(yearly)));
-  lines.push(setLine('SUB_LIFECYCLE_YEARLY_CANCEL_PASSWORD', password));
+  const email = activeEmail(yearly);
+  lines.push(setLine('SUB_LIFECYCLE_YEARLY_CANCEL_EMAIL', email));
+  lines.push(setLine('SUB_LIFECYCLE_YEARLY_CANCEL_PASSWORD', passwordForEmail(email)));
+  lines.push(setLine('CANCEL_YEARLY_EMAIL', email));
+  lines.push(setLine('CANCEL_YEARLY_PASSWORD', passwordForEmail(email)));
 }
 
 if (monthly) {
-  lines.push(setLine('SUB_LIFECYCLE_MONTHLY_CANCEL_EMAIL', activeEmail(monthly)));
-  lines.push(setLine('SUB_LIFECYCLE_MONTHLY_CANCEL_PASSWORD', password));
+  const email = activeEmail(monthly);
+  lines.push(setLine('SUB_LIFECYCLE_MONTHLY_CANCEL_EMAIL', email));
+  lines.push(setLine('SUB_LIFECYCLE_MONTHLY_CANCEL_PASSWORD', passwordForEmail(email)));
+  lines.push(setLine('CANCEL_MONTHLY_EMAIL', email));
+  lines.push(setLine('CANCEL_MONTHLY_PASSWORD', passwordForEmail(email)));
 }
 
 lines.push(setLine('SUBSCRIPTION_LIFECYCLE_EXECUTION_ENABLED', 'true'));

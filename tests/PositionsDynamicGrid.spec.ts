@@ -9,8 +9,13 @@ import { PositionsDynamicGridPage }
   from './pages/PositionsDynamicGridPage';
 
 import {
+  recoverPageLoadFailure
+} from './helpers/recoverPageLoadFailure';
+
+import {
   test
 } from './fixtures/subscriberAuth';
+
 
 /* =============================================================================
 TEST SUITE: Positions dynamic grid
@@ -59,11 +64,19 @@ test.describe(
 
         await dashboard.validateLoaded();
 
+        const positionsUrl =
+          `${BASE_URL}/dashboard/positions`;
+
         await page.goto(
-          `${BASE_URL}/dashboard/positions`,
+          positionsUrl,
           {
             waitUntil: 'domcontentloaded'
           }
+        );
+
+        await recoverPageLoadFailure(
+          page,
+          positionsUrl
         );
       }
     );

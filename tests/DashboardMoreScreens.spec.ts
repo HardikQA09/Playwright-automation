@@ -223,6 +223,30 @@ test.describe(
         ).toContainText(
           /support|help|contact|question/i
         );
+
+        await page.goto(
+          `${BASE_URL}/dashboard/support`,
+          {
+            waitUntil: 'domcontentloaded'
+          }
+        );
+
+        await expect(
+          page
+        ).toHaveURL(
+          /support/,
+          {
+            timeout: 20000
+          }
+        );
+
+        await expect(
+          page.locator(
+            'main'
+          )
+        ).toContainText(
+          /support|help|contact|question/i
+        );
       }
     );
 

@@ -141,6 +141,69 @@ test.describe(
     );
 
     test(
+      'Direct analytics route loads portfolio measures',
+      async ({ page }) => {
+        await page.goto(
+          `${BASE_URL}/dashboard/analytics`,
+          {
+            waitUntil: 'domcontentloaded'
+          }
+        );
+
+        await expect(
+          page
+        ).toHaveURL(
+          /analytics/i,
+          {
+            timeout: 20000
+          }
+        );
+
+        await expect(
+          page.locator(
+            'main'
+          )
+        ).toContainText(
+          /analytics|allocation|performance|return|portfolio|\$[\d,.]+|%/i,
+          {
+            timeout: 20000
+          }
+        );
+      }
+    );
+    test(
+      'Direct event calendar route loads calendar heading',
+      async ({ page }) => {
+        await page.goto(
+          `${BASE_URL}/dashboard/event-calendar`,
+          {
+            waitUntil: 'domcontentloaded'
+          }
+        );
+
+        await expect(
+          page
+        ).toHaveURL(
+          /event-calendar/i,
+          {
+            timeout: 20000
+          }
+        );
+
+        await expect(
+          page.getByRole(
+            'heading',
+            {
+              name: /event calendar/i
+            }
+          )
+        ).toBeVisible({
+          timeout: 20000
+        });
+      }
+    );
+
+    test(
       'Analytics shows portfolio measures',
       async ({ page }) => {
         await openDashboard(

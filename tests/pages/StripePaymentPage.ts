@@ -454,9 +454,7 @@ export class StripePaymentPage
 
     await this.waitForCheckoutReady();
 
-    await this.page.locator(
-      '#cardNumber'
-    ).fill(
+    await this.fillCardNumber(
       STRIPE_DECLINED_CARD
     );
 
@@ -514,6 +512,68 @@ export class StripePaymentPage
     );
   }
 
+  private async fillCardNumber(
+    cardNumber: string
+  ) {
+    const cardField =
+      this.page.locator(
+        '#cardNumber'
+      );
+
+    // After a submit Stripe disables inputs while confirming. Wait out the
+    // lock, or reload checkout, before trying a different fingerprint.
+    const enabled =
+      await expect(
+        cardField
+      ).toBeEnabled({
+        timeout: 45000
+      }).then(
+        () => true
+      ).catch(
+        () => false
+      );
+
+    if (!enabled) {
+      const checkoutUrl =
+        this.page.url();
+
+      Logger.warning(
+        'Stripe card field stayed disabled — reloading checkout for a fresh form'
+      );
+
+      await this.page.goto(
+        checkoutUrl,
+        {
+          waitUntil: 'domcontentloaded'
+        }
+      );
+
+      await this.waitForCheckoutReady();
+
+      await expect(
+        cardField
+      ).toBeEnabled({
+        timeout: 30000
+      });
+    }
+
+    await cardField.click({
+      force: true
+    }).catch(
+      () => undefined
+    );
+
+    await cardField.fill(
+      ''
+    ).catch(
+      () => undefined
+    );
+
+    await cardField.fill(
+      cardNumber
+    );
+  }
+
   async completePayment(
     cardNumber = STRIPE_CARD
   ) {
@@ -523,9 +583,7 @@ export class StripePaymentPage
 
     await this.waitForCheckoutReady();
 
-    await this.page.locator(
-      '#cardNumber'
-    ).fill(
+    await this.fillCardNumber(
       cardNumber
     );
 
@@ -590,6 +648,14 @@ export class StripePaymentPage
     Logger.url(
       this.page.url()
     );
+
+    if (
+      this.onStripeCheckout()
+    ) {
+      throw new Error(
+        'Stripe Checkout stayed open after submitting payment — card may be blocked, pay button did not complete, or redirect timed out.'
+      );
+    }
 
     const successToast =
       this.page.getByText(

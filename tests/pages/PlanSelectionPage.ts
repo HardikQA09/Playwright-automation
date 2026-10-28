@@ -7,6 +7,11 @@ import {
 import { BasePage } from './BasePage';
 import { safeClick } from '../helpers/safeClick';
 import { PLAN_PRICES } from '../config/testData';
+import {
+  PAID_ENTITLEMENT_PLANS,
+  PLAN_ENTITLEMENTS,
+  entitlementNearPlanPattern
+} from '../config/planEntitlements';
 import { Logger } from '../utils/logger';
 
 function shownPricePattern(
@@ -896,17 +901,31 @@ export class PlanSelectionPage extends BasePage {
       'Validating paid plan entitlement summaries'
     );
 
-    const expectedEntitlements = [
-      /(?:income(?:\s+builder)?|build your portfolio)[\s\S]{0,800}broker integration\s*\(1\)/i,
-      /(?:income(?:\s+builder)?|build your portfolio)[\s\S]{0,800}account linked\s*\(1\)/i,
-      /(?:income(?:\s+builder)?|build your portfolio)[\s\S]{0,800}positions\s*\(100\)/i,
-      /overlay strategists[\s\S]{0,800}broker integration\s*\(5\)/i,
-      /overlay strategists[\s\S]{0,800}account linked\s*\(10\)/i,
-      /overlay strategists[\s\S]{0,800}positions\s*\(500\)/i,
-      /portfolio hedger[\s\S]{0,800}broker integration\s*\(10\)/i,
-      /portfolio hedger[\s\S]{0,800}account linked\s*\(20\)/i,
-      /portfolio hedger[\s\S]{0,800}positions\s*\(1000\)/i
-    ];
+    const expectedEntitlements =
+      PAID_ENTITLEMENT_PLANS.flatMap(
+        (plan) => {
+          const limits =
+            PLAN_ENTITLEMENTS[plan];
+
+          return [
+            entitlementNearPlanPattern(
+              plan,
+              'broker integration',
+              limits.brokerIntegration
+            ),
+            entitlementNearPlanPattern(
+              plan,
+              'account linked',
+              limits.accountLinked
+            ),
+            entitlementNearPlanPattern(
+              plan,
+              'positions',
+              limits.positions
+            )
+          ];
+        }
+      );
 
     for (const planName of await this.catalogPlans()) {
       if (

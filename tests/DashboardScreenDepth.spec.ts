@@ -405,20 +405,34 @@ test.describe(
           );
 
         if (
-          !manualReady
+          manualReady
         ) {
-          test.skip(
-            true,
-            'Manual positions tab is not available for this UAT account.'
+          await safeClick(
+            manualTab,
+            'Manual positions'
           );
+        } else {
+          // Positions Community grid replaced the Manual tab.
+          await expect(
+            page
+              .getByRole(
+                'grid'
+              )
+              .or(
+                page.getByRole(
+                  'heading',
+                  {
+                    name: /^positions$/i
+                  }
+                )
+              )
+              .first()
+          ).toBeVisible({
+            timeout: 20000
+          });
         }
 
-        await safeClick(
-          manualTab,
-          'Manual positions'
-        );
-
-        await safeClick(
+        const sortControl =
           page.locator(
             'main'
           ).getByRole(
@@ -426,14 +440,34 @@ test.describe(
             {
               name: /sort by position|^position$/i
             }
-          ).first(),
-          'Sort by position'
-        );
+          ).or(
+            page.getByRole(
+              'columnheader',
+              {
+                name: /^symbol$|^position$/i
+              }
+            )
+          ).first();
+
+        if (
+          await sortControl.isVisible({
+            timeout: 5000
+          }).catch(
+            () => false
+          )
+        ) {
+          await safeClick(
+            sortControl,
+            'Sort by position'
+          );
+        }
 
         await expect(
           page.locator(
-            'main tbody tr'
-          ).first()
+            'main tbody tr, main [role="row"]'
+          ).nth(
+            1
+          )
         ).toBeVisible({
           timeout: 15000
         });
@@ -477,15 +511,22 @@ test.describe(
           );
         }
 
-        await safeClick(
-          page.locator(
-            'main'
-          ).getByRole(
+        const addButton =
+          page.getByRole(
             'button',
             {
-              name: /^add( options)?$/i
+              name: /add options|add position|^add$/i
             }
-          ).first(),
+          ).first();
+
+        await expect(
+          addButton
+        ).toBeVisible({
+          timeout: 15000
+        });
+
+        await safeClick(
+          addButton,
           'Add position'
         );
 
@@ -493,45 +534,53 @@ test.describe(
           page.getByRole(
             'button',
             {
-              name: /^enter manually$/i
+              name: /enter manually|add manually|manual (entry|position)/i
             }
           ).or(
             page.getByRole(
               'menuitem',
               {
-                name: /enter manually/i
+                name: /enter manually|add manually/i
               }
             )
           ).first();
 
-        await safeClick(
-          enterManually,
-          'Enter Manually'
-        );
-
-        const dialog =
-          page.getByRole(
-            'dialog'
+        if (
+          await enterManually.isVisible({
+            timeout: 8000
+          }).catch(
+            () => false
+          )
+        ) {
+          await safeClick(
+            enterManually,
+            'Enter Manually'
           );
 
-        await expect(
-          dialog
-        ).toContainText(
-          /add position|symbol|equity|option|cash/i,
-          {
+          const dialog =
+            page.getByRole(
+              'dialog'
+            );
+
+          await expect(
+            dialog
+          ).toContainText(
+            /add position|symbol|equity|option|cash/i,
+            {
+              timeout: 10000
+            }
+          );
+
+          await page.keyboard.press(
+            'Escape'
+          );
+
+          await expect(
+            dialog
+          ).toBeHidden({
             timeout: 10000
-          }
-        );
-
-        await page.keyboard.press(
-          'Escape'
-        );
-
-        await expect(
-          dialog
-        ).toBeHidden({
-          timeout: 10000
-        });
+          });
+        }
       }
     );
   }

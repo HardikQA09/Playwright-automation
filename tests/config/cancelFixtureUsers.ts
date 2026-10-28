@@ -20,7 +20,7 @@ SUB_LIFECYCLE_*_CANCEL_* aliases when needed.
 
 IMPORTANT: +e2e uses TEST_USERS.e2e.password (H@rdik9944), NOT the shared
 onboarding / SUB_LIFECYCLE_PAID password (Test@123456). Mixing those locks the
-account after a few failed Sign In attempts.
+account after a few failed Sign In attempts. +monthly-to-a uses cancelMonthly.
 ============================================================================= */
 
 function passwordForCancelFixture(
@@ -49,6 +49,7 @@ function passwordForCancelFixture(
   ) {
     return (
       process.env.E2E_PASSWORD?.trim() ||
+      process.env.CANCEL_YEARLY_PASSWORD?.trim() ||
       TEST_USERS.e2e.password
     );
   }
@@ -66,6 +67,18 @@ function passwordForCancelFixture(
     );
   }
 
+  if (
+    /monthly-to-a/i.test(
+      email
+    )
+  ) {
+    return (
+      process.env.CANCEL_MONTHLY_PASSWORD?.trim() ||
+      TEST_USERS.cancelMonthly?.password ||
+      'Test@123456'
+    );
+  }
+
   return preparedPassword;
 }
 
@@ -79,33 +92,64 @@ const monthly =
     'CANCEL_MONTHLY_INSPECT'
   );
 
+function firstEmail(
+  ...candidates: Array<string | undefined>
+) {
+  for (const value of candidates) {
+    const trimmed =
+      value?.trim();
+
+    if (
+      trimmed
+    ) {
+      return trimmed;
+    }
+  }
+
+  return '';
+}
+
 export const CANCEL_FIXTURE_USERS = {
   yearly: {
     email:
-      process.env.SUB_LIFECYCLE_YEARLY_CANCEL_EMAIL ??
-      yearly.email,
+      firstEmail(
+        process.env.SUB_LIFECYCLE_YEARLY_CANCEL_EMAIL,
+        process.env.CANCEL_YEARLY_EMAIL,
+        yearly.email
+      ),
     password:
       passwordForCancelFixture(
-        process.env.SUB_LIFECYCLE_YEARLY_CANCEL_EMAIL ??
-          yearly.email,
+        firstEmail(
+          process.env.SUB_LIFECYCLE_YEARLY_CANCEL_EMAIL,
+          process.env.CANCEL_YEARLY_EMAIL,
+          yearly.email
+        ),
         yearly.password,
         'SUB_LIFECYCLE_YEARLY_CANCEL_PASSWORD'
       )
   },
   monthly: {
-    // Prefer prepared monthly (plantest) — do NOT fall back to
-    // SUB_LIFECYCLE_PAID_EMAIL (paid-income currently fails Sign In on UAT).
+    // Prefer a real monthly cancel fixture. Do NOT fall back to plantest
+    // (annual Overlay) — that forces monthly cancel rows to skip.
+    // When unset, loginCancelFixture buys a disposable monthly user if
+    // SUB_LIFECYCLE_CREATE_DISPOSABLE_USER=true.
     email:
-      process.env.SUB_LIFECYCLE_MONTHLY_CANCEL_EMAIL ??
-      process.env.SUBSCRIBER_EMAIL ??
-      monthly.email,
+      firstEmail(
+        process.env.SUB_LIFECYCLE_MONTHLY_CANCEL_EMAIL,
+        process.env.CANCEL_MONTHLY_EMAIL,
+        /plantest/i.test(
+          monthly.email
+        )
+          ? ''
+          : monthly.email
+      ),
     password:
-      process.env.SUB_LIFECYCLE_MONTHLY_CANCEL_PASSWORD ??
-      process.env.SUBSCRIBER_PASSWORD ??
       passwordForCancelFixture(
-        process.env.SUB_LIFECYCLE_MONTHLY_CANCEL_EMAIL ??
-          process.env.SUBSCRIBER_EMAIL ??
-          monthly.email,
+        firstEmail(
+          process.env.SUB_LIFECYCLE_MONTHLY_CANCEL_EMAIL,
+          process.env.CANCEL_MONTHLY_EMAIL,
+          monthly.email
+        ),
         monthly.password,
         'SUB_LIFECYCLE_MONTHLY_CANCEL_PASSWORD'
       )

@@ -8,7 +8,7 @@
       "legacyEmail": "imhardikthanki+plan-selection-prepared@gmail.com",
       "plan": "Curious Explorer",
       "interval": "none",
-      "purpose": "Verified user on Choose Your Plan \u2014 catalog, pricing, trial CTA.",
+      "purpose": "Verified user on Choose Your Plan — catalog, pricing, trial CTA.",
       "validates": [
         "plan-catalog",
         "trial-cta",
@@ -25,19 +25,20 @@
       "legacyEmail": "imhardikthanki+plantest@gmail.com",
       "plan": "Overlay Strategists",
       "interval": "annual",
-      "purpose": "Daily upgrade calculation preview on the SAME account (due, credit, recurring). Never Confirm & pay.",
+      "purpose": "Daily upgrade / amount-due / renewal-date preview (same account). Never Confirm & pay.",
       "validates": [
         "upgrade-calculation",
         "unused-time-credit",
         "amount-due",
         "recurring-price",
         "billing-overview",
-        "invoice-history"
+        "invoice-history",
+        "renewal-date-copy"
       ],
       "safeDaily": true,
       "mutateRisk": "preview-only",
-      "envEmail": "SUBSCRIBER_EMAIL",
-      "envPassword": "SUBSCRIBER_PASSWORD"
+      "envEmail": "SUB_FIXTURE_UPGRADE_CALC_EMAIL",
+      "envPassword": "SUB_FIXTURE_UPGRADE_CALC_PASSWORD"
     },
     {
       "key": "DOWNGRADE_CALC_DAILY",
@@ -49,12 +50,13 @@
       "validates": [
         "downgrade-calculation",
         "retention-offer-inspect",
-        "feature-impact-copy"
+        "feature-impact-copy",
+        "schedule-at-renewal-copy"
       ],
       "safeDaily": true,
       "mutateRisk": "preview-only",
-      "envEmail": "SUBSCRIBER_EMAIL",
-      "envPassword": "SUBSCRIBER_PASSWORD"
+      "envEmail": "SUB_FIXTURE_DOWNGRADE_EMAIL",
+      "envPassword": "SUB_FIXTURE_DOWNGRADE_PASSWORD"
     },
     {
       "key": "INTERVAL_CALC_DAILY",
@@ -62,23 +64,24 @@
       "legacyEmail": "imhardikthanki+plantest@gmail.com",
       "plan": "Overlay Strategists",
       "interval": "annual",
-      "purpose": "Daily monthly\u2194annual interval preview without submitting.",
+      "purpose": "Daily monthly↔annual interval preview without submitting.",
       "validates": [
         "interval-preview",
-        "annual-savings-copy"
+        "annual-savings-copy",
+        "renewal-date-copy"
       ],
       "safeDaily": true,
       "mutateRisk": "preview-only",
-      "envEmail": "SUBSCRIBER_EMAIL",
-      "envPassword": "SUBSCRIBER_PASSWORD"
+      "envEmail": "SUB_FIXTURE_INTERVAL_EMAIL",
+      "envPassword": "SUB_FIXTURE_INTERVAL_PASSWORD"
     },
     {
       "key": "CANCEL_MONTHLY_INSPECT",
       "tag": "sub-cx-mo-inspect",
-      "legacyEmail": "imhardikthanki+plantest@gmail.com",
-      "plan": "Overlay Strategists",
-      "interval": "annual",
-      "purpose": "Monthly cancel dialog inspect \u2014 Keep my plan only; never Yes, cancel.",
+      "legacyEmail": "imhardikthanki+monthly-to-a-mvjn15yr@gmail.com",
+      "plan": "Income Builder",
+      "interval": "monthly",
+      "purpose": "Monthly cancel dialog inspect — Keep my plan only; never Yes, cancel.",
       "validates": [
         "cancel-form",
         "cancel-guard",
@@ -86,13 +89,13 @@
       ],
       "safeDaily": true,
       "mutateRisk": "preview-only",
-      "envEmail": "SUBSCRIBER_EMAIL",
-      "envPassword": "SUBSCRIBER_PASSWORD"
+      "envEmail": "SUB_LIFECYCLE_MONTHLY_CANCEL_EMAIL",
+      "envPassword": "SUB_LIFECYCLE_MONTHLY_CANCEL_PASSWORD"
     },
     {
       "key": "CANCEL_YEARLY_INSPECT",
       "tag": "sub-cx-yr-inspect",
-      "legacyEmail": "imhardikthanki+plantest@gmail.com",
+      "legacyEmail": "imhardikthanki+e2e@gmail.com",
       "plan": "Overlay Strategists",
       "interval": "annual",
       "purpose": "Annual cancel-at-expiry vs cancel-and-refund option copy; never submit.",
@@ -103,8 +106,8 @@
       ],
       "safeDaily": true,
       "mutateRisk": "preview-only",
-      "envEmail": "SUBSCRIBER_EMAIL",
-      "envPassword": "SUBSCRIBER_PASSWORD"
+      "envEmail": "SUB_LIFECYCLE_YEARLY_CANCEL_EMAIL",
+      "envPassword": "SUB_LIFECYCLE_YEARLY_CANCEL_PASSWORD"
     },
     {
       "key": "RETENTION_INSPECT",
@@ -112,15 +115,15 @@
       "legacyEmail": "imhardikthanki+plantest@gmail.com",
       "plan": "Overlay Strategists",
       "interval": "annual",
-      "purpose": "Retention offer still eligible \u2014 open, decline, close (do not accept).",
+      "purpose": "Retention offer still eligible — open, decline, close (do not accept).",
       "validates": [
         "retention-offer-copy",
         "once-per-lifetime-eligibility"
       ],
       "safeDaily": true,
       "mutateRisk": "preview-only",
-      "envEmail": "SUBSCRIBER_EMAIL",
-      "envPassword": "SUBSCRIBER_PASSWORD"
+      "envEmail": "SUB_FIXTURE_RETENTION_EMAIL",
+      "envPassword": "SUB_FIXTURE_RETENTION_PASSWORD"
     },
     {
       "key": "BILLING_PORTAL",
@@ -136,8 +139,72 @@
       ],
       "safeDaily": true,
       "mutateRisk": "preview-only",
-      "envEmail": "SUBSCRIBER_EMAIL",
-      "envPassword": "SUBSCRIBER_PASSWORD"
+      "envEmail": "BILLING_MANAGEMENT_EMAIL",
+      "envPassword": "BILLING_MANAGEMENT_PASSWORD"
+    },
+    {
+      "key": "CANCEL_SCHEDULED",
+      "tag": "sub-cancel-scheduled",
+      "plan": "Income Builder",
+      "interval": "monthly",
+      "purpose": "Already scheduled to cancel at period end — access-until-expiry / renew restore UI.",
+      "validates": [
+        "cancel-scheduled-state",
+        "access-until-expiry",
+        "renew-restore-copy"
+      ],
+      "safeDaily": true,
+      "mutateRisk": "preview-only",
+      "envEmail": "SUB_FIXTURE_CANCEL_SCHEDULED_EMAIL",
+      "envPassword": "SUB_FIXTURE_CANCEL_SCHEDULED_PASSWORD"
+    },
+    {
+      "key": "RENEWAL_READY",
+      "tag": "sub-renewal-ready",
+      "plan": "Income Builder",
+      "interval": "monthly",
+      "purpose": "Near renewal / scheduler-controlled — auto-renew invoice and renewal notifications.",
+      "validates": [
+        "auto-renewal",
+        "renewal-invoice",
+        "renewal-notification"
+      ],
+      "safeDaily": false,
+      "mutateRisk": "destructive",
+      "envEmail": "SUB_FIXTURE_RENEWAL_EMAIL",
+      "envPassword": "SUB_FIXTURE_RENEWAL_PASSWORD"
+    },
+    {
+      "key": "PAST_DUE_DUNNING",
+      "tag": "sub-past-due",
+      "plan": "Income Builder",
+      "interval": "monthly",
+      "purpose": "Failed-payment / past-due — dunning, recovery, grace-period messaging.",
+      "validates": [
+        "dunning-banner",
+        "payment-recovery",
+        "grace-period-copy"
+      ],
+      "safeDaily": true,
+      "mutateRisk": "preview-only",
+      "envEmail": "SUB_FIXTURE_PAST_DUE_EMAIL",
+      "envPassword": "SUB_FIXTURE_PAST_DUE_PASSWORD"
+    },
+    {
+      "key": "EXPIRED_TRIAL_NO_CARD",
+      "tag": "sub-expired-no-card",
+      "plan": "Curious Explorer",
+      "interval": "none",
+      "purpose": "No-card trial expired → Free — paid-feature removal and upgrade prompt.",
+      "validates": [
+        "trial-expiry-free",
+        "paid-feature-removal",
+        "upgrade-prompt"
+      ],
+      "safeDaily": true,
+      "mutateRisk": "preview-only",
+      "envEmail": "SUB_FIXTURE_EXPIRED_TRIAL_EMAIL",
+      "envPassword": "SUB_FIXTURE_EXPIRED_TRIAL_PASSWORD"
     },
     {
       "key": "UPGRADE_SUBMIT",
@@ -145,7 +212,7 @@
       "legacyEmail": "imhardikthanki+plantest@gmail.com",
       "plan": "Income Builder",
       "interval": "monthly",
-      "purpose": "One-shot Confirm & pay upgrade \u2014 mutates plan; not for daily runs.",
+      "purpose": "One-shot Confirm & pay upgrade — mutates plan; not for daily runs.",
       "validates": [
         "upgrade-submit"
       ],

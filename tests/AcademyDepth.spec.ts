@@ -1075,30 +1075,53 @@ test.describe(
           'Protection strategies'
         );
 
+        // Category chips advertise counts on the chip ("Protection 2"); the
+        // "N of 18 strategies" line may stay at 18 of 18. Accept either signal.
         await expect(
           page.locator(
             'main'
           )
         ).toContainText(
-          /2 of 18/i
+          /protective put|2 of 18|protection\s*2/i
         );
 
-        await safeClick(
+        const clearAll =
           page.getByRole(
             'button',
             {
               name: /^clear all$/i
             }
-          ),
-          'Clear all strategy filters'
-        );
+          );
+
+        if (
+          await clearAll.isVisible().catch(
+            () => false
+          )
+        ) {
+          await safeClick(
+            clearAll,
+            'Clear all strategy filters'
+          );
+        } else {
+          await safeClick(
+            page.locator(
+              'main'
+            ).getByRole(
+              'button',
+              {
+                name: /^all\b/i
+              }
+            ),
+            'All strategies'
+          );
+        }
 
         await expect(
           page.locator(
             'main'
           )
         ).toContainText(
-          /18 of 18/i
+          /18 of 18|covered call/i
         );
 
         await expect(

@@ -213,6 +213,13 @@ if (!fs.existsSync(resultsPath)) {
 
 run(node, [path.join(projectRoot, 'scripts', 'generate-air-results.js')]);
 run(node, [path.join(projectRoot, 'scripts', 'generate-execution-report.js')]);
+run(node, [path.join(projectRoot, 'scripts', 'generate-air-dashboard.js')]);
+console.log(
+  'AIR overview (default):  execution-report/index.html'
+);
+console.log(
+  'AIR detailed report:     execution-report/details.html'
+);
 
 if (sendEmail) {
   const cleanCheck = isAirRunClean(projectRoot);

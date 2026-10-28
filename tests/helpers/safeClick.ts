@@ -94,6 +94,33 @@ export async function safeClick(
   }
 }
 
+/** Visible entry inside an open header dropdown (menuitem, link, or Radix item). */
+export function headerMenuEntries(
+  page: Page
+) {
+  return page
+    .getByRole('menuitem')
+    .or(
+      page.locator(
+        [
+          '[role="menu"] a',
+          '[role="menu"] button',
+          '[role="menu"] [role="menuitem"]',
+          '[data-radix-menu-content] a',
+          '[data-radix-menu-content] button',
+          '[data-radix-dropdown-menu-content] a',
+          '[data-radix-dropdown-menu-content] button',
+          '[data-radix-dropdown-menu-content] [data-radix-collection-item]',
+          '[data-radix-popper-content-wrapper] a',
+          '[data-radix-popper-content-wrapper] button',
+          '[data-radix-popper-content-wrapper] [data-radix-collection-item]',
+          '[data-state="open"] a',
+          '[data-state="open"] [data-radix-collection-item]'
+        ].join(', ')
+      )
+    );
+}
+
 export async function openHeaderMenu(
   page: Page,
   menuName: RegExp
@@ -107,44 +134,27 @@ export async function openHeaderMenu(
     ).first();
 
   const anyItem =
-    page.getByRole(
-      'menuitem'
+    headerMenuEntries(
+      page
     ).first();
 
-  for (let attempt = 1; attempt <= 2; attempt += 1) {
-    await menuButton.hover();
+  for (let attempt = 1; attempt <= 4; attempt += 1) {
+    await page.keyboard.press(
+      'Escape'
+    ).catch(
+      () => undefined
+    );
 
-    const openedByHover =
-      await anyItem.waitFor({
-        state: 'visible',
-        timeout: 1500
-      }).then(
-        () => true
-      ).catch(
-        () => false
-      );
-
-    if (openedByHover) {
-      return;
-    }
-
-    const expanded =
-      await menuButton.getAttribute(
-        'aria-expanded'
-      ).catch(
-        () => null
-      );
-
-    if (expanded !== 'true') {
-      await menuButton.click({
-        timeout: 8000
-      });
-    }
+    // Click-first: hover alone often leaves aria-expanded unset and a follow-up
+    // click then toggles the menu closed before menuitems are observed.
+    await menuButton.click({
+      timeout: 8000
+    });
 
     const opened =
       await anyItem.waitFor({
         state: 'visible',
-        timeout: 5000
+        timeout: 4000
       }).then(
         () => true
       ).catch(
@@ -155,10 +165,24 @@ export async function openHeaderMenu(
       return;
     }
 
-    await page.keyboard.press(
-      'Escape'
-    ).catch(
-      () => undefined
+    await menuButton.hover();
+
+    const openedByHover =
+      await anyItem.waitFor({
+        state: 'visible',
+        timeout: 2000
+      }).then(
+        () => true
+      ).catch(
+        () => false
+      );
+
+    if (openedByHover) {
+      return;
+    }
+
+    await page.waitForTimeout(
+      200
     );
   }
 
@@ -175,12 +199,11 @@ export async function openHeaderMenuItem(
   label: string
 ) {
   const menuItem =
-    page.getByRole(
-      'menuitem',
-      {
-        name: itemName
-      }
-    ).or(
+    headerMenuEntries(
+      page
+    ).filter({
+      hasText: itemName
+    }).or(
       page.getByRole(
         'option',
         {
@@ -194,12 +217,6 @@ export async function openHeaderMenuItem(
           name: itemName
         }
       )
-    ).or(
-      page.locator(
-        '[role="menu"] a, [data-radix-menu-content] a, [data-state="open"] a, [data-state="open"] button'
-      ).filter({
-        hasText: itemName
-      })
     ).first();
 
   const fallbackPath =

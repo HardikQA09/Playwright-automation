@@ -110,6 +110,13 @@ test.describe(
             await dashboard.validateExpiryOverview();
           }
         );
+
+        await test.step(
+          'Card links',
+          async () => {
+            await dashboard.validateDashboardCardLinks();
+          }
+        );
       }
     );
 

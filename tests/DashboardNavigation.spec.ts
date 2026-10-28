@@ -109,6 +109,162 @@ test.describe(
     }
 
     test(
+      'Authenticated onboarding route resolves without crash',
+      async ({ page }) => {
+        await page.goto(
+          `${BASE_URL}/onboarding`,
+          {
+            waitUntil: 'domcontentloaded'
+          }
+        );
+
+        const body =
+          await page.locator(
+            'body'
+          ).innerText({
+            timeout: 15000
+          });
+
+        expect(
+          /this page couldn[’']t load|reload to try again/i.test(
+            body
+          ),
+          '/onboarding must not show the app crash interstitial'
+        ).toBe(
+          false
+        );
+
+        // Finished subscribers usually redirect to dashboard; incomplete
+        // accounts may stay on onboarding/plan selection.
+        expect(
+          page.url()
+        ).toMatch(
+          /\/(dashboard|onboarding|plan|choose|support|academy)(\/|$|\?)/i
+        );
+
+        expect(
+          body.length
+        ).toBeGreaterThan(
+          20
+        );
+      }
+    );
+
+    test(
+      'Utility routes settings notifications activity subscription and security load or redirect safely',
+      async ({ page }) => {
+        const routes = [
+          {
+            path: '/dashboard/settings',
+            content: /setting|preference|account|profile|security|notification/i
+          },
+          {
+            path: '/dashboard/notifications',
+            content: /notification|alert|inbox|preference|activity/i
+          },
+          {
+            path: '/dashboard/activity',
+            content: /activity|audit|history|session|login|event/i
+          },
+          {
+            path: '/dashboard/subscription',
+            content: /subscription|billing|plan|invoice|current plan|overlay|income/i
+          },
+          {
+            path: '/dashboard/security',
+            content: /security|password|mfa|two-factor|authenticator|session/i
+          },
+          {
+            path: '/dashboard/profile/security',
+            content: /security|password|mfa|two-factor|authenticator|session|profile/i
+          },
+          {
+            path: '/dashboard/account',
+            content: /account|profile|setting|billing|subscription|security/i
+          },
+          {
+            path: '/dashboard/account/security',
+            content: /security|password|mfa|two-factor|authenticator|session|profile/i
+          }
+        ];
+
+        for (const route of routes) {
+          await page.goto(
+            `${BASE_URL}${route.path}`,
+            {
+              waitUntil: 'domcontentloaded'
+            }
+          );
+
+          const body =
+            await page.locator(
+              'body'
+            ).innerText({
+              timeout: 15000
+            });
+
+          const crashed =
+            /this page couldn[’']t load|reload to try again/i.test(
+              body
+            );
+
+          expect(
+            crashed,
+            `${route.path} must not show the app crash interstitial`
+          ).toBe(
+            false
+          );
+
+          const notFound =
+            /\b404\b|page not found/i.test(
+              body
+            );
+
+          if (
+            notFound
+          ) {
+            // Product has not shipped this deep link yet — a clean 404 is fine.
+            await expect(
+              page.getByRole(
+                'link',
+                {
+                  name: /go home|dashboard|home/i
+                }
+              ).first()
+            ).toBeVisible({
+              timeout: 10000
+            });
+
+            continue;
+          }
+
+          expect(
+            page.url()
+          ).toMatch(
+            /\/(dashboard|support|academy)(\/|$)/i
+          );
+
+          expect(
+            body.length
+          ).toBeGreaterThan(
+            40
+          );
+
+          if (
+            page.url().toLowerCase().includes(
+              route.path.toLowerCase()
+            )
+          ) {
+            expect(
+              body
+            ).toMatch(
+              route.content
+            );
+          }
+        }
+      }
+    );
+    test(
       'Authenticated user can open dashboard profile billing and compliance routes',
       async ({ page }) => {
         const dashboard =

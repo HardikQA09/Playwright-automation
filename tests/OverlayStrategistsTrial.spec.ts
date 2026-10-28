@@ -20,7 +20,8 @@ import {
 } from './helpers/onboardingContinuation';
 import {
   expectCoveredBy,
-  recordCoverage
+  recordCoverage,
+  wasCoveredBy
 } from './helpers/coverageReuse';
 import {
   continueAfterWithCardTrialCheckout,
@@ -172,11 +173,15 @@ if (
     test(
       'New user can reach Overlay Strategists trial option',
       async ({ page }) => {
-        // The plan catalog test already checks the same screen. When it runs,
-        // reuse its recorded result instead of registering another user.
+        // Reuse the plan-catalog checkpoint when that covering test already
+        // passed in this run. If it was skipped (wrong prepared user), run the
+        // real discovery flow instead of skipping this row too.
         if (
           envEnabled(
             'PLAN_SELECTION_VALIDATION_ENABLED'
+          ) &&
+          wasCoveredBy(
+            'overlay-trial-options-offered'
           )
         ) {
           expectCoveredBy(
@@ -434,11 +439,13 @@ if (
       test(
         'Overlay Strategists with-card trial opens Stripe checkout with trial details',
         async ({ page }) => {
-        // The with-card trial user already walks this checkout, so confirm
-        // that checkpoint instead of paying for another sign-up.
+        // Reuse the with-card trial checkpoint when it already passed this run.
         if (
           envEnabled(
             'OVERLAY_STRATEGISTS_WITH_CARD_ENABLED'
+          ) &&
+          wasCoveredBy(
+            'overlay-with-card-checkout-details'
           )
         ) {
           expectCoveredBy(
@@ -559,6 +566,9 @@ if (
         if (
           envEnabled(
             'OVERLAY_STRATEGISTS_WITH_CARD_ENABLED'
+          ) &&
+          wasCoveredBy(
+            'overlay-with-card-missing-card'
           )
         ) {
           expectCoveredBy(
@@ -677,6 +687,9 @@ if (
         if (
           envEnabled(
             'OVERLAY_STRATEGISTS_WITH_CARD_ENABLED'
+          ) &&
+          wasCoveredBy(
+            'overlay-with-card-declined-card'
           )
         ) {
           expectCoveredBy(

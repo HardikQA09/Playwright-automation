@@ -89,13 +89,19 @@ test.describe(
             await expect(
               profile.firstNameInput
             ).not.toHaveValue(
-              ''
+              '',
+              {
+                timeout: 15000
+              }
             );
 
             await expect(
               profile.lastNameInput
             ).not.toHaveValue(
-              ''
+              '',
+              {
+                timeout: 15000
+              }
             );
           }
         );

@@ -16,8 +16,10 @@ import { AddPositionPage }
 import { test }
   from './fixtures/subscriberAuth';
 
-import { safeClick }
-  from './helpers/safeClick';
+import {
+  headerMenuEntries,
+  safeClick
+} from './helpers/safeClick';
 
 /* =============================================================================
 TEST SUITE: Dashboard options
@@ -87,8 +89,8 @@ test.describe(
       page: Page
     ) {
       const items =
-        page.getByRole(
-          'menuitem'
+        headerMenuEntries(
+          page
         );
 
       await expect(
@@ -114,19 +116,21 @@ test.describe(
       page: Page,
       label: string
     ) {
+      const itemRe =
+        new RegExp(
+          `^${label.replace(
+            /[.*+?^${}()|[\]\\]/g,
+            '\\$&'
+          )}$`,
+          'i'
+        );
+
       await safeClick(
-        page.getByRole(
-          'menuitem',
-          {
-            name: new RegExp(
-              `^${label.replace(
-                /[.*+?^${}()|[\]\\]/g,
-                '\\$&'
-              )}$`,
-              'i'
-            )
-          }
-        ).first(),
+        headerMenuEntries(
+          page
+        ).filter({
+          hasText: itemRe
+        }).first(),
         label
       );
 

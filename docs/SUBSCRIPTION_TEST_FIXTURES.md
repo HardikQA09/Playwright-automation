@@ -10,18 +10,24 @@ npm run fixtures:list -- --canonical   # target +sub-* emails
 npm run fixtures:apply-env             # print $env: lines for this session
 ```
 
-| Key | Canonical email (easy to spot) | Required state | Daily use |
+| Key | Canonical email (easy to spot) | Legacy (until canonical ready) | Daily use |
 | --- | --- | --- | --- |
-| `UPGRADE_CALC_DAILY` | `imhardikthanki+sub-upg-calc-daily@gmail.com` | Income Builder **monthly** + saved card | Upgrade calculation preview every day (same account) |
-| `DOWNGRADE_CALC_DAILY` | `imhardikthanki+sub-dng-calc-daily@gmail.com` | Overlay Strategists **monthly** | Downgrade preview + retention inspect |
-| `INTERVAL_CALC_DAILY` | `imhardikthanki+sub-int-calc-daily@gmail.com` | Income Builder **monthly** | Monthly↔annual interval preview |
-| `CANCEL_MONTHLY_INSPECT` | `imhardikthanki+sub-cx-mo-inspect@gmail.com` | Income Builder **monthly** | Cancel form / Keep my plan |
-| `CANCEL_YEARLY_INSPECT` | `imhardikthanki+sub-cx-yr-inspect@gmail.com` | Overlay (or paid) **annual** | Cancel-at-expiry vs refund **options** (no submit) |
-| `RETENTION_INSPECT` | `imhardikthanki+sub-retention-inspect@gmail.com` | Overlay **monthly**, retention still eligible | Open retention, decline, close |
-| `BILLING_PORTAL` | `imhardikthanki+sub-billing-portal@gmail.com` | Any active paid | Portal / payment method / invoices |
-| `PLAN_SELECTION` | `imhardikthanki+sub-plan-ready@gmail.com` | Verified, on Choose Your Plan | Catalog / trial CTA |
+| `UPGRADE_CALC_DAILY` | `+sub-upg-calc-daily` | `+plantest` | Upgrade / due / renewal-date preview |
+| `DOWNGRADE_CALC_DAILY` | `+sub-dng-calc-daily` | `+plantest` | Downgrade + schedule-at-renewal preview |
+| `INTERVAL_CALC_DAILY` | `+sub-int-calc-daily` | `+plantest` | Monthly↔annual interval preview |
+| `CANCEL_MONTHLY_INSPECT` | `+sub-cx-mo-inspect` | `+monthly-to-a-mvjn15yr` | Monthly cancel / period-end copy |
+| `CANCEL_YEARLY_INSPECT` | `+sub-cx-yr-inspect` | `+e2e` | Yearly cancel-at-expiry vs refund options |
+| `RETENTION_INSPECT` | `+sub-retention-inspect` | `+plantest` | Retention offer inspect (decline/close) |
+| `BILLING_PORTAL` | `+sub-billing-portal` | `+plantest` | Portal / payment method / invoices |
+| `CANCEL_SCHEDULED` | `+sub-cancel-scheduled` | *(prepare)* | Already cancel-at-period-end state |
+| `RENEWAL_READY` | `+sub-renewal-ready` | *(prepare)* | Near-renewal / auto-renew evidence |
+| `PAST_DUE_DUNNING` | `+sub-past-due` | *(prepare)* | Dunning / payment recovery |
+| `EXPIRED_TRIAL_NO_CARD` | `+sub-expired-no-card` | *(prepare)* | Trial expiry → Free |
+| `PLAN_SELECTION` | `+sub-plan-ready` | `+plan-selection-prepared` | Catalog / trial CTA |
 
-Until those canonical accounts exist on UAT, runners keep using the **legacy** emails listed in the JSON (`monthly-to-a-mvjn15yr`, `e2e`, `plan-selection-prepared`). After you prepare each `+sub-*` account:
+Each key has its **own** env vars (`SUB_FIXTURE_*` / `SUB_LIFECYCLE_*_CANCEL_*`) so renew, downgrade, and cancel do not share one plantest session.
+
+Until those canonical accounts exist on UAT, runners keep using the **legacy** emails listed in the JSON (`plantest`, `e2e`, `monthly-to-a-mvjn15yr`, `plan-selection-prepared`). After you prepare each `+sub-*` account:
 
 ```powershell
 $env:SUB_FIXTURE_USE_CANONICAL_EMAILS="true"

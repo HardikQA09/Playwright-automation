@@ -1,44 +1,44 @@
 {
-  "generatedAt": "2026-10-23T04:35:49.833Z",
+  "generatedAt": "2026-10-28T09:39:01.888Z",
   "provenance": {
     "mode": "CURRENT_EXECUTION",
     "sourceArtifact": "test-results/results.json",
     "sourceFramework": "Playwright",
-    "generatedAt": "2026-10-23T04:35:49.231Z",
+    "generatedAt": "2026-10-28T09:39:01.590Z",
     "restoredFromHistory": false,
     "warning": ""
   },
   "sourceExecution": {
     "source": "json-reporter",
-    "total": 764,
-    "rawTestCount": 764,
-    "attempts": 764,
-    "passed": 505,
+    "total": 778,
+    "rawTestCount": 778,
+    "attempts": 778,
+    "passed": 618,
     "failed": 7,
-    "skipped": 252,
+    "skipped": 153,
     "flaky": 0,
     "interrupted": 0,
     "statuses": {
-      "expected": 505,
-      "skipped": 252,
-      "unexpected": 7
+      "expected": 618,
+      "unexpected": 7,
+      "skipped": 153
     }
   },
   "airExecution": {
-    "total": 764,
-    "attempts": 764,
-    "passed": 505,
+    "total": 778,
+    "attempts": 778,
+    "passed": 618,
     "failed": 7,
-    "skipped": 252,
+    "skipped": 153,
     "flaky": 0,
     "interrupted": 0,
     "retryCount": 0
   },
   "reconciliation": {
     "status": "PASS",
-    "sourceTotal": 764,
-    "expectedAirTotal": 764,
-    "airTotal": 764,
+    "sourceTotal": 778,
+    "expectedAirTotal": 778,
+    "airTotal": 778,
     "difference": 0
   },
   "duplicates": {
@@ -49,10 +49,10 @@
   },
   "orphanEvidence": [],
   "evidenceClassification": {
-    "perTestEvidence": 13,
+    "perTestEvidence": 11,
     "executionArtifacts": 2,
     "rawReports": 2,
-    "totalWithRawReports": 15,
+    "totalWithRawReports": 13,
     "rawReportsCountAsFailureEvidence": false
   },
   "invalidModuleReferences": [],
@@ -61,44 +61,44 @@
   "evidenceTraceability": {
     "failedTests": [
       {
-        "testId": "chromium > AuthUiValidation.spec.ts > Auth UI Validation > Login password visibility control is exposed without submitting form",
-        "testName": "Auth UI Validation > Login password visibility control is exposed without submitting form",
+        "testId": "chromium > SubscriptionLifecycleExecution.spec.ts > Subscription Lifecycle Execution > Prepared paid user exposes upgrade downgrade and interval controls",
+        "testName": "Subscription Lifecycle Execution > Prepared paid user exposes upgrade downgrade and interval controls",
         "evidenceCount": 2,
         "status": "Evidence Available"
       },
       {
-        "testId": "chromium > SubscriptionLifecycleExecution.spec.ts > Subscription Lifecycle Execution > Disposable user climbs every monthly then yearly plan and sees yearly cancel options",
-        "testName": "Subscription Lifecycle Execution > Disposable user climbs every monthly then yearly plan and sees yearly cancel options",
+        "testId": "chromium > SubscriptionLifecycleExecution.spec.ts > Subscription Lifecycle Execution > Prepared paid user can preview monthly and annual upgrade calculations",
+        "testName": "Subscription Lifecycle Execution > Prepared paid user can preview monthly and annual upgrade calculations",
         "evidenceCount": 2,
         "status": "Evidence Available"
       },
       {
-        "testId": "chromium > RollConfiguration.spec.ts > Roll Configuration > Tax-Aware field-level validation blocks empty and zeroed fields",
-        "testName": "Roll Configuration > Tax-Aware field-level validation blocks empty and zeroed fields",
+        "testId": "chromium > SubscriptionLifecycleExecution.spec.ts > Subscription Lifecycle Execution > Prepared paid user exposes non-destructive cancellation form",
+        "testName": "Subscription Lifecycle Execution > Prepared paid user exposes non-destructive cancellation form",
         "evidenceCount": 2,
         "status": "Evidence Available"
       },
       {
-        "testId": "chromium > RollConfiguration.spec.ts > Roll Configuration > Balanced field-level validation blocks empty and zeroed fields",
-        "testName": "Roll Configuration > Balanced field-level validation blocks empty and zeroed fields",
+        "testId": "chromium > SubscriptionLifecycleExecution.spec.ts > Subscription Lifecycle Execution > Prepared monthly fixture shows monthly cancel options",
+        "testName": "Subscription Lifecycle Execution > Prepared monthly fixture shows monthly cancel options",
         "evidenceCount": 2,
         "status": "Evidence Available"
       },
       {
-        "testId": "chromium > DashboardRemainingScreens.spec.ts > Remaining dashboard screens > Footer legal pages open",
-        "testName": "Remaining dashboard screens > Footer legal pages open",
-        "evidenceCount": 2,
+        "testId": "chromium > SubscriptionCancellationMatrix.spec.ts > Subscription Cancellation Use Case 7 Matrix > SC-299 - Cancellation matrix coverage appears in AIR blocked and skipped coverage",
+        "testName": "Subscription Cancellation Use Case 7 Matrix > SC-299 - Cancellation matrix coverage appears in AIR blocked and skipped coverage",
+        "evidenceCount": 1,
         "status": "Evidence Available"
       },
       {
-        "testId": "chromium > DashboardScenarioSweep.spec.ts > Remaining dashboard scenarios > Strategy library applies every category and filter",
-        "testName": "Remaining dashboard scenarios > Strategy library applies every category and filter",
-        "evidenceCount": 2,
+        "testId": "chromium > FailedPaymentDunningMatrix.spec.ts > Failed Payment And Dunning Use Case 8 Matrix > SC-349 - AIR records failed payment evidence when available",
+        "testName": "Failed Payment And Dunning Use Case 8 Matrix > SC-349 - AIR records failed payment evidence when available",
+        "evidenceCount": 1,
         "status": "Evidence Available"
       },
       {
-        "testId": "chromium > DowngradeSubscriptionMatrix.spec.ts > Downgrade Subscription Use Case 4 Matrix > SC-141 - Scheduled downgrade appears in billing overview",
-        "testName": "Downgrade Subscription Use Case 4 Matrix > SC-141 - Scheduled downgrade appears in billing overview",
+        "testId": "chromium > SubscriptionLifecycleE2EMatrix.spec.ts > Subscription Lifecycle E2E Matrix > LC-045 - AIR shows subscription lifecycle coverage, blocked gaps, known bugs, and executable coverage status",
+        "testName": "Subscription Lifecycle E2E Matrix > LC-045 - AIR shows subscription lifecycle coverage, blocked gaps, known bugs, and executable coverage status",
         "evidenceCount": 1,
         "status": "Evidence Available"
       }
@@ -118,27 +118,37 @@
         "references": [
           {
             "type": "Failure",
-            "name": "Subscription Lifecycle Execution > Disposable user climbs every monthly then yearly plan and sees yearly cancel options",
+            "name": "Subscription Lifecycle Execution > Prepared paid user exposes upgrade downgrade and interval controls",
             "detail": "Critical failure severity matched release rules."
           },
           {
             "type": "Failure",
-            "name": "Roll Configuration > Tax-Aware field-level validation blocks empty and zeroed fields",
+            "name": "Subscription Lifecycle Execution > Prepared paid user can preview monthly and annual upgrade calculations",
             "detail": "Critical failure severity matched release rules."
           },
           {
             "type": "Failure",
-            "name": "Roll Configuration > Balanced field-level validation blocks empty and zeroed fields",
+            "name": "Subscription Lifecycle Execution > Prepared paid user exposes non-destructive cancellation form",
             "detail": "Critical failure severity matched release rules."
           },
           {
             "type": "Failure",
-            "name": "Remaining dashboard screens > Footer legal pages open",
+            "name": "Subscription Lifecycle Execution > Prepared monthly fixture shows monthly cancel options",
             "detail": "Critical failure severity matched release rules."
           },
           {
             "type": "Failure",
-            "name": "Remaining dashboard scenarios > Strategy library applies every category and filter",
+            "name": "Subscription Cancellation Use Case 7 Matrix > SC-299 - Cancellation matrix coverage appears in AIR blocked and skipped coverage",
+            "detail": "Critical failure severity matched release rules."
+          },
+          {
+            "type": "Failure",
+            "name": "Failed Payment And Dunning Use Case 8 Matrix > SC-349 - AIR records failed payment evidence when available",
+            "detail": "Critical failure severity matched release rules."
+          },
+          {
+            "type": "Failure",
+            "name": "Subscription Lifecycle E2E Matrix > LC-045 - AIR shows subscription lifecycle coverage, blocked gaps, known bugs, and executable coverage status",
             "detail": "Critical failure severity matched release rules."
           },
           {
@@ -152,28 +162,8 @@
             "detail": "Critical journey status is Critical."
           },
           {
-            "type": "Business Journey",
-            "name": "Dashboard",
-            "detail": "Critical journey status is Critical."
-          },
-          {
-            "type": "Business Journey",
-            "name": "Roll Configuration",
-            "detail": "Critical journey status is Critical."
-          },
-          {
             "type": "Module",
             "name": "Billing",
-            "detail": "Critical module risk is High."
-          },
-          {
-            "type": "Module",
-            "name": "Dashboard",
-            "detail": "Critical module risk is High."
-          },
-          {
-            "type": "Module",
-            "name": "Roll Configuration",
             "detail": "Critical module risk is High."
           }
         ]
@@ -184,27 +174,37 @@
         "references": [
           {
             "type": "Failure",
-            "name": "Subscription Lifecycle Execution > Disposable user climbs every monthly then yearly plan and sees yearly cancel options",
+            "name": "Subscription Lifecycle Execution > Prepared paid user exposes upgrade downgrade and interval controls",
             "detail": "Critical failure severity matched release rules."
           },
           {
             "type": "Failure",
-            "name": "Roll Configuration > Tax-Aware field-level validation blocks empty and zeroed fields",
+            "name": "Subscription Lifecycle Execution > Prepared paid user can preview monthly and annual upgrade calculations",
             "detail": "Critical failure severity matched release rules."
           },
           {
             "type": "Failure",
-            "name": "Roll Configuration > Balanced field-level validation blocks empty and zeroed fields",
+            "name": "Subscription Lifecycle Execution > Prepared paid user exposes non-destructive cancellation form",
             "detail": "Critical failure severity matched release rules."
           },
           {
             "type": "Failure",
-            "name": "Remaining dashboard screens > Footer legal pages open",
+            "name": "Subscription Lifecycle Execution > Prepared monthly fixture shows monthly cancel options",
             "detail": "Critical failure severity matched release rules."
           },
           {
             "type": "Failure",
-            "name": "Remaining dashboard scenarios > Strategy library applies every category and filter",
+            "name": "Subscription Cancellation Use Case 7 Matrix > SC-299 - Cancellation matrix coverage appears in AIR blocked and skipped coverage",
+            "detail": "Critical failure severity matched release rules."
+          },
+          {
+            "type": "Failure",
+            "name": "Failed Payment And Dunning Use Case 8 Matrix > SC-349 - AIR records failed payment evidence when available",
+            "detail": "Critical failure severity matched release rules."
+          },
+          {
+            "type": "Failure",
+            "name": "Subscription Lifecycle E2E Matrix > LC-045 - AIR shows subscription lifecycle coverage, blocked gaps, known bugs, and executable coverage status",
             "detail": "Critical failure severity matched release rules."
           },
           {
@@ -218,28 +218,8 @@
             "detail": "Critical journey status is Critical."
           },
           {
-            "type": "Business Journey",
-            "name": "Dashboard",
-            "detail": "Critical journey status is Critical."
-          },
-          {
-            "type": "Business Journey",
-            "name": "Roll Configuration",
-            "detail": "Critical journey status is Critical."
-          },
-          {
             "type": "Module",
             "name": "Billing",
-            "detail": "Critical module risk is High."
-          },
-          {
-            "type": "Module",
-            "name": "Dashboard",
-            "detail": "Critical module risk is High."
-          },
-          {
-            "type": "Module",
-            "name": "Roll Configuration",
             "detail": "Critical module risk is High."
           }
         ]
@@ -250,27 +230,37 @@
         "references": [
           {
             "type": "Failure",
-            "name": "Subscription Lifecycle Execution > Disposable user climbs every monthly then yearly plan and sees yearly cancel options",
+            "name": "Subscription Lifecycle Execution > Prepared paid user exposes upgrade downgrade and interval controls",
             "detail": "Critical failure severity matched release rules."
           },
           {
             "type": "Failure",
-            "name": "Roll Configuration > Tax-Aware field-level validation blocks empty and zeroed fields",
+            "name": "Subscription Lifecycle Execution > Prepared paid user can preview monthly and annual upgrade calculations",
             "detail": "Critical failure severity matched release rules."
           },
           {
             "type": "Failure",
-            "name": "Roll Configuration > Balanced field-level validation blocks empty and zeroed fields",
+            "name": "Subscription Lifecycle Execution > Prepared paid user exposes non-destructive cancellation form",
             "detail": "Critical failure severity matched release rules."
           },
           {
             "type": "Failure",
-            "name": "Remaining dashboard screens > Footer legal pages open",
+            "name": "Subscription Lifecycle Execution > Prepared monthly fixture shows monthly cancel options",
             "detail": "Critical failure severity matched release rules."
           },
           {
             "type": "Failure",
-            "name": "Remaining dashboard scenarios > Strategy library applies every category and filter",
+            "name": "Subscription Cancellation Use Case 7 Matrix > SC-299 - Cancellation matrix coverage appears in AIR blocked and skipped coverage",
+            "detail": "Critical failure severity matched release rules."
+          },
+          {
+            "type": "Failure",
+            "name": "Failed Payment And Dunning Use Case 8 Matrix > SC-349 - AIR records failed payment evidence when available",
+            "detail": "Critical failure severity matched release rules."
+          },
+          {
+            "type": "Failure",
+            "name": "Subscription Lifecycle E2E Matrix > LC-045 - AIR shows subscription lifecycle coverage, blocked gaps, known bugs, and executable coverage status",
             "detail": "Critical failure severity matched release rules."
           },
           {
@@ -284,34 +274,14 @@
             "detail": "Critical journey status is Critical."
           },
           {
-            "type": "Business Journey",
-            "name": "Dashboard",
-            "detail": "Critical journey status is Critical."
-          },
-          {
-            "type": "Business Journey",
-            "name": "Roll Configuration",
-            "detail": "Critical journey status is Critical."
-          },
-          {
             "type": "Module",
             "name": "Billing",
-            "detail": "Critical module risk is High."
-          },
-          {
-            "type": "Module",
-            "name": "Dashboard",
-            "detail": "Critical module risk is High."
-          },
-          {
-            "type": "Module",
-            "name": "Roll Configuration",
             "detail": "Critical module risk is High."
           }
         ]
       }
     ],
-    "warnings": 11,
-    "blockers": 12
+    "warnings": 5,
+    "blockers": 10
   }
 }

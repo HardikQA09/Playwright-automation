@@ -14,6 +14,9 @@ import {
   classHasHex,
   ROB_POSITION_COLORS
 } from '../helpers/positionAssetColors';
+import {
+  recoverPageLoadFailure
+} from '../helpers/recoverPageLoadFailure';
 import { safeClick }
   from '../helpers/safeClick';
 import { Logger }
@@ -35,11 +38,19 @@ export class PositionsDynamicGridPage {
   ) {}
 
   async open() {
+    const url =
+      `${BASE_URL}/dashboard/positions`;
+
     await this.page.goto(
-      `${BASE_URL}/dashboard/positions`,
+      url,
       {
         waitUntil: 'domcontentloaded'
       }
+    );
+
+    await recoverPageLoadFailure(
+      this.page,
+      url
     );
   }
 
@@ -182,6 +193,11 @@ export class PositionsDynamicGridPage {
   async expectLoaded() {
     Logger.info(
       'Checking Positions dynamic grid'
+    );
+
+    await recoverPageLoadFailure(
+      this.page,
+      `${BASE_URL}/dashboard/positions`
     );
 
     await expect(

@@ -82,8 +82,8 @@ const downgradeScenarios: DowngradeScenario[] = [
     sourceIds: ['SUB-DOWN-007'],
     title: 'Downgrade from paid plan to Free is only available when business rules allow it',
     priority: 'High',
-    status: 'blocked',
-    dependency: 'Requires confirmed business rule for paid-to-free downgrade and fixture account.'
+    status: 'automated',
+    automation: 'PaidToFreeDowngrade.spec.ts > SC-119 - Downgrade from paid plan to Free is only available when business rules allow it'
   },
   {
     id: 'SC-120',

@@ -135,57 +135,66 @@ async function openPlanSelection(
         page
       );
 
+    let preparedReady = false;
+
     try {
       await login.login(
         existingUser.email,
         existingUser.password
       );
+
+      await new MobileVerificationPage(
+        page
+      ).completeIfVisible(
+        existingUser.mobile
+      );
+
+      if (
+        !/\/onboarding/.test(
+          page.url()
+        )
+      ) {
+        await page.goto(
+          `${BASE_URL}/onboarding`,
+          {
+            waitUntil: 'domcontentloaded'
+          }
+        );
+      }
+
+      const planSelectionHeading =
+        page.getByText(
+          /choose your plan|select a plan|get started/i
+        ).first();
+
+      preparedReady =
+        await planSelectionHeading.isVisible({
+          timeout: 10000
+        }).catch(
+          () => false
+        );
+
+      if (
+        !preparedReady
+      ) {
+        console.warn(
+          `${scenario}: prepared user ${existingUser.email} is not on Choose Your Plan (URL: ${page.url()}). Falling back to a fresh disposable user.`
+        );
+      }
     } catch (error) {
-      test.skip(
-        true,
-        `Prepared plan-selection user could not log in. Refresh PLAN_SELECTION_EXISTING_EMAIL/PASSWORD before executing this fixture. ${error instanceof Error ? error.message : ''}`.trim()
+      console.warn(
+        `${scenario}: prepared plan-selection login failed (${error instanceof Error ? error.message : String(error)}). Falling back to a fresh disposable user.`
       );
     }
-
-    await new MobileVerificationPage(
-      page
-    ).completeIfVisible(
-      existingUser.mobile
-    );
 
     if (
-      !/\/onboarding/.test(
-        page.url()
-      )
+      preparedReady
     ) {
-      await page.goto(
-        `${BASE_URL}/onboarding`,
-        {
-          waitUntil: 'domcontentloaded'
-        }
-      );
+      return;
     }
 
-    const planSelectionHeading =
-      page.getByText(
-        /choose your plan|select a plan|get started/i
-      ).first();
-
-    const planSelectionVisible =
-      await planSelectionHeading.isVisible({
-        timeout: 10000
-      }).catch(
-        () => false
-      );
-
-    if (!planSelectionVisible) {
-      test.skip(
-        true,
-        `Prepared plan-selection user is not currently on the Choose Your Plan step. Current URL: ${page.url()}. Refresh PLAN_SELECTION_EXISTING_EMAIL/PASSWORD with a user paused at plan selection or run the fresh-user plan flow.`
-      );
-    }
-
-    return;
+    await page.context().clearCookies();
+    await page.goto('about:blank').catch(() => undefined);
   }
 
   skipUnlessEmailVerificationReady();

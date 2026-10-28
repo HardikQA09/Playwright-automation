@@ -1,6 +1,10 @@
 import {
+  ADD_POSITION_OPTION,
   BASE_URL
 } from './config/testData';
+
+import { AddPositionPage }
+  from './pages/AddPositionPage';
 
 import { DashboardPage }
   from './pages/DashboardPage';
@@ -111,10 +115,40 @@ test.describe(
     test(
       'Dashboard expiry overview call distance matches ((S - K) / K) x 100',
       async ({ page }) => {
+        const dashboard =
+          new DashboardPage(
+            page
+          );
         const expiry =
           new OptionExpiryOverviewPage(
             page
           );
+
+        // Seed a Long Call when the overview has no Long Options rows.
+        await expiry.openLongOptions();
+        const noLongRows =
+          await page
+            .getByText(/no (open )?long.*(option|expir)/i)
+            .first()
+            .isVisible()
+            .catch(() => false);
+
+        if (noLongRows) {
+          await new AddPositionPage(
+            page
+          ).addOptionPosition({
+            ...ADD_POSITION_OPTION,
+            right: 'Call'
+          });
+
+          await page.goto(
+            `${BASE_URL}/dashboard`,
+            {
+              waitUntil: 'domcontentloaded'
+            }
+          );
+          await dashboard.validateLoaded();
+        }
 
         await expiry.expectCallDistanceMatchesFormula();
       }

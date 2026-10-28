@@ -122,9 +122,34 @@ function buildMessage(air, args) {
     ['Release decision', decision]
   ];
 
-  const link = process.env.REPORT_URL
-    ? `<p><a href="${escapeHtml(process.env.REPORT_URL)}">Open the hosted report</a></p>`
-    : '';
+  const publishedPath = path.join(reportDir, 'published-url.txt');
+  const airJsonPath = path.join(reportDir, 'air-results.json');
+  let hostedUrl =
+    process.env.REPORT_URL ||
+    (fs.existsSync(publishedPath)
+      ? fs.readFileSync(publishedPath, 'utf8').trim()
+      : '');
+
+  // Stale GitHub Pages URL is worse than no link — body/attachment can say
+  // 579/0 while the hosted page is still an older 505/7 run.
+  if (
+    hostedUrl &&
+    fs.existsSync(publishedPath) &&
+    fs.existsSync(airJsonPath)
+  ) {
+    const publishedAge = fs.statSync(publishedPath).mtimeMs;
+    const airAge = fs.statSync(airJsonPath).mtimeMs;
+    if (airAge - publishedAge > 5 * 60 * 1000) {
+      console.warn(
+        'Hosted REPORT_URL / published-url.txt is older than air-results.json — omitting the link so the email does not open a previous run. Run: npm run report:publish'
+      );
+      hostedUrl = '';
+    }
+  }
+
+  const link = hostedUrl
+    ? `<p><a href="${escapeHtml(hostedUrl)}">Open the hosted AIR report</a> (same run as this email)</p>`
+    : `<p><b>Open the attached AIR HTML</b> for this run’s numbers. The hosted web link was omitted because it was not republished after this run (or was stale).</p>`;
 
   const env = air.environment?.name ?? 'UAT';
   const intro =
@@ -173,6 +198,20 @@ function buildMessage(air, args) {
 }
 
 async function main() {
+  const skipEmailFlag = path.join(
+    projectRoot,
+    'tmp',
+    'SKIP_REPORT_EMAIL'
+  );
+
+  // Hold email after a live run while failures are still being fixed.
+  if (fs.existsSync(skipEmailFlag)) {
+    console.warn(
+      `Report email skipped (flag present: ${path.relative(projectRoot, skipEmailFlag)}). Remove the flag when ready to send.`
+    );
+    return;
+  }
+
   const args = parseArgs(process.argv.slice(2));
   const airPath = path.join(reportDir, 'air-results.json');
 
@@ -207,18 +246,52 @@ async function main() {
   const today = new Date().toISOString().slice(0, 10);
 
   // 1. The AIR execution report (a single self-contained HTML file).
-  // When index.html is open in a viewer the generator cannot replace it and
-  // writes index-spare.html instead, so send whichever is newest.
-  const htmlPath = ['index.html', 'index-updated.html', 'index-spare.html']
+  // When index.html is locked open, the generator writes index-latest.html /
+  // index-current.html / index-spare.html instead. Always attach the newest
+  // candidate so the download matches the email body counts from air-results.json.
+  const htmlRank = (file) => {
+    const base = path.basename(file).toLowerCase();
+    if (base === 'index.html') return 0;
+    if (base === 'index-latest.html') return 1;
+    if (base === 'index-current.html') return 2;
+    if (base === 'index-updated.html') return 3;
+    return 9;
+  };
+
+  const htmlPath = fs
+    .readdirSync(reportDir)
+    .filter(
+      (name) =>
+        /^index(-[\w]+)?\.html$/i.test(name) ||
+        /^AIR-Execution-Report.*\.html$/i.test(name)
+    )
     .map((name) => path.join(reportDir, name))
-    .filter((file) => fs.existsSync(file))
-    .sort((a, b) => fs.statSync(b).mtimeMs - fs.statSync(a).mtimeMs)[0];
+    .filter((file) => {
+      try {
+        return fs.statSync(file).isFile() && fs.statSync(file).size > 50_000;
+      } catch {
+        return false;
+      }
+    })
+    .sort((a, b) => {
+      const mt = fs.statSync(b).mtimeMs - fs.statSync(a).mtimeMs;
+      // Same write burst — prefer canonical names over index-nav/spare.
+      if (Math.abs(mt) < 5000) {
+        return htmlRank(a) - htmlRank(b);
+      }
+      return mt;
+    })[0];
 
   if (htmlPath) {
+    console.log(
+      `Attaching AIR HTML: ${path.basename(htmlPath)} (mtime ${fs.statSync(htmlPath).mtime.toISOString()})`
+    );
     attachments.push({
       filename: `AIR-Execution-Report-${today}.html`,
       path: htmlPath
     });
+  } else {
+    console.warn('No AIR HTML report found under execution-report/.');
   }
 
   // 2. The Playwright HTML report. It is a folder (index.html plus the

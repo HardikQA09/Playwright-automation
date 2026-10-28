@@ -9,11 +9,10 @@
  * Applies complete-run-flags to this process (does not rewrite .env).
  * --minimize-skips / MINIMIZE_SKIPS=true turns lifecycle purchase+submit
  * flags ON (fewer skips, slower, more Stripe mutations).
- * Report email is OFF by default. Pass --email to notify REPORT_EMAIL_* /
- * default recipients — but only when the run is clean (0 failed).
- * After the main pass, failed tests are re-run once (--last-failed) and merged
- * into results.json so AIR reflects the healed outcome of this same suite run.
- * Remaining failures → AIR still generates, email is skipped.
+ * Report email is OFF by default. AIR HTML is built only AFTER the heal pass
+ * (never mid-suite / never from pre-heal failures alone).
+ * Pass --email to notify REPORT_EMAIL_* after heal+AIR (any result).
+ * Pass --email-if-clean to email only when post-heal AIR has 0 failed.
  * SEND_REPORT_EMAIL in the environment is ignored so scheduled/.env flags
  * cannot accidentally email the whole recipient list.
  */
@@ -56,7 +55,9 @@ const watch = ['1', 'true', 'yes', 'on'].includes(
 );
 const headed = argv.includes('--headed') || watch;
 delete process.env.SEND_REPORT_EMAIL;
-const sendEmail = argv.includes('--email');
+const sendEmailAlways = argv.includes('--email');
+const sendEmailIfClean = argv.includes('--email-if-clean');
+const sendEmail = sendEmailAlways || sendEmailIfClean;
 
 process.env.HEADED = headed ? 'true' : 'false';
 process.env.AIR_REPORT_SCOPE = process.env.AIR_REPORT_SCOPE || 'latest';
@@ -66,6 +67,19 @@ process.env.SKIP_AIR_REPORT = 'true';
 process.env.PLAYWRIGHT_RETRIES =
   process.env.PLAYWRIGHT_RETRIES || '1';
 const healEnabled = !argv.includes('--no-heal');
+
+console.log(
+  healEnabled
+    ? 'Heal: ON — failed tests re-run once before AIR / email.'
+    : 'Heal: OFF (--no-heal) — AIR uses the main pass as-is.'
+);
+console.log(
+  sendEmailAlways
+    ? 'Email: ON after heal+AIR (any result).'
+    : sendEmailIfClean
+      ? 'Email: ON after heal+AIR only if 0 failed.'
+      : 'Email: OFF — report will not be sent.'
+);
 
 function run(command, args) {
   console.log(`\n> ${command} ${args.join(' ')}`);
@@ -115,9 +129,11 @@ if (headed) {
 
 const resultsPath = path.join(projectRoot, 'test-results', 'results.json');
 const healPath = path.join(projectRoot, 'test-results', 'results-heal.json');
+// Keep the pre-heal snapshot outside Playwright's outputDir — heal's
+// --last-failed run wipes test-results/ and used to delete this backup too.
 const resultsBackupPath = path.join(
   projectRoot,
-  'test-results',
+  'tmp',
   'results-pre-heal.json'
 );
 
@@ -243,40 +259,46 @@ if (!fs.existsSync(resultsPath)) {
   );
 }
 
+console.log(
+  '\n--- Building AIR after heal (not from mid-run / pre-heal failures) ---'
+);
 run(node, [path.join(projectRoot, 'scripts', 'generate-air-results.js')]);
 run(node, [path.join(projectRoot, 'scripts', 'generate-execution-report.js')]);
+run(node, [path.join(projectRoot, 'scripts', 'generate-air-dashboard.js')]);
+console.log(
+  'AIR overview (default):  execution-report/index.html'
+);
+console.log(
+  'AIR detailed report:     execution-report/details.html'
+);
 
 if (sendEmail) {
-  const cleanCheck = isAirRunClean(projectRoot);
+  const { recipients, skipped } = collectConfiguredRecipients();
 
-  if (!cleanCheck.clean || playwrightExit !== 0) {
-    const reason =
-      playwrightExit !== 0 && cleanCheck.clean
-        ? `Playwright exit code ${playwrightExit} — report email will not be sent.`
-        : cleanCheck.reason;
+  if (skipped.length) {
+    console.log(`Schedule/report email will skip: ${skipped.join(', ')}`);
+  }
 
-    console.warn(`Report email skipped (run not clean): ${reason}`);
+  if (!recipients.length) {
+    console.warn(
+      'No REPORT_EMAIL_TO / REPORT_EMAIL_CC configured, so the AIR report was not emailed.'
+    );
   } else {
-    const { recipients, skipped } = collectConfiguredRecipients();
+    const cleanCheck = isAirRunClean(projectRoot);
 
-    if (skipped.length) {
-      console.log(`Schedule/report email will skip: ${skipped.join(', ')}`);
-    }
-
-    if (!recipients.length) {
-      console.warn(
-        'No REPORT_EMAIL_TO / REPORT_EMAIL_CC configured, so the AIR report was not emailed.'
+    if (sendEmailIfClean && !sendEmailAlways && !cleanCheck.clean) {
+      console.log(
+        `Report email held back after heal: ${cleanCheck.reason}`
       );
     } else {
       console.log(
-        `Clean run — emailing AIR report to ${recipients.length} configured recipient(s): ${recipients.join(', ')}`
+        `Emailing post-heal AIR report to ${recipients.length} configured recipient(s) (clean=${cleanCheck.clean}, exit=${playwrightExit}): ${recipients.join(', ')}`
       );
 
       const emailStatus = run(node, [
         path.join(projectRoot, 'scripts', 'send-report-email.js'),
         '--label',
-        'Complete suite',
-        '--only-if-clean'
+        'Complete suite'
       ]);
 
       if (emailStatus !== 0) {
@@ -286,7 +308,7 @@ if (sendEmail) {
   }
 } else {
   console.log(
-    'Report email skipped (default). Pass --email to send only when the run is clean (0 failed).'
+    'Report email skipped (default). Pass --email or --email-if-clean after heal only.'
   );
 }
 

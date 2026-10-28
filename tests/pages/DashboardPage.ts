@@ -176,13 +176,41 @@ export class DashboardPage
   }
 
   private profileMenuTrigger() {
-    return this.page.getByRole(
-      'banner'
-    ).getByRole(
+    const banner =
+      this.page.getByRole(
+        'banner'
+      );
+
+    return banner.getByRole(
       'button',
       {
         name: /^[A-Z]{2}$/
       }
+    ).or(
+      banner.locator(
+        'button'
+      ).filter({
+        hasText: /^[A-Z]{2}$/
+      })
+    ).first();
+  }
+
+  private profileMenuOpenMarker() {
+    return this.profileMenuItem(
+      'Billing'
+    ).or(
+      this.page.getByRole(
+        'menuitem',
+        {
+          name: /sign out|billing|profile|risk/i
+        }
+      )
+    ).or(
+      this.page.locator(
+        '[role="menu"], [data-radix-menu-content], [data-radix-dropdown-menu-content], [data-radix-popper-content-wrapper], [data-state="open"]'
+      ).getByText(
+        /billing|sign out|profile|risk/i
+      )
     ).first();
   }
 
@@ -194,40 +222,52 @@ export class DashboardPage
       this.profileMenuTrigger();
 
     const accountMenu =
-      this.profileMenuItem(
-        'Billing'
-      ).or(
-        this.page.getByRole(
-          'menuitem',
-          {
-            name: /sign out|billing/i
-          }
-        )
-      ).first();
+      this.profileMenuOpenMarker();
+
+    await menuTrigger.scrollIntoViewIfNeeded().catch(
+      () => undefined
+    );
 
     // Prefer click over hover so Radix focuses the menu and Escape dismiss works.
-    for (let attempt = 1; attempt <= 3; attempt += 1) {
-      const expanded =
-        await menuTrigger.getAttribute(
-          'aria-expanded'
-        ).catch(
-          () => null
-        );
+    // Always Escape between attempts — without aria-expanded a second click toggles closed.
+    for (let attempt = 1; attempt <= 6; attempt += 1) {
+      await this.page.keyboard.press(
+        'Escape'
+      ).catch(
+        () => undefined
+      );
 
-      if (expanded !== 'true') {
+      await this.page.waitForTimeout(
+        150
+      );
+
+      if (attempt % 2 === 1) {
         await menuTrigger.click({
-          timeout: 8000
+          timeout: 8000,
+          delay: 40
         }).catch(
           async () => {
-            await menuTrigger.hover();
+            await menuTrigger.click({
+              force: true,
+              timeout: 8000
+            });
           }
+        );
+      } else {
+        await menuTrigger.focus().catch(
+          () => undefined
+        );
+        await this.page.keyboard.press(
+          'Enter'
+        ).catch(
+          () => undefined
         );
       }
 
       const opened =
         await accountMenu.waitFor({
           state: 'visible',
-          timeout: 4000
+          timeout: 3500
         }).then(
           () => true
         ).catch(
@@ -238,31 +278,35 @@ export class DashboardPage
         break;
       }
 
-      await menuTrigger.hover();
+      // Hover path for menus that open on pointer enter when click is swallowed.
+      await menuTrigger.hover().catch(
+        () => undefined
+      );
+      await menuTrigger.click({
+        force: true,
+        timeout: 8000
+      }).catch(
+        () => undefined
+      );
 
-      const openedByHover =
+      const openedAgain =
         await accountMenu.waitFor({
           state: 'visible',
-          timeout: 2000
+          timeout: 2500
         }).then(
           () => true
         ).catch(
           () => false
         );
 
-      if (openedByHover) {
+      if (openedAgain) {
         break;
       }
     }
 
     await expect(
-      this.profileMenuItem(
-        'Billing'
-      ).or(
-        this.page.getByText(
-          /sign out/i
-        )
-      ).first()
+      accountMenu,
+      'Profile avatar menu should show Billing / Sign out after opening'
     ).toBeVisible({
       timeout: 10000
     });
@@ -283,83 +327,74 @@ export class DashboardPage
       return;
     }
 
+    const menuTrigger =
+      this.profileMenuTrigger();
+
     // Focus a menu item so Escape is handled by the Radix dropdown.
     await billingMenuItem.focus().catch(
       () => undefined
     );
 
-    await this.page.keyboard.press(
-      'Escape'
-    );
-
-    if (
-      await billingMenuItem.isVisible({
-        timeout: 1500
-      }).catch(
-        () => false
-      )
-    ) {
+    for (let press = 0; press < 2; press += 1) {
       await this.page.keyboard.press(
         'Escape'
       );
-    }
-
-    if (
-      await billingMenuItem.isVisible({
-        timeout: 1500
-      }).catch(
-        () => false
-      )
-    ) {
-      const menuTrigger =
-        this.profileMenuTrigger();
 
       if (
-        (
-          await menuTrigger.getAttribute(
-            'aria-expanded'
-          ).catch(
-            () => null
+        !(
+          await billingMenuItem.isVisible({
+            timeout: 1200
+          }).catch(
+            () => false
           )
-        ) === 'true'
-      ) {
-        await menuTrigger.click({
-          timeout: 8000
-        });
-      }
-    }
-
-    if (
-      await billingMenuItem.isVisible({
-        timeout: 1500
-      }).catch(
-        () => false
-      )
-    ) {
-      // Last resort: click empty main content away from the avatar.
-      const main =
-        this.page.locator(
-          'main'
-        ).first();
-
-      if (
-        await main.isVisible().catch(
-          () => false
         )
       ) {
-        await main.click({
-          position: {
-            x: 48,
-            y: 48
-          },
-          force: true
-        });
-      } else {
-        await this.page.mouse.click(
-          640,
-          400
-        );
+        return;
       }
+    }
+
+    // Toggle the avatar closed when Escape is ignored (common under load).
+    await menuTrigger.click({
+      timeout: 8000
+    }).catch(
+      () => undefined
+    );
+
+    if (
+      !(
+        await billingMenuItem.isVisible({
+          timeout: 1200
+        }).catch(
+          () => false
+        )
+      )
+    ) {
+      return;
+    }
+
+    // Click empty main content away from the avatar as a last resort.
+    const main =
+      this.page.locator(
+        'main'
+      ).first();
+
+    if (
+      await main.isVisible().catch(
+        () => false
+      )
+    ) {
+      await main.click({
+        position: {
+          x: 48,
+          y: 48
+        },
+        force: true
+      });
+    } else {
+      await this.page.mouse.click(
+        640,
+        400
+      );
     }
 
     await expect(
@@ -1053,28 +1088,45 @@ export class DashboardPage
   }
 
   private async readThemeSignature() {
+    // Appearance only. First explicit theme pick often writes localStorage
+    // (e.g. theme=light) even when the visible mode matches the prior
+    // default — that must not fail the restore check.
     return this.page.evaluate(
       () => {
         const html =
           document.documentElement;
+        const body =
+          document.body;
+        const root =
+          getComputedStyle(html);
+        const bodyStyle =
+          getComputedStyle(body);
 
         return JSON.stringify({
           htmlClass:
             html.className,
+          bodyClass:
+            body.className,
           dataTheme:
             html.getAttribute(
               'data-theme'
+            ) ||
+            body.getAttribute(
+              'data-theme'
             ),
           colorScheme:
-            html.style.colorScheme,
+            html.style.colorScheme ||
+            body.style.colorScheme ||
+            root.colorScheme,
           background:
-            getComputedStyle(
-              document.body
-            ).backgroundColor
+            bodyStyle.backgroundColor,
+          color:
+            bodyStyle.color
         });
       }
     );
   }
+
 
   async validateProfileMenuThemeToggle() {
     Logger.info(
@@ -1146,12 +1198,14 @@ export class DashboardPage
         : 'Switch to Dark theme'
     );
 
+    // Theme class updates can land a tick after the menu closes under load.
     await expect
       .poll(
         async () =>
           this.readThemeSignature(),
         {
-          timeout: 10000,
+          timeout: 15000,
+          intervals: [200, 400, 800],
           message:
             'The page appearance should change after choosing the other theme.'
         }
@@ -1179,7 +1233,8 @@ export class DashboardPage
         async () =>
           this.readThemeSignature(),
         {
-          timeout: 10000,
+          timeout: 15000,
+          intervals: [200, 400, 800],
           message:
             'Switching back should restore the original appearance.'
         }

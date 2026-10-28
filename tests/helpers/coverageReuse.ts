@@ -52,26 +52,51 @@ export function recordCoverage(
   );
 }
 
+export function wasCoveredBy(
+  key: string
+) {
+  const file = fileFor(key);
+
+  if (
+    !fs.existsSync(
+      file
+    )
+  ) {
+    return false;
+  }
+
+  try {
+    const recorded =
+      JSON.parse(
+        fs.readFileSync(
+          file,
+          'utf8'
+        )
+      ) as {
+        runner?: number
+      };
+
+    return recorded?.runner ===
+      process.ppid;
+  } catch {
+    return false;
+  }
+}
+
 export function expectCoveredBy(
   key: string,
   coveringTest: string
 ) {
-  const file = fileFor(key);
-
-  const recorded =
-    fs.existsSync(file)
-      ? (JSON.parse(
-          fs.readFileSync(file, 'utf8')
-        ) as { runner?: number })
-      : null;
-
   if (
-    recorded?.runner !==
-    process.ppid
+    wasCoveredBy(
+      key
+    )
   ) {
-    test.skip(
-      true,
-      `Covering test "${coveringTest}" did not complete checkpoint "${key}" in this run. Skipped (not a separate product defect) — fix or rerun the covering check first.`
-    );
+    return;
   }
+
+  test.skip(
+    true,
+    `Covering test "${coveringTest}" did not complete checkpoint "${key}" in this run. Skipped (not a separate product defect) — fix or rerun the covering check first.`
+  );
 }

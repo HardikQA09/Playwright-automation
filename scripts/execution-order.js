@@ -48,6 +48,8 @@ const coreExecutableJourneyOrder = [
   'DashboardWidgets.spec.ts',
   'DashboardUiStoryFixes.spec.ts',
   'OptionExpiryOverview.spec.ts',
+  'PaidToFreeDowngrade.spec.ts',
+  'PlanPositionLimits.spec.ts',
   'PositionsDynamicGrid.spec.ts',
   'EventCalendarFundamentals.spec.ts',
   'DashboardResearchPortfolio.spec.ts',
@@ -149,6 +151,8 @@ const scheduleGroups = [
           'DashboardWidgets.spec.ts',
           'DashboardUiStoryFixes.spec.ts',
           'OptionExpiryOverview.spec.ts',
+          'PaidToFreeDowngrade.spec.ts',
+          'PlanPositionLimits.spec.ts',
           'PositionsDynamicGrid.spec.ts'
         ])
       },
@@ -531,6 +535,8 @@ const executableBatches = [
       'DashboardWidgets.spec.ts',
       'DashboardUiStoryFixes.spec.ts',
       'OptionExpiryOverview.spec.ts',
+      'PaidToFreeDowngrade.spec.ts',
+      'PlanPositionLimits.spec.ts',
       'PositionsDynamicGrid.spec.ts',
       'EventCalendarFundamentals.spec.ts',
       'DashboardResearchPortfolio.spec.ts',

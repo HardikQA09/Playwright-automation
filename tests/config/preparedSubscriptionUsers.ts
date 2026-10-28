@@ -159,6 +159,21 @@ function passwordForEmail(
     );
   }
 
+  // Known monthly paid fixture from test-data.json cancelMonthly.
+  // Do NOT fall through to SUB_LIFECYCLE_PAID_PASSWORD (plantest / H@rdik9944).
+  if (
+    /monthly-to-a/i.test(
+      email
+    )
+  ) {
+    return (
+      process.env.CANCEL_MONTHLY_PASSWORD?.trim() ||
+      process.env.SUB_LIFECYCLE_MONTHLY_CANCEL_PASSWORD?.trim() ||
+      TEST_USERS.cancelMonthly?.password ||
+      'Test@123456'
+    );
+  }
+
   return sharedPassword();
 }
 
@@ -348,6 +363,14 @@ export function preparedUserEnvDefaults(
       resolvePreparedUser(
         'BILLING_PORTAL'
       );
+    const yearlyCancel =
+      resolvePreparedUser(
+        'CANCEL_YEARLY_INSPECT'
+      );
+    const monthlyCancel =
+      resolvePreparedUser(
+        'CANCEL_MONTHLY_INSPECT'
+      );
 
     env.SUB_LIFECYCLE_PAID_EMAIL =
       upgrade.email;
@@ -357,6 +380,22 @@ export function preparedUserEnvDefaults(
       portal.email;
     env.BILLING_MANAGEMENT_PASSWORD =
       portal.password;
+    env.SUB_LIFECYCLE_YEARLY_CANCEL_EMAIL =
+      yearlyCancel.email;
+    env.SUB_LIFECYCLE_YEARLY_CANCEL_PASSWORD =
+      yearlyCancel.password;
+    env.CANCEL_YEARLY_EMAIL =
+      yearlyCancel.email;
+    env.CANCEL_YEARLY_PASSWORD =
+      yearlyCancel.password;
+    env.SUB_LIFECYCLE_MONTHLY_CANCEL_EMAIL =
+      monthlyCancel.email;
+    env.SUB_LIFECYCLE_MONTHLY_CANCEL_PASSWORD =
+      monthlyCancel.password;
+    env.CANCEL_MONTHLY_EMAIL =
+      monthlyCancel.email;
+    env.CANCEL_MONTHLY_PASSWORD =
+      monthlyCancel.password;
 
     return env;
   } finally {

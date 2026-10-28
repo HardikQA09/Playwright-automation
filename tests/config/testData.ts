@@ -202,6 +202,12 @@ const subscriber =
 const e2e =
   data.users?.e2e ?? {};
 
+const cancelYearly =
+  data.users?.cancelYearly ?? {};
+
+const cancelMonthly =
+  data.users?.cancelMonthly ?? {};
+
 const auth =
   data.auth ?? {};
 
@@ -354,6 +360,38 @@ export const TEST_USERS = {
       process.env.E2E_PASSWORD ??
       e2e.password ??
       'H@rdik9944'
+  },
+
+  cancelYearly: {
+
+    email:
+      process.env.CANCEL_YEARLY_EMAIL ??
+      process.env.SUB_LIFECYCLE_YEARLY_CANCEL_EMAIL ??
+      cancelYearly.email ??
+      e2e.email ??
+      'imhardikthanki+e2e@gmail.com',
+
+    password:
+      process.env.CANCEL_YEARLY_PASSWORD ??
+      process.env.SUB_LIFECYCLE_YEARLY_CANCEL_PASSWORD ??
+      cancelYearly.password ??
+      e2e.password ??
+      'H@rdik9944'
+  },
+
+  cancelMonthly: {
+
+    email:
+      process.env.CANCEL_MONTHLY_EMAIL ??
+      process.env.SUB_LIFECYCLE_MONTHLY_CANCEL_EMAIL ??
+      cancelMonthly.email ??
+      'imhardikthanki+monthly-to-a-mvjn15yr@gmail.com',
+
+    password:
+      process.env.CANCEL_MONTHLY_PASSWORD ??
+      process.env.SUB_LIFECYCLE_MONTHLY_CANCEL_PASSWORD ??
+      cancelMonthly.password ??
+      'Test@123456'
   },
 
   mfaLocal: {

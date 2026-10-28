@@ -110,9 +110,21 @@ function normalizeReason(value) {
     return 'Scenario was not executed in this run.';
   }
 
-  return reason.length > 180
-    ? `${reason.slice(0, 177).trim()}...`
-    : reason;
+  if (reason.length <= 180) {
+    return reason;
+  }
+
+  const budget = 179;
+  let cut = reason.slice(0, budget);
+  const lastSpace = cut.lastIndexOf(' ');
+
+  if (lastSpace > Math.floor(budget * 0.4)) {
+    cut = cut.slice(0, lastSpace);
+  } else {
+    cut = cut.replace(/[A-Za-z0-9_-]+$/g, '').trim();
+  }
+
+  return `${cut.replace(/[.,;:]+$/g, '').trim()}…`;
 }
 
 function findScenarioArrayLiteral(content) {

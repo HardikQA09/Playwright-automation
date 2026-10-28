@@ -81,63 +81,170 @@ function applyCompleteRunEnv(projectRoot = path.resolve(__dirname, '..')) {
   }
 
   setDefaultEnv('AUTH_OTP_CODE', '111111');
-  // plan-selection-prepared is rejected by UAT (CredentialsSignin).
-  // Use the working plantest account so plan-selection login can proceed.
-  setDefaultEnv(
-    'PLAN_SELECTION_EXISTING_EMAIL',
-    'imhardikthanki+plantest@gmail.com'
-  );
-  setDefaultEnv('PLAN_SELECTION_EXISTING_PASSWORD', 'H@rdik9944');
+  // plantest is an active paid Overlay subscriber — NOT paused on Choose Your
+  // Plan. Pointing PLAN_SELECTION_EXISTING_* at plantest makes both plan-
+  // selection checks skip, which also skips Overlay "trial option" discovery.
+  // Prefer a fresh disposable user (Gmail IMAP) unless .env explicitly sets a
+  // user that is truly parked on plan selection.
+  const planSelectionEmail = String(
+    process.env.PLAN_SELECTION_EXISTING_EMAIL || ''
+  ).trim();
+  if (
+    /plantest|paid-income|paid-fix|monthly-to-a|e2e/i.test(
+      planSelectionEmail
+    )
+  ) {
+    console.warn(
+      `[complete-run-env] Clearing PLAN_SELECTION_EXISTING_EMAIL (${planSelectionEmail}) — not a plan-selection fixture; will register a fresh user`
+    );
+    delete process.env.PLAN_SELECTION_EXISTING_EMAIL;
+    delete process.env.PLAN_SELECTION_EXISTING_PASSWORD;
+    delete process.env.PLAN_SELECTION_EXISTING_MOBILE;
+  }
   setDefaultEnv('ADMIN_EMAIL', 'admin@ooltool.com');
   setDefaultEnv('ADMIN_PASSWORD', 'Admin@1234!');
 
-  // UAT accounts that currently fail Sign In (no credentials POST / lockout).
-  // Always remap these patterns — .env still points at paid-income for many keys.
+  // Multi-account paid fixtures (renew / downgrade / cancel / interval).
+  // Only remap throwaway Stripe tags that cannot Sign In on UAT.
   const workingPaidEmail = 'imhardikthanki+plantest@gmail.com';
   const workingPaidPassword = 'H@rdik9944';
+  const yearlyCancelEmail = 'imhardikthanki+e2e@gmail.com';
+  const yearlyCancelPassword = 'H@rdik9944';
+  const monthlyCancelEmail =
+    'imhardikthanki+monthly-to-a-mvjn15yr@gmail.com';
+  const monthlyCancelPassword = 'Test@123456';
   const brokenPaidPattern =
-    /\+(?:paid-income|paid-fix|monthly-to-a|e2e)(?:-|[.@])/i;
+    /\+(?:paid-income|paid-fix)(?:-|[.@])/i;
 
-  function forceWorkingPaidFixture(emailKey, passwordKey) {
-    const email = String(process.env[emailKey] || '').trim();
-    if (!email || brokenPaidPattern.test(email)) {
-      const previous = email || 'unset';
-      process.env[emailKey] = workingPaidEmail;
-      process.env[passwordKey] = workingPaidPassword;
-      console.warn(
-        `[complete-run-env] ${emailKey} remapped to plantest (was ${previous})`
-      );
+  function remapIfBroken(emailKey, passwordKey, email, password) {
+    const current = String(process.env[emailKey] || '').trim();
+    if (!current || brokenPaidPattern.test(current)) {
+      const previous = current || 'unset';
+      process.env[emailKey] = email;
+      process.env[passwordKey] = password;
+      if (previous !== email) {
+        console.warn(
+          `[complete-run-env] ${emailKey} → ${email} (was ${previous})`
+        );
+      }
     }
   }
 
-  forceWorkingPaidFixture('SUB_LIFECYCLE_MONTHLY_CANCEL_EMAIL', 'SUB_LIFECYCLE_MONTHLY_CANCEL_PASSWORD');
-  forceWorkingPaidFixture('SUB_LIFECYCLE_YEARLY_CANCEL_EMAIL', 'SUB_LIFECYCLE_YEARLY_CANCEL_PASSWORD');
-  forceWorkingPaidFixture('CANCEL_MONTHLY_EMAIL', 'CANCEL_MONTHLY_PASSWORD');
-  forceWorkingPaidFixture('CANCEL_YEARLY_EMAIL', 'CANCEL_YEARLY_PASSWORD');
-  forceWorkingPaidFixture('SUB_FIXTURE_DOWNGRADE_EMAIL', 'SUB_FIXTURE_DOWNGRADE_PASSWORD');
-  forceWorkingPaidFixture('SUB_FIXTURE_RETENTION_EMAIL', 'SUB_FIXTURE_RETENTION_PASSWORD');
-  forceWorkingPaidFixture('SUB_FIXTURE_INTERVAL_EMAIL', 'SUB_FIXTURE_INTERVAL_PASSWORD');
+  function setFixtureDefault(emailKey, passwordKey, email, password) {
+    if (!String(process.env[emailKey] || '').trim()) {
+      process.env[emailKey] = email;
+      process.env[passwordKey] = password;
+    }
+  }
 
-  // Always pin the primary paid fixtures for complete suite — .env paid-income
-  // currently cannot complete Sign In on UAT (no credentials POST).
+  // Shared dashboard / portal / generic paid — plantest (Overlay annual).
+  process.env.SUBSCRIBER_EMAIL = workingPaidEmail;
+  process.env.SUBSCRIBER_PASSWORD = workingPaidPassword;
   process.env.SUB_LIFECYCLE_PAID_EMAIL = workingPaidEmail;
   process.env.SUB_LIFECYCLE_PAID_PASSWORD = workingPaidPassword;
   process.env.BILLING_MANAGEMENT_EMAIL = workingPaidEmail;
   process.env.BILLING_MANAGEMENT_PASSWORD = workingPaidPassword;
-  process.env.SUBSCRIBER_EMAIL = workingPaidEmail;
-  process.env.SUBSCRIBER_PASSWORD = workingPaidPassword;
-  // Prefer prepared plantest over registering a new Stripe user every run.
+
+  // Per-scenario keys — distinct accounts so renew/downgrade/cancel do not collide.
+  setFixtureDefault(
+    'SUB_FIXTURE_UPGRADE_CALC_EMAIL',
+    'SUB_FIXTURE_UPGRADE_CALC_PASSWORD',
+    workingPaidEmail,
+    workingPaidPassword
+  );
+  setFixtureDefault(
+    'SUB_FIXTURE_INTERVAL_EMAIL',
+    'SUB_FIXTURE_INTERVAL_PASSWORD',
+    workingPaidEmail,
+    workingPaidPassword
+  );
+  setFixtureDefault(
+    'SUB_FIXTURE_RETENTION_EMAIL',
+    'SUB_FIXTURE_RETENTION_PASSWORD',
+    workingPaidEmail,
+    workingPaidPassword
+  );
+  // Downgrade preview: plantest Overlay annual can open schedule-at-renewal copy;
+  // disposable Overlay monthly still fills gaps when CREATE_DISPOSABLE_USER=true.
+  setFixtureDefault(
+    'SUB_FIXTURE_DOWNGRADE_EMAIL',
+    'SUB_FIXTURE_DOWNGRADE_PASSWORD',
+    workingPaidEmail,
+    workingPaidPassword
+  );
+
+  // Yearly cancel / refund-option copy — e2e (annual), not the shared plantest session.
+  remapIfBroken(
+    'SUB_LIFECYCLE_YEARLY_CANCEL_EMAIL',
+    'SUB_LIFECYCLE_YEARLY_CANCEL_PASSWORD',
+    yearlyCancelEmail,
+    yearlyCancelPassword
+  );
+  remapIfBroken(
+    'CANCEL_YEARLY_EMAIL',
+    'CANCEL_YEARLY_PASSWORD',
+    yearlyCancelEmail,
+    yearlyCancelPassword
+  );
+  setFixtureDefault(
+    'SUB_LIFECYCLE_YEARLY_CANCEL_EMAIL',
+    'SUB_LIFECYCLE_YEARLY_CANCEL_PASSWORD',
+    yearlyCancelEmail,
+    yearlyCancelPassword
+  );
+  setFixtureDefault(
+    'CANCEL_YEARLY_EMAIL',
+    'CANCEL_YEARLY_PASSWORD',
+    yearlyCancelEmail,
+    yearlyCancelPassword
+  );
+
+  // Monthly cancel / period-end copy — dedicated monthly paid fixture.
+  remapIfBroken(
+    'SUB_LIFECYCLE_MONTHLY_CANCEL_EMAIL',
+    'SUB_LIFECYCLE_MONTHLY_CANCEL_PASSWORD',
+    monthlyCancelEmail,
+    monthlyCancelPassword
+  );
+  remapIfBroken(
+    'CANCEL_MONTHLY_EMAIL',
+    'CANCEL_MONTHLY_PASSWORD',
+    monthlyCancelEmail,
+    monthlyCancelPassword
+  );
+  setFixtureDefault(
+    'SUB_LIFECYCLE_MONTHLY_CANCEL_EMAIL',
+    'SUB_LIFECYCLE_MONTHLY_CANCEL_PASSWORD',
+    monthlyCancelEmail,
+    monthlyCancelPassword
+  );
+  setFixtureDefault(
+    'CANCEL_MONTHLY_EMAIL',
+    'CANCEL_MONTHLY_PASSWORD',
+    monthlyCancelEmail,
+    monthlyCancelPassword
+  );
+
+  // Prefer prepared multi-account roster; disposable fills missing time-state slots.
   process.env.SUB_LIFECYCLE_USE_PREPARED_USER = 'true';
+  // AIR matrix self-checks read the previous air:parse output (no browser).
+  // Enable on every complete run so SC-164/199/200-style rows execute instead of
+  // soft-skipping with "excluded from the live Playwright execution".
+  process.env.AIR_SELF_VALIDATION_ENABLED = 'true';
+  // Disposable Stripe users fill fixture gaps (time-state / wrong interval).
+  process.env.SUB_LIFECYCLE_CREATE_DISPOSABLE_USER = 'true';
   if (!minimizeSkips) {
-    process.env.SUB_LIFECYCLE_CREATE_DISPOSABLE_USER = 'false';
+    console.warn(
+      '[complete-run-env] CREATE_DISPOSABLE_USER=true for complete suite (fixture-gap skips become live purchases)'
+    );
   }
   console.warn(
-    '[complete-run-env] SUB_LIFECYCLE_PAID / BILLING_MANAGEMENT / SUBSCRIBER pinned to plantest'
+    '[complete-run-env] multi-account fixtures: plantest=portal/upgrade/interval/downgrade, e2e=yearly-cancel, monthly-to-a=monthly-cancel'
   );
   console.warn(
     minimizeSkips
-      ? '[complete-run-env] MINIMIZE_SKIPS: CREATE_DISPOSABLE_USER=true (slower; fewer fixture skips)'
-      : '[complete-run-env] prepared users ON (CREATE_DISPOSABLE_USER=false) for faster runs'
+      ? '[complete-run-env] MINIMIZE_SKIPS: CREATE_DISPOSABLE_USER=true — wrong/missing fixtures buy a disposable user instead of skipping'
+      : '[complete-run-env] prepared users ON with disposable fallback for missing time-state accounts'
   );
   setDefaultEnv(
     'REPORT_EMAIL_TO',
