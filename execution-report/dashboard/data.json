@@ -1,0 +1,4983 @@
+{
+  "generatedAt": "2026-10-29T06:06:13.371Z",
+  "keepDays": 14,
+  "source": {
+    "history": "execution-report/history/air-history.json",
+    "latest": "execution-report/air-results.json",
+    "fullReport": "execution-report/details.html",
+    "overview": "execution-report/index.html"
+  },
+  "runs": [
+    {
+      "id": "air-1792392739790",
+      "at": "10/19/2026, 12:22:19 PM",
+      "generatedAt": "2026-10-19T06:52:19.790Z",
+      "duration": "149m 2s",
+      "durationMs": 8941928,
+      "total": 726,
+      "passed": 461,
+      "failed": 14,
+      "skipped": 251,
+      "notRun": 251,
+      "flaky": 0,
+      "executed": 475,
+      "documentedSkipped": 245,
+      "passRate": 97,
+      "unexpectedSkipped": 6,
+      "decision": "NO GO",
+      "risk": "HIGH",
+      "qualityScore": 87,
+      "failedTitles": [
+        {
+          "title": "Dashboard Widgets > Dashboard shows portfolio score events allocation and opportunities",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Dashboard Widgets > Dashboard shows portfolio score events allocation and opportunities",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Opportunities > Opportunity save view research watch and pagination",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Opportunities > Opportunity save view research watch and pagination",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "More dashboard screens > Option chain strike count keeps calls and puts",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "More dashboard screens > Option chain strike count keeps calls and puts",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Deeper dashboard controls > News switches portfolio and watchlist, then searches a symbol",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Deeper dashboard controls > News switches portfolio and watchlist, then searches a symbol",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Deeper dashboard controls > Support changes ticket fields and status without submitting",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Deeper dashboard controls > Support changes ticket fields and status without submitting",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Billing Edge Validation > Billing overview plans and history in one session",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Billing Edge Validation > Billing overview plans and history in one session",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Disposable user resets password from the email link and signs in with the new password",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Disposable user resets password from the email link and signs in with the new password",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Overlay Strategists Trial FRD Matrix > SC-03 - Broker account limit is one",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Overlay Strategists Trial FRD Matrix > SC-03 - Broker account limit is one",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Overlay Strategists Trial FRD Matrix > SC-07 - Start trial with valid card",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Overlay Strategists Trial FRD Matrix > SC-07 - Start trial with valid card",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "New Subscription Purchase Use Case 2 Matrix > SC-75I - Invoice PDF amount, currency, and plan match the purchased subscription",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "New Subscription Purchase Use Case 2 Matrix > SC-75I - Invoice PDF amount, currency, and plan match the purchased subscription",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Upgrade Subscription Use Case 3 Matrix > SC-76 - Current lower-tier paid subscription is displayed before upgrade",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Upgrade Subscription Use Case 3 Matrix > SC-76 - Current lower-tier paid subscription is displayed before upgrade",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Upgrade Subscription Use Case 3 Matrix > SC-95 - Upgrade confirmation email is sent",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Upgrade Subscription Use Case 3 Matrix > SC-95 - Upgrade confirmation email is sent",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Monthly To Annual Billing Change Use Case 5 Matrix > SC-182 - Confirmation email is sent after monthly-to-annual change",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Monthly To Annual Billing Change Use Case 5 Matrix > SC-182 - Confirmation email is sent after monthly-to-annual change",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Subscription Cancellation Use Case 7 Matrix > SC-262 - Cancellation confirmation email is sent",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Subscription Cancellation Use Case 7 Matrix > SC-262 - Cancellation confirmation email is sent",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        }
+      ],
+      "modules": [
+        {
+          "name": "Access Control",
+          "passed": 0,
+          "failed": 0,
+          "skipped": 1,
+          "score": 0,
+          "status": "Not Executed",
+          "critical": true
+        },
+        {
+          "name": "Accessibility",
+          "passed": 24,
+          "failed": 0,
+          "skipped": 5,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Authentication",
+          "passed": 65,
+          "failed": 0,
+          "skipped": 9,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Billing",
+          "passed": 207,
+          "failed": 8,
+          "skipped": 227,
+          "score": 96,
+          "status": "Critical",
+          "critical": true
+        },
+        {
+          "name": "Dashboard",
+          "passed": 71,
+          "failed": 4,
+          "skipped": 0,
+          "score": 95,
+          "status": "Warning",
+          "critical": true
+        },
+        {
+          "name": "General",
+          "passed": 42,
+          "failed": 1,
+          "skipped": 1,
+          "score": 98,
+          "status": "Warning",
+          "critical": false
+        },
+        {
+          "name": "MFA",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 7,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Onboarding",
+          "passed": 10,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Password",
+          "passed": 17,
+          "failed": 1,
+          "skipped": 0,
+          "score": 94,
+          "status": "Critical",
+          "critical": true
+        },
+        {
+          "name": "Profile",
+          "passed": 3,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Signup",
+          "passed": 21,
+          "failed": 0,
+          "skipped": 1,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1792587577733",
+      "at": "10/21/2026, 6:29:37 PM",
+      "generatedAt": "2026-10-21T12:59:37.733Z",
+      "duration": "143m 30s",
+      "durationMs": 8609968,
+      "total": 746,
+      "passed": 487,
+      "failed": 17,
+      "skipped": 242,
+      "notRun": 242,
+      "flaky": 0,
+      "executed": 504,
+      "documentedSkipped": 241,
+      "passRate": 97,
+      "unexpectedSkipped": 1,
+      "decision": "NO GO",
+      "risk": "HIGH",
+      "qualityScore": 71,
+      "failedTitles": [
+        {
+          "title": "Overlay Strategists Trial Experience > New user can reach Overlay Strategists trial option",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Overlay Strategists Trial Experience > New user can reach Overlay Strategists trial option",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Overlay Strategists Trial Experience > New user can start Overlay Strategists trial with card",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Overlay Strategists Trial Experience > New user can start Overlay Strategists trial with card",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Direct Subscription Purchase > Paid plan checkout summaries currency refresh and return use one user",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Direct Subscription Purchase > Paid plan checkout summaries currency refresh and return use one user",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Direct Subscription Purchase > Income Builder monthly checkout shows subscription summary before payment",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Direct Subscription Purchase > Income Builder monthly checkout shows subscription summary before payment",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Direct Subscription Purchase > Portfolio Hedger annual checkout shows subscription summary before payment",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Direct Subscription Purchase > Portfolio Hedger annual checkout shows subscription summary before payment",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Direct Subscription Purchase > Income Builder annual checkout shows subscription summary before payment",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Direct Subscription Purchase > Income Builder annual checkout shows subscription summary before payment",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Direct Subscription Purchase > Income Builder checkout shows currency and conversion details before payment",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Direct Subscription Purchase > Income Builder checkout shows currency and conversion details before payment",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Direct Subscription Purchase > Income Builder checkout preserves context on refresh and returns safely before payment",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Direct Subscription Purchase > Income Builder checkout preserves context on refresh and returns safely before payment",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Subscription Lifecycle Execution > Prepared paid user can preview monthly and annual upgrade calculations",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Subscription Lifecycle Execution > Prepared paid user can preview monthly and annual upgrade calculations",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Subscription Lifecycle Execution > Prepared paid user can preview downgrade calculations without submitting",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Subscription Lifecycle Execution > Prepared paid user can preview downgrade calculations without submitting",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Subscription Lifecycle Execution > User A monthly plan ladder then period-end cancel",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Subscription Lifecycle Execution > User A monthly plan ladder then period-end cancel",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Option Expiry Overview revamp > Dashboard expiry overview call distance matches ((S - K) / K) x 100",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Option Expiry Overview revamp > Dashboard expiry overview call distance matches ((S - K) / K) x 100",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Deeper dashboard controls > Support changes ticket fields and status without submitting",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Deeper dashboard controls > Support changes ticket fields and status without submitting",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Password mismatch and wrong current password in one session",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Password mismatch and wrong current password in one session",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Disposable user resets password from the email link and signs in with the new password",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Disposable user resets password from the email link and signs in with the new password",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Overlay Strategists Trial FRD Matrix > SC-03 - Broker account limit is one",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Overlay Strategists Trial FRD Matrix > SC-03 - Broker account limit is one",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Subscription Cancellation Use Case 7 Matrix > SC-262 - Cancellation confirmation email is sent",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Subscription Cancellation Use Case 7 Matrix > SC-262 - Cancellation confirmation email is sent",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        }
+      ],
+      "modules": [
+        {
+          "name": "Access Control",
+          "passed": 0,
+          "failed": 0,
+          "skipped": 1,
+          "score": 0,
+          "status": "Not Executed",
+          "critical": true
+        },
+        {
+          "name": "Accessibility",
+          "passed": 23,
+          "failed": 0,
+          "skipped": 6,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Authentication",
+          "passed": 65,
+          "failed": 0,
+          "skipped": 9,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Billing",
+          "passed": 212,
+          "failed": 13,
+          "skipped": 217,
+          "score": 94,
+          "status": "Critical",
+          "critical": true
+        },
+        {
+          "name": "Dashboard",
+          "passed": 93,
+          "failed": 2,
+          "skipped": 0,
+          "score": 98,
+          "status": "Critical",
+          "critical": true
+        },
+        {
+          "name": "General",
+          "passed": 43,
+          "failed": 0,
+          "skipped": 1,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "MFA",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 7,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Onboarding",
+          "passed": 10,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Password",
+          "passed": 16,
+          "failed": 2,
+          "skipped": 0,
+          "score": 89,
+          "status": "Critical",
+          "critical": true
+        },
+        {
+          "name": "Profile",
+          "passed": 3,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Signup",
+          "passed": 21,
+          "failed": 0,
+          "skipped": 1,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1792653901290",
+      "at": "10/22/2026, 12:55:01 PM",
+      "generatedAt": "2026-10-22T07:25:01.290Z",
+      "duration": "162m 14s",
+      "durationMs": 9734208,
+      "total": 746,
+      "passed": 474,
+      "failed": 32,
+      "skipped": 240,
+      "notRun": 240,
+      "flaky": 0,
+      "executed": 506,
+      "documentedSkipped": 235,
+      "passRate": 94,
+      "unexpectedSkipped": 5,
+      "decision": "NO GO",
+      "risk": "HIGH",
+      "qualityScore": 70,
+      "failedTitles": [
+        {
+          "title": "Subscription Lifecycle Execution > Prepared paid user can preview monthly and annual upgrade calculations",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Subscription Lifecycle Execution > Prepared paid user can preview monthly and annual upgrade calculations",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Subscription Lifecycle Execution > Prepared paid user can preview downgrade calculations without submitting",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Subscription Lifecycle Execution > Prepared paid user can preview downgrade calculations without submitting",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Option Expiry Overview revamp > Dashboard expiry overview has Short and Long tabs and OTM to ITM legend",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Option Expiry Overview revamp > Dashboard expiry overview has Short and Long tabs and OTM to ITM legend",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Option Expiry Overview revamp > Dashboard expiry overview footer lists OTM NTM ATM ITM counts",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Option Expiry Overview revamp > Dashboard expiry overview footer lists OTM NTM ATM ITM counts",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Option Expiry Overview revamp > Dashboard expiry overview breakdown uses integer contract counts",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Option Expiry Overview revamp > Dashboard expiry overview breakdown uses integer contract counts",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Option Expiry Overview revamp > Dashboard expiry overview row opens a drill-down modal",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Option Expiry Overview revamp > Dashboard expiry overview row opens a drill-down modal",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Positions dynamic grid > Dashboard positions call filter shows active filter chips",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Positions dynamic grid > Dashboard positions call filter shows active filter chips",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Opportunities > Opportunity save view research watch and pagination",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Opportunities > Opportunity save view research watch and pagination",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Deeper dashboard controls > Support changes ticket fields and status without submitting",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Deeper dashboard controls > Support changes ticket fields and status without submitting",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Remaining dashboard scenarios > Support walks every category, priority, and status without submitting",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Remaining dashboard scenarios > Support walks every category, priority, and status without submitting",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Upgrade Subscription Use Case 3 Matrix > SC-86 - Upgrade starts a new billing cycle and displays next renewal date",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Upgrade Subscription Use Case 3 Matrix > SC-86 - Upgrade starts a new billing cycle and displays next renewal date",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Upgrade Subscription Use Case 3 Matrix > SC-88 - Successful upgrade immediately updates active plan",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Upgrade Subscription Use Case 3 Matrix > SC-88 - Successful upgrade immediately updates active plan",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Upgrade Subscription Use Case 3 Matrix > SC-91 - Successful upgrade records subscription history entry",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Upgrade Subscription Use Case 3 Matrix > SC-91 - Successful upgrade records subscription history entry",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Upgrade Subscription Use Case 3 Matrix > SC-109 - Upgrade is available for subscription scheduled to cancel before end date when allowed",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Upgrade Subscription Use Case 3 Matrix > SC-109 - Upgrade is available for subscription scheduled to cancel before end date when allowed",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Downgrade Subscription Use Case 4 Matrix > SC-121 - Downgrade confirmation displays lost feature warning",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Downgrade Subscription Use Case 4 Matrix > SC-121 - Downgrade confirmation displays lost feature warning",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Downgrade Subscription Use Case 4 Matrix > SC-143 - Downgrade confirmation email is sent",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Downgrade Subscription Use Case 4 Matrix > SC-143 - Downgrade confirmation email is sent",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Monthly To Annual Billing Change Use Case 5 Matrix > SC-187 - Browser refresh during monthly-to-annual confirmation does not charge or change the plan",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Monthly To Annual Billing Change Use Case 5 Matrix > SC-187 - Browser refresh during monthly-to-annual confirmation does not charge or change the plan",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Subscription Cancellation Use Case 7 Matrix > SC-262 - Cancellation confirmation email is sent",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Subscription Cancellation Use Case 7 Matrix > SC-262 - Cancellation confirmation email is sent",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Failed Payment And Dunning Use Case 8 Matrix > SC-313 - Add payment method screen opens from Stripe portal",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Failed Payment And Dunning Use Case 8 Matrix > SC-313 - Add payment method screen opens from Stripe portal",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Failed Payment And Dunning Use Case 8 Matrix > SC-314 - Billing information update screen opens from Stripe portal",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Failed Payment And Dunning Use Case 8 Matrix > SC-314 - Billing information update screen opens from Stripe portal",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Failed Payment And Dunning Use Case 8 Matrix > SC-328 - Update payment link opens Stripe portal",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Failed Payment And Dunning Use Case 8 Matrix > SC-328 - Update payment link opens Stripe portal",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Subscription Lifecycle E2E Matrix > LC-009 - Existing paid subscriber cannot start another Overlay Strategists trial",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Subscription Lifecycle E2E Matrix > LC-009 - Existing paid subscriber cannot start another Overlay Strategists trial",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Subscription Lifecycle E2E Matrix > LC-018 - Successful paid checkout activates subscription and redirects back to dashboard",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Subscription Lifecycle E2E Matrix > LC-018 - Successful paid checkout activates subscription and redirects back to dashboard",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Subscription Lifecycle E2E Matrix > LC-023 - Subscribed user can see upgrade action or current plan status controls",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Subscription Lifecycle E2E Matrix > LC-023 - Subscribed user can see upgrade action or current plan status controls",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Subscription Lifecycle E2E Matrix > LC-024 - Upgrade to higher plan starts immediate Stripe proration checkout",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Subscription Lifecycle E2E Matrix > LC-024 - Upgrade to higher plan starts immediate Stripe proration checkout",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Subscription Lifecycle E2E Matrix > LC-025 - Upgrade payment starts a new billing cycle immediately",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Subscription Lifecycle E2E Matrix > LC-025 - Upgrade payment starts a new billing cycle immediately",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Subscription Lifecycle E2E Matrix > LC-026 - Subscribed user can see downgrade action or current plan status controls",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Subscription Lifecycle E2E Matrix > LC-026 - Subscribed user can see downgrade action or current plan status controls",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Subscription Lifecycle E2E Matrix > LC-031 - Billing interval toggles and interval-specific prices remain visible before change",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Subscription Lifecycle E2E Matrix > LC-031 - Billing interval toggles and interval-specific prices remain visible before change",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Subscription Lifecycle E2E Matrix > LC-032 - Subscription management portal opens with current subscription details",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Subscription Lifecycle E2E Matrix > LC-032 - Subscription management portal opens with current subscription details",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Subscription Lifecycle E2E Matrix > LC-033 - Cancel-at-period-end form accepts reason and feedback without immediate cancellation",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Subscription Lifecycle E2E Matrix > LC-033 - Cancel-at-period-end form accepts reason and feedback without immediate cancellation",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Subscription Lifecycle E2E Matrix > LC-035 - Cancelled subscription shows scheduled cancellation state and renewal/end date",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Subscription Lifecycle E2E Matrix > LC-035 - Cancelled subscription shows scheduled cancellation state and renewal/end date",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Subscription Lifecycle E2E Matrix > LC-043 - Payment recovery portal allows updating payment method without losing subscription context",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Subscription Lifecycle E2E Matrix > LC-043 - Payment recovery portal allows updating payment method without losing subscription context",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        }
+      ],
+      "modules": [
+        {
+          "name": "Access Control",
+          "passed": 0,
+          "failed": 0,
+          "skipped": 1,
+          "score": 0,
+          "status": "Not Executed",
+          "critical": true
+        },
+        {
+          "name": "Accessibility",
+          "passed": 23,
+          "failed": 1,
+          "skipped": 5,
+          "score": 96,
+          "status": "Warning",
+          "critical": false
+        },
+        {
+          "name": "Authentication",
+          "passed": 65,
+          "failed": 0,
+          "skipped": 9,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Billing",
+          "passed": 204,
+          "failed": 23,
+          "skipped": 215,
+          "score": 90,
+          "status": "Critical",
+          "critical": true
+        },
+        {
+          "name": "Dashboard",
+          "passed": 87,
+          "failed": 7,
+          "skipped": 1,
+          "score": 93,
+          "status": "Critical",
+          "critical": true
+        },
+        {
+          "name": "General",
+          "passed": 42,
+          "failed": 1,
+          "skipped": 1,
+          "score": 98,
+          "status": "Warning",
+          "critical": false
+        },
+        {
+          "name": "MFA",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 7,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Onboarding",
+          "passed": 10,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Password",
+          "passed": 18,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Profile",
+          "passed": 3,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Signup",
+          "passed": 21,
+          "failed": 0,
+          "skipped": 1,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1792675902208",
+      "at": "10/22/2026, 7:01:42 PM",
+      "generatedAt": "2026-10-22T13:31:42.208Z",
+      "duration": "162m 10s",
+      "durationMs": 9729689,
+      "total": 746,
+      "passed": 487,
+      "failed": 5,
+      "skipped": 252,
+      "notRun": 252,
+      "flaky": 2,
+      "executed": 492,
+      "documentedSkipped": 242,
+      "passRate": 99,
+      "unexpectedSkipped": 10,
+      "decision": "NO GO",
+      "risk": "HIGH",
+      "qualityScore": 94,
+      "failedTitles": [
+        {
+          "title": "Signup Negative Scenarios > Signup OTP input trims pasted value to 8 digits",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Signup Negative Scenarios > Signup OTP input trims pasted value to 8 digits",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Subscription Lifecycle Execution > Disposable user climbs every monthly then yearly plan and sees yearly cancel options",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Subscription Lifecycle Execution > Disposable user climbs every monthly then yearly plan and sees yearly cancel options",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Deeper dashboard screens > Company Finance shows statements for a symbol",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Deeper dashboard screens > Company Finance shows statements for a symbol",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Remaining dashboard scenarios > Strategy library applies every category and filter",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Remaining dashboard scenarios > Strategy library applies every category and filter",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Add Manual Position > Enter Manually from the plus popup opens Add Position with all position types",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Add Manual Position > Enter Manually from the plus popup opens Add Position with all position types",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        }
+      ],
+      "modules": [
+        {
+          "name": "Access Control",
+          "passed": 0,
+          "failed": 0,
+          "skipped": 1,
+          "score": 0,
+          "status": "Not Executed",
+          "critical": true
+        },
+        {
+          "name": "Accessibility",
+          "passed": 23,
+          "failed": 0,
+          "skipped": 6,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Authentication",
+          "passed": 65,
+          "failed": 0,
+          "skipped": 9,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Beta",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Billing",
+          "passed": 218,
+          "failed": 1,
+          "skipped": 223,
+          "score": 100,
+          "status": "Critical",
+          "critical": true
+        },
+        {
+          "name": "Dashboard",
+          "passed": 88,
+          "failed": 2,
+          "skipped": 4,
+          "score": 98,
+          "status": "Critical",
+          "critical": true
+        },
+        {
+          "name": "General",
+          "passed": 40,
+          "failed": 3,
+          "skipped": 1,
+          "score": 93,
+          "status": "Warning",
+          "critical": false
+        },
+        {
+          "name": "MFA",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 7,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Onboarding",
+          "passed": 10,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Password",
+          "passed": 18,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Profile",
+          "passed": 3,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Signup",
+          "passed": 20,
+          "failed": 1,
+          "skipped": 1,
+          "score": 95,
+          "status": "Warning",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1792681831470",
+      "at": "10/22/2026, 8:40:31 PM",
+      "generatedAt": "2026-10-22T15:10:31.470Z",
+      "duration": "152m 28s",
+      "durationMs": 9147746,
+      "total": 764,
+      "passed": 505,
+      "failed": 7,
+      "skipped": 252,
+      "notRun": 252,
+      "flaky": 0,
+      "executed": 512,
+      "documentedSkipped": 244,
+      "passRate": 99,
+      "unexpectedSkipped": 8,
+      "decision": "NO GO",
+      "risk": "HIGH",
+      "qualityScore": 90,
+      "failedTitles": [
+        {
+          "title": "Auth UI Validation > Login password visibility control is exposed without submitting form",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Auth UI Validation > Login password visibility control is exposed without submitting form",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Subscription Lifecycle Execution > Disposable user climbs every monthly then yearly plan and sees yearly cancel options",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Subscription Lifecycle Execution > Disposable user climbs every monthly then yearly plan and sees yearly cancel options",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Roll Configuration > Tax-Aware field-level validation blocks empty and zeroed fields",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Roll Configuration > Tax-Aware field-level validation blocks empty and zeroed fields",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Roll Configuration > Balanced field-level validation blocks empty and zeroed fields",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Roll Configuration > Balanced field-level validation blocks empty and zeroed fields",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Remaining dashboard screens > Footer legal pages open",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Remaining dashboard screens > Footer legal pages open",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Remaining dashboard scenarios > Strategy library applies every category and filter",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Remaining dashboard scenarios > Strategy library applies every category and filter",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Downgrade Subscription Use Case 4 Matrix > SC-141 - Scheduled downgrade appears in billing overview",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Downgrade Subscription Use Case 4 Matrix > SC-141 - Scheduled downgrade appears in billing overview",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        }
+      ],
+      "modules": [
+        {
+          "name": "Access Control",
+          "passed": 0,
+          "failed": 0,
+          "skipped": 1,
+          "score": 0,
+          "status": "Not Executed",
+          "critical": true
+        },
+        {
+          "name": "Accessibility",
+          "passed": 23,
+          "failed": 0,
+          "skipped": 6,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Authentication",
+          "passed": 64,
+          "failed": 1,
+          "skipped": 9,
+          "score": 98,
+          "status": "Warning",
+          "critical": true
+        },
+        {
+          "name": "Beta",
+          "passed": 5,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Billing",
+          "passed": 216,
+          "failed": 2,
+          "skipped": 224,
+          "score": 99,
+          "status": "Critical",
+          "critical": true
+        },
+        {
+          "name": "Dashboard",
+          "passed": 91,
+          "failed": 2,
+          "skipped": 1,
+          "score": 98,
+          "status": "Critical",
+          "critical": true
+        },
+        {
+          "name": "General",
+          "passed": 43,
+          "failed": 0,
+          "skipped": 1,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "MFA",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 7,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Onboarding",
+          "passed": 9,
+          "failed": 0,
+          "skipped": 1,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Password",
+          "passed": 18,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Profile",
+          "passed": 3,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Roll Configuration",
+          "passed": 12,
+          "failed": 2,
+          "skipped": 0,
+          "score": 86,
+          "status": "Critical",
+          "critical": true
+        },
+        {
+          "name": "Signup",
+          "passed": 20,
+          "failed": 0,
+          "skipped": 2,
+          "score": 100,
+          "status": "Warning",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1792730149231",
+      "at": "10/23/2026, 10:05:49 AM",
+      "generatedAt": "2026-10-23T04:35:49.231Z",
+      "duration": "152m 28s",
+      "durationMs": 9147746,
+      "total": 764,
+      "passed": 505,
+      "failed": 7,
+      "skipped": 252,
+      "notRun": 252,
+      "flaky": 0,
+      "executed": 512,
+      "documentedSkipped": 244,
+      "passRate": 99,
+      "unexpectedSkipped": 8,
+      "decision": "NO GO",
+      "risk": "HIGH",
+      "qualityScore": 90,
+      "failedTitles": [
+        {
+          "title": "Auth UI Validation > Login password visibility control is exposed without submitting form",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Auth UI Validation > Login password visibility control is exposed without submitting form",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Subscription Lifecycle Execution > Disposable user climbs every monthly then yearly plan and sees yearly cancel options",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Subscription Lifecycle Execution > Disposable user climbs every monthly then yearly plan and sees yearly cancel options",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Roll Configuration > Tax-Aware field-level validation blocks empty and zeroed fields",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Roll Configuration > Tax-Aware field-level validation blocks empty and zeroed fields",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Roll Configuration > Balanced field-level validation blocks empty and zeroed fields",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Roll Configuration > Balanced field-level validation blocks empty and zeroed fields",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Remaining dashboard screens > Footer legal pages open",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Remaining dashboard screens > Footer legal pages open",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Remaining dashboard scenarios > Strategy library applies every category and filter",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Remaining dashboard scenarios > Strategy library applies every category and filter",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Downgrade Subscription Use Case 4 Matrix > SC-141 - Scheduled downgrade appears in billing overview",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Downgrade Subscription Use Case 4 Matrix > SC-141 - Scheduled downgrade appears in billing overview",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        }
+      ],
+      "modules": [
+        {
+          "name": "Access Control",
+          "passed": 0,
+          "failed": 0,
+          "skipped": 1,
+          "score": 0,
+          "status": "Not Executed",
+          "critical": true
+        },
+        {
+          "name": "Accessibility",
+          "passed": 23,
+          "failed": 0,
+          "skipped": 6,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Authentication",
+          "passed": 64,
+          "failed": 1,
+          "skipped": 9,
+          "score": 98,
+          "status": "Warning",
+          "critical": true
+        },
+        {
+          "name": "Beta",
+          "passed": 5,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Billing",
+          "passed": 216,
+          "failed": 2,
+          "skipped": 224,
+          "score": 99,
+          "status": "Critical",
+          "critical": true
+        },
+        {
+          "name": "Dashboard",
+          "passed": 91,
+          "failed": 2,
+          "skipped": 1,
+          "score": 98,
+          "status": "Critical",
+          "critical": true
+        },
+        {
+          "name": "General",
+          "passed": 43,
+          "failed": 0,
+          "skipped": 1,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "MFA",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 7,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Onboarding",
+          "passed": 9,
+          "failed": 0,
+          "skipped": 1,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Password",
+          "passed": 18,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Profile",
+          "passed": 3,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Roll Configuration",
+          "passed": 12,
+          "failed": 2,
+          "skipped": 0,
+          "score": 86,
+          "status": "Critical",
+          "critical": true
+        },
+        {
+          "name": "Signup",
+          "passed": 20,
+          "failed": 0,
+          "skipped": 2,
+          "score": 100,
+          "status": "Warning",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793032804345",
+      "at": "10/26/2026, 10:10:04 PM",
+      "generatedAt": "2026-10-26T16:40:04.345Z",
+      "duration": "0s",
+      "durationMs": 0,
+      "total": 8,
+      "passed": 7,
+      "failed": 0,
+      "skipped": 1,
+      "notRun": 1,
+      "flaky": 0,
+      "executed": 7,
+      "documentedSkipped": 1,
+      "passRate": 100,
+      "unexpectedSkipped": 0,
+      "decision": "CONDITIONAL GO",
+      "risk": "MEDIUM",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Billing",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 1,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Dashboard",
+          "passed": 6,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793044567833",
+      "at": "10/27/2026, 1:26:07 AM",
+      "generatedAt": "2026-10-26T19:56:07.833Z",
+      "duration": "185m 38s",
+      "durationMs": 11138303,
+      "total": 766,
+      "passed": 579,
+      "failed": 0,
+      "skipped": 187,
+      "notRun": 187,
+      "flaky": 0,
+      "executed": 579,
+      "documentedSkipped": 177,
+      "passRate": 100,
+      "unexpectedSkipped": 10,
+      "decision": "CONDITIONAL GO",
+      "risk": "MEDIUM",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Access Control",
+          "passed": 0,
+          "failed": 0,
+          "skipped": 1,
+          "score": 0,
+          "status": "Not Executed",
+          "critical": true
+        },
+        {
+          "name": "Accessibility",
+          "passed": 29,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Authentication",
+          "passed": 65,
+          "failed": 0,
+          "skipped": 9,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Beta",
+          "passed": 5,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Billing",
+          "passed": 285,
+          "failed": 0,
+          "skipped": 159,
+          "score": 100,
+          "status": "Warning",
+          "critical": true
+        },
+        {
+          "name": "Dashboard",
+          "passed": 90,
+          "failed": 0,
+          "skipped": 4,
+          "score": 100,
+          "status": "Warning",
+          "critical": true
+        },
+        {
+          "name": "General",
+          "passed": 38,
+          "failed": 0,
+          "skipped": 6,
+          "score": 100,
+          "status": "Warning",
+          "critical": false
+        },
+        {
+          "name": "MFA",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 7,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Onboarding",
+          "passed": 10,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Password",
+          "passed": 18,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Profile",
+          "passed": 3,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Roll Configuration",
+          "passed": 14,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Signup",
+          "passed": 21,
+          "failed": 0,
+          "skipped": 1,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793090165507",
+      "at": "10/27/2026, 2:06:05 PM",
+      "generatedAt": "2026-10-27T08:36:05.507Z",
+      "duration": "163m 17s",
+      "durationMs": 9797141,
+      "total": 770,
+      "passed": 597,
+      "failed": 1,
+      "skipped": 171,
+      "notRun": 171,
+      "flaky": 1,
+      "executed": 598,
+      "documentedSkipped": 160,
+      "passRate": 100,
+      "unexpectedSkipped": 11,
+      "decision": "NO GO",
+      "risk": "HIGH",
+      "qualityScore": 98,
+      "failedTitles": [
+        {
+          "title": "Dashboard menus > Research menu opens fundamentals finance news calendar and simulator",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Dashboard menus > Research menu opens fundamentals finance news calendar and simulator",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        }
+      ],
+      "modules": [
+        {
+          "name": "Access Control",
+          "passed": 0,
+          "failed": 0,
+          "skipped": 1,
+          "score": 0,
+          "status": "Not Executed",
+          "critical": true
+        },
+        {
+          "name": "Accessibility",
+          "passed": 28,
+          "failed": 0,
+          "skipped": 1,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Authentication",
+          "passed": 65,
+          "failed": 0,
+          "skipped": 9,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Beta",
+          "passed": 5,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Billing",
+          "passed": 303,
+          "failed": 1,
+          "skipped": 141,
+          "score": 100,
+          "status": "Warning",
+          "critical": true
+        },
+        {
+          "name": "Dashboard",
+          "passed": 90,
+          "failed": 1,
+          "skipped": 4,
+          "score": 99,
+          "status": "Critical",
+          "critical": true
+        },
+        {
+          "name": "General",
+          "passed": 39,
+          "failed": 0,
+          "skipped": 7,
+          "score": 100,
+          "status": "Warning",
+          "critical": false
+        },
+        {
+          "name": "MFA",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 7,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Onboarding",
+          "passed": 10,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Password",
+          "passed": 18,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Profile",
+          "passed": 3,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Roll Configuration",
+          "passed": 14,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Signup",
+          "passed": 21,
+          "failed": 0,
+          "skipped": 1,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793090289761",
+      "at": "10/27/2026, 2:08:09 PM",
+      "generatedAt": "2026-10-27T08:38:09.761Z",
+      "duration": "0s",
+      "durationMs": 0,
+      "total": 3,
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0,
+      "flaky": 0,
+      "executed": 3,
+      "documentedSkipped": 0,
+      "passRate": 100,
+      "unexpectedSkipped": 0,
+      "decision": "CONDITIONAL GO",
+      "risk": "MEDIUM",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Billing",
+          "passed": 2,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Password",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793090309435",
+      "at": "10/27/2026, 2:08:29 PM",
+      "generatedAt": "2026-10-27T08:38:29.435Z",
+      "duration": "163m 13s",
+      "durationMs": 9793228,
+      "total": 770,
+      "passed": 594,
+      "failed": 4,
+      "skipped": 171,
+      "notRun": 171,
+      "flaky": 1,
+      "executed": 598,
+      "documentedSkipped": 160,
+      "passRate": 99,
+      "unexpectedSkipped": 11,
+      "decision": "NO GO",
+      "risk": "HIGH",
+      "qualityScore": 96,
+      "failedTitles": [
+        {
+          "title": "Dashboard menus > Research menu opens fundamentals finance news calendar and simulator",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Dashboard menus > Research menu opens fundamentals finance news calendar and simulator",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Profile Negative Scenarios > Profile identity drafts password toggles and navigation in one session",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Profile Negative Scenarios > Profile identity drafts password toggles and navigation in one session",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Billing Subscription Management > Billing portal plans invoices and return in one session",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Billing Subscription Management > Billing portal plans invoices and return in one session",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Subscription Cancellation Use Case 7 Matrix > SC-289 - Transaction history does not create an unexpected extra charge on cancellation",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Subscription Cancellation Use Case 7 Matrix > SC-289 - Transaction history does not create an unexpected extra charge on cancellation",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        }
+      ],
+      "modules": [
+        {
+          "name": "Access Control",
+          "passed": 0,
+          "failed": 0,
+          "skipped": 1,
+          "score": 0,
+          "status": "Not Executed",
+          "critical": true
+        },
+        {
+          "name": "Accessibility",
+          "passed": 28,
+          "failed": 0,
+          "skipped": 1,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Authentication",
+          "passed": 65,
+          "failed": 0,
+          "skipped": 9,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Beta",
+          "passed": 5,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Billing",
+          "passed": 301,
+          "failed": 3,
+          "skipped": 141,
+          "score": 99,
+          "status": "Warning",
+          "critical": true
+        },
+        {
+          "name": "Dashboard",
+          "passed": 90,
+          "failed": 1,
+          "skipped": 4,
+          "score": 99,
+          "status": "Critical",
+          "critical": true
+        },
+        {
+          "name": "General",
+          "passed": 39,
+          "failed": 0,
+          "skipped": 7,
+          "score": 100,
+          "status": "Warning",
+          "critical": false
+        },
+        {
+          "name": "MFA",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 7,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Onboarding",
+          "passed": 10,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Password",
+          "passed": 17,
+          "failed": 1,
+          "skipped": 0,
+          "score": 94,
+          "status": "Critical",
+          "critical": true
+        },
+        {
+          "name": "Profile",
+          "passed": 3,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Roll Configuration",
+          "passed": 14,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Signup",
+          "passed": 21,
+          "failed": 0,
+          "skipped": 1,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793090336238",
+      "at": "10/27/2026, 2:08:56 PM",
+      "generatedAt": "2026-10-27T08:38:56.238Z",
+      "duration": "163m 13s",
+      "durationMs": 9793228,
+      "total": 770,
+      "passed": 598,
+      "failed": 0,
+      "skipped": 171,
+      "notRun": 171,
+      "flaky": 1,
+      "executed": 598,
+      "documentedSkipped": 160,
+      "passRate": 100,
+      "unexpectedSkipped": 11,
+      "decision": "CONDITIONAL GO",
+      "risk": "MEDIUM",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Access Control",
+          "passed": 0,
+          "failed": 0,
+          "skipped": 1,
+          "score": 0,
+          "status": "Not Executed",
+          "critical": true
+        },
+        {
+          "name": "Accessibility",
+          "passed": 28,
+          "failed": 0,
+          "skipped": 1,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Authentication",
+          "passed": 65,
+          "failed": 0,
+          "skipped": 9,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Beta",
+          "passed": 5,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Billing",
+          "passed": 303,
+          "failed": 1,
+          "skipped": 141,
+          "score": 100,
+          "status": "Warning",
+          "critical": true
+        },
+        {
+          "name": "Dashboard",
+          "passed": 91,
+          "failed": 0,
+          "skipped": 4,
+          "score": 100,
+          "status": "Warning",
+          "critical": true
+        },
+        {
+          "name": "General",
+          "passed": 39,
+          "failed": 0,
+          "skipped": 7,
+          "score": 100,
+          "status": "Warning",
+          "critical": false
+        },
+        {
+          "name": "MFA",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 7,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Onboarding",
+          "passed": 10,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Password",
+          "passed": 18,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Profile",
+          "passed": 3,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Roll Configuration",
+          "passed": 14,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Signup",
+          "passed": 21,
+          "failed": 0,
+          "skipped": 1,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793100841694",
+      "at": "10/27/2026, 5:04:01 PM",
+      "generatedAt": "2026-10-27T11:34:01.694Z",
+      "duration": "165m 9s",
+      "durationMs": 9909111,
+      "total": 775,
+      "passed": 603,
+      "failed": 0,
+      "skipped": 169,
+      "notRun": 169,
+      "flaky": 3,
+      "executed": 603,
+      "documentedSkipped": 159,
+      "passRate": 100,
+      "unexpectedSkipped": 10,
+      "decision": "NO GO",
+      "risk": "HIGH",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Access Control",
+          "passed": 0,
+          "failed": 0,
+          "skipped": 1,
+          "score": 0,
+          "status": "Not Executed",
+          "critical": true
+        },
+        {
+          "name": "Accessibility",
+          "passed": 28,
+          "failed": 1,
+          "skipped": 0,
+          "score": 97,
+          "status": "Warning",
+          "critical": false
+        },
+        {
+          "name": "Authentication",
+          "passed": 66,
+          "failed": 0,
+          "skipped": 9,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Beta",
+          "passed": 6,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Billing",
+          "passed": 303,
+          "failed": 1,
+          "skipped": 141,
+          "score": 100,
+          "status": "Critical",
+          "critical": true
+        },
+        {
+          "name": "Dashboard",
+          "passed": 93,
+          "failed": 1,
+          "skipped": 4,
+          "score": 99,
+          "status": "Critical",
+          "critical": true
+        },
+        {
+          "name": "General",
+          "passed": 40,
+          "failed": 0,
+          "skipped": 6,
+          "score": 100,
+          "status": "Warning",
+          "critical": false
+        },
+        {
+          "name": "MFA",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 7,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Onboarding",
+          "passed": 10,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Password",
+          "passed": 18,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Profile",
+          "passed": 3,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Roll Configuration",
+          "passed": 14,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Signup",
+          "passed": 21,
+          "failed": 0,
+          "skipped": 1,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793116932988",
+      "at": "10/27/2026, 9:32:12 PM",
+      "generatedAt": "2026-10-27T16:02:12.988Z",
+      "duration": "181m 51s",
+      "durationMs": 10910581,
+      "total": 775,
+      "passed": 615,
+      "failed": 0,
+      "skipped": 153,
+      "notRun": 153,
+      "flaky": 7,
+      "executed": 615,
+      "documentedSkipped": 151,
+      "passRate": 100,
+      "unexpectedSkipped": 2,
+      "decision": "NO GO",
+      "risk": "HIGH",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Access Control",
+          "passed": 0,
+          "failed": 0,
+          "skipped": 1,
+          "score": 0,
+          "status": "Not Executed",
+          "critical": true
+        },
+        {
+          "name": "Accessibility",
+          "passed": 29,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Authentication",
+          "passed": 65,
+          "failed": 1,
+          "skipped": 9,
+          "score": 98,
+          "status": "Critical",
+          "critical": true
+        },
+        {
+          "name": "Beta",
+          "passed": 6,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Billing",
+          "passed": 309,
+          "failed": 3,
+          "skipped": 133,
+          "score": 99,
+          "status": "Critical",
+          "critical": true
+        },
+        {
+          "name": "Dashboard",
+          "passed": 96,
+          "failed": 1,
+          "skipped": 1,
+          "score": 99,
+          "status": "Warning",
+          "critical": true
+        },
+        {
+          "name": "General",
+          "passed": 43,
+          "failed": 2,
+          "skipped": 1,
+          "score": 96,
+          "status": "Warning",
+          "critical": false
+        },
+        {
+          "name": "MFA",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 7,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Onboarding",
+          "passed": 10,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Password",
+          "passed": 18,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Profile",
+          "passed": 3,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Roll Configuration",
+          "passed": 14,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Signup",
+          "passed": 21,
+          "failed": 0,
+          "skipped": 1,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793167737534",
+      "at": "10/28/2026, 11:38:57 AM",
+      "generatedAt": "2026-10-28T06:08:57.534Z",
+      "duration": "0s",
+      "durationMs": 0,
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0,
+      "flaky": 0,
+      "executed": 1,
+      "documentedSkipped": 0,
+      "passRate": 100,
+      "unexpectedSkipped": 0,
+      "decision": "CONDITIONAL GO",
+      "risk": "MEDIUM",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Billing",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793167869410",
+      "at": "10/28/2026, 11:41:09 AM",
+      "generatedAt": "2026-10-28T06:11:09.410Z",
+      "duration": "0s",
+      "durationMs": 0,
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0,
+      "flaky": 0,
+      "executed": 1,
+      "documentedSkipped": 0,
+      "passRate": 100,
+      "unexpectedSkipped": 0,
+      "decision": "CONDITIONAL GO",
+      "risk": "MEDIUM",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Billing",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793168331317",
+      "at": "10/28/2026, 11:48:51 AM",
+      "generatedAt": "2026-10-28T06:18:51.317Z",
+      "duration": "0s",
+      "durationMs": 0,
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0,
+      "flaky": 0,
+      "executed": 1,
+      "documentedSkipped": 0,
+      "passRate": 100,
+      "unexpectedSkipped": 0,
+      "decision": "CONDITIONAL GO",
+      "risk": "MEDIUM",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Billing",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793168701076",
+      "at": "10/28/2026, 11:55:01 AM",
+      "generatedAt": "2026-10-28T06:25:01.076Z",
+      "duration": "0s",
+      "durationMs": 0,
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0,
+      "flaky": 0,
+      "executed": 1,
+      "documentedSkipped": 0,
+      "passRate": 100,
+      "unexpectedSkipped": 0,
+      "decision": "CONDITIONAL GO",
+      "risk": "MEDIUM",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Billing",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793169002569",
+      "at": "10/28/2026, 12:00:02 PM",
+      "generatedAt": "2026-10-28T06:30:02.569Z",
+      "duration": "0s",
+      "durationMs": 0,
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0,
+      "flaky": 0,
+      "executed": 1,
+      "documentedSkipped": 0,
+      "passRate": 100,
+      "unexpectedSkipped": 0,
+      "decision": "CONDITIONAL GO",
+      "risk": "MEDIUM",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Billing",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793169374504",
+      "at": "10/28/2026, 12:06:14 PM",
+      "generatedAt": "2026-10-28T06:36:14.504Z",
+      "duration": "0s",
+      "durationMs": 0,
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0,
+      "flaky": 0,
+      "executed": 1,
+      "documentedSkipped": 0,
+      "passRate": 100,
+      "unexpectedSkipped": 0,
+      "decision": "CONDITIONAL GO",
+      "risk": "MEDIUM",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Billing",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793169410725",
+      "at": "10/28/2026, 12:06:50 PM",
+      "generatedAt": "2026-10-28T06:36:50.725Z",
+      "duration": "0s",
+      "durationMs": 0,
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0,
+      "flaky": 0,
+      "executed": 1,
+      "documentedSkipped": 0,
+      "passRate": 100,
+      "unexpectedSkipped": 0,
+      "decision": "CONDITIONAL GO",
+      "risk": "MEDIUM",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Billing",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793169572859",
+      "at": "10/28/2026, 12:09:32 PM",
+      "generatedAt": "2026-10-28T06:39:32.859Z",
+      "duration": "0s",
+      "durationMs": 0,
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0,
+      "flaky": 0,
+      "executed": 1,
+      "documentedSkipped": 0,
+      "passRate": 100,
+      "unexpectedSkipped": 0,
+      "decision": "CONDITIONAL GO",
+      "risk": "MEDIUM",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Billing",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793170670938",
+      "at": "10/28/2026, 12:27:50 PM",
+      "generatedAt": "2026-10-28T06:57:50.938Z",
+      "duration": "0s",
+      "durationMs": 0,
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0,
+      "flaky": 0,
+      "executed": 1,
+      "documentedSkipped": 0,
+      "passRate": 100,
+      "unexpectedSkipped": 0,
+      "decision": "CONDITIONAL GO",
+      "risk": "MEDIUM",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Billing",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793171382763",
+      "at": "10/28/2026, 12:39:42 PM",
+      "generatedAt": "2026-10-28T07:09:42.763Z",
+      "duration": "0s",
+      "durationMs": 0,
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0,
+      "flaky": 0,
+      "executed": 1,
+      "documentedSkipped": 0,
+      "passRate": 100,
+      "unexpectedSkipped": 0,
+      "decision": "CONDITIONAL GO",
+      "risk": "MEDIUM",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Billing",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793171468387",
+      "at": "10/28/2026, 12:41:08 PM",
+      "generatedAt": "2026-10-28T07:11:08.387Z",
+      "duration": "0s",
+      "durationMs": 0,
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0,
+      "flaky": 0,
+      "executed": 1,
+      "documentedSkipped": 0,
+      "passRate": 100,
+      "unexpectedSkipped": 0,
+      "decision": "CONDITIONAL GO",
+      "risk": "MEDIUM",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Billing",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793172282137",
+      "at": "10/28/2026, 12:54:42 PM",
+      "generatedAt": "2026-10-28T07:24:42.137Z",
+      "duration": "0s",
+      "durationMs": 0,
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0,
+      "flaky": 0,
+      "executed": 1,
+      "documentedSkipped": 0,
+      "passRate": 100,
+      "unexpectedSkipped": 0,
+      "decision": "CONDITIONAL GO",
+      "risk": "MEDIUM",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Billing",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793172499048",
+      "at": "10/28/2026, 12:58:19 PM",
+      "generatedAt": "2026-10-28T07:28:19.048Z",
+      "duration": "0s",
+      "durationMs": 0,
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0,
+      "flaky": 0,
+      "executed": 1,
+      "documentedSkipped": 0,
+      "passRate": 100,
+      "unexpectedSkipped": 0,
+      "decision": "CONDITIONAL GO",
+      "risk": "MEDIUM",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Billing",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793180341590",
+      "at": "10/28/2026, 3:09:01 PM",
+      "generatedAt": "2026-10-28T09:39:01.590Z",
+      "duration": "186m 43s",
+      "durationMs": 11202930,
+      "total": 778,
+      "passed": 618,
+      "failed": 7,
+      "skipped": 153,
+      "notRun": 153,
+      "flaky": 0,
+      "executed": 625,
+      "documentedSkipped": 152,
+      "passRate": 99,
+      "unexpectedSkipped": 1,
+      "decision": "NO GO",
+      "risk": "HIGH",
+      "qualityScore": 87,
+      "failedTitles": [
+        {
+          "title": "Subscription Lifecycle Execution > Prepared paid user exposes upgrade downgrade and interval controls",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Subscription Lifecycle Execution > Prepared paid user exposes upgrade downgrade and interval controls",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Subscription Lifecycle Execution > Prepared paid user can preview monthly and annual upgrade calculations",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Subscription Lifecycle Execution > Prepared paid user can preview monthly and annual upgrade calculations",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Subscription Lifecycle Execution > Prepared paid user exposes non-destructive cancellation form",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Subscription Lifecycle Execution > Prepared paid user exposes non-destructive cancellation form",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Subscription Lifecycle Execution > Prepared monthly fixture shows monthly cancel options",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Subscription Lifecycle Execution > Prepared monthly fixture shows monthly cancel options",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Subscription Cancellation Use Case 7 Matrix > SC-299 - Cancellation matrix coverage appears in AIR blocked and skipped coverage",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Subscription Cancellation Use Case 7 Matrix > SC-299 - Cancellation matrix coverage appears in AIR blocked and skipped coverage",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Failed Payment And Dunning Use Case 8 Matrix > SC-349 - AIR records failed payment evidence when available",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Failed Payment And Dunning Use Case 8 Matrix > SC-349 - AIR records failed payment evidence when available",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        },
+        {
+          "title": "Subscription Lifecycle E2E Matrix > LC-045 - AIR shows subscription lifecycle coverage, blocked gaps, known bugs, and executable coverage status",
+          "file": "",
+          "status": "failed",
+          "error": "",
+          "scenario": "Subscription Lifecycle E2E Matrix > LC-045 - AIR shows subscription lifecycle coverage, blocked gaps, known bugs, and executable coverage status",
+          "expected": "The check should complete with the expected product result.",
+          "actual": "The check failed.",
+          "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+          "evidenceHref": "",
+          "badge": "Failed"
+        }
+      ],
+      "modules": [
+        {
+          "name": "Access Control",
+          "passed": 0,
+          "failed": 0,
+          "skipped": 1,
+          "score": 0,
+          "status": "Not Executed",
+          "critical": true
+        },
+        {
+          "name": "Accessibility",
+          "passed": 28,
+          "failed": 0,
+          "skipped": 1,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Authentication",
+          "passed": 66,
+          "failed": 0,
+          "skipped": 9,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Beta",
+          "passed": 6,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Billing",
+          "passed": 308,
+          "failed": 7,
+          "skipped": 133,
+          "score": 98,
+          "status": "Critical",
+          "critical": true
+        },
+        {
+          "name": "Dashboard",
+          "passed": 98,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "General",
+          "passed": 45,
+          "failed": 0,
+          "skipped": 1,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "MFA",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 7,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Onboarding",
+          "passed": 10,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Password",
+          "passed": 18,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Profile",
+          "passed": 3,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Roll Configuration",
+          "passed": 14,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Signup",
+          "passed": 21,
+          "failed": 0,
+          "skipped": 1,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793196922644",
+      "at": "10/28/2026, 7:45:22 PM",
+      "generatedAt": "2026-10-28T14:15:22.644Z",
+      "duration": "176m 46s",
+      "durationMs": 10606112,
+      "total": 778,
+      "passed": 618,
+      "failed": 0,
+      "skipped": 156,
+      "notRun": 156,
+      "flaky": 4,
+      "executed": 618,
+      "documentedSkipped": 150,
+      "passRate": 100,
+      "unexpectedSkipped": 6,
+      "decision": "NO GO",
+      "risk": "HIGH",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Access Control",
+          "passed": 0,
+          "failed": 0,
+          "skipped": 1,
+          "score": 0,
+          "status": "Not Executed",
+          "critical": true
+        },
+        {
+          "name": "Accessibility",
+          "passed": 28,
+          "failed": 1,
+          "skipped": 0,
+          "score": 97,
+          "status": "Warning",
+          "critical": false
+        },
+        {
+          "name": "Authentication",
+          "passed": 66,
+          "failed": 0,
+          "skipped": 9,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Beta",
+          "passed": 6,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Billing",
+          "passed": 308,
+          "failed": 3,
+          "skipped": 137,
+          "score": 99,
+          "status": "Critical",
+          "critical": true
+        },
+        {
+          "name": "Dashboard",
+          "passed": 98,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "General",
+          "passed": 45,
+          "failed": 0,
+          "skipped": 1,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "MFA",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 7,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Onboarding",
+          "passed": 10,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Password",
+          "passed": 18,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Profile",
+          "passed": 3,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Roll Configuration",
+          "passed": 14,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Signup",
+          "passed": 21,
+          "failed": 0,
+          "skipped": 1,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793253956720",
+      "at": "10/29/2026, 11:35:56 AM",
+      "generatedAt": "2026-10-29T06:05:56.720Z",
+      "duration": "176m 46s",
+      "durationMs": 10606112,
+      "total": 778,
+      "passed": 622,
+      "failed": 0,
+      "skipped": 156,
+      "notRun": 156,
+      "flaky": 4,
+      "executed": 622,
+      "documentedSkipped": 156,
+      "passRate": 100,
+      "unexpectedSkipped": 0,
+      "decision": "CONDITIONAL GO",
+      "risk": "MEDIUM",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Access Control",
+          "passed": 0,
+          "failed": 0,
+          "skipped": 1,
+          "score": 0,
+          "status": "Not Executed",
+          "critical": true
+        },
+        {
+          "name": "Accessibility",
+          "passed": 29,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Authentication",
+          "passed": 66,
+          "failed": 0,
+          "skipped": 9,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Beta",
+          "passed": 6,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Billing",
+          "passed": 311,
+          "failed": 0,
+          "skipped": 137,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Dashboard",
+          "passed": 98,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "General",
+          "passed": 45,
+          "failed": 0,
+          "skipped": 1,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "MFA",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 7,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Onboarding",
+          "passed": 10,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Password",
+          "passed": 18,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Profile",
+          "passed": 3,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Roll Configuration",
+          "passed": 14,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Signup",
+          "passed": 21,
+          "failed": 0,
+          "skipped": 1,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    }
+  ],
+  "latest": {
+    "id": "air-1793253956720",
+    "at": "10/29/2026, 11:35:56 AM",
+    "generatedAt": "2026-10-29T06:05:56.720Z",
+    "duration": "176m 46s",
+    "durationMs": 10606112,
+    "total": 778,
+    "passed": 622,
+    "failed": 0,
+    "skipped": 156,
+    "notRun": 156,
+    "flaky": 4,
+    "executed": 622,
+    "documentedSkipped": 156,
+    "passRate": 100,
+    "unexpectedSkipped": 0,
+    "decision": "CONDITIONAL GO",
+    "risk": "MEDIUM",
+    "qualityScore": 100,
+    "failedTitles": [],
+    "modules": [
+      {
+        "name": "Access Control",
+        "passed": 0,
+        "failed": 0,
+        "skipped": 1,
+        "score": 0,
+        "status": "Not Executed",
+        "critical": true
+      },
+      {
+        "name": "Accessibility",
+        "passed": 29,
+        "failed": 0,
+        "skipped": 0,
+        "score": 100,
+        "status": "Healthy",
+        "critical": false
+      },
+      {
+        "name": "Authentication",
+        "passed": 66,
+        "failed": 0,
+        "skipped": 9,
+        "score": 100,
+        "status": "Healthy",
+        "critical": true
+      },
+      {
+        "name": "Beta",
+        "passed": 6,
+        "failed": 0,
+        "skipped": 0,
+        "score": 100,
+        "status": "Healthy",
+        "critical": false
+      },
+      {
+        "name": "Billing",
+        "passed": 311,
+        "failed": 0,
+        "skipped": 137,
+        "score": 100,
+        "status": "Healthy",
+        "critical": true
+      },
+      {
+        "name": "Dashboard",
+        "passed": 98,
+        "failed": 0,
+        "skipped": 0,
+        "score": 100,
+        "status": "Healthy",
+        "critical": true
+      },
+      {
+        "name": "General",
+        "passed": 45,
+        "failed": 0,
+        "skipped": 1,
+        "score": 100,
+        "status": "Healthy",
+        "critical": false
+      },
+      {
+        "name": "MFA",
+        "passed": 1,
+        "failed": 0,
+        "skipped": 7,
+        "score": 100,
+        "status": "Healthy",
+        "critical": true
+      },
+      {
+        "name": "Onboarding",
+        "passed": 10,
+        "failed": 0,
+        "skipped": 0,
+        "score": 100,
+        "status": "Healthy",
+        "critical": true
+      },
+      {
+        "name": "Password",
+        "passed": 18,
+        "failed": 0,
+        "skipped": 0,
+        "score": 100,
+        "status": "Healthy",
+        "critical": true
+      },
+      {
+        "name": "Profile",
+        "passed": 3,
+        "failed": 0,
+        "skipped": 0,
+        "score": 100,
+        "status": "Healthy",
+        "critical": false
+      },
+      {
+        "name": "Roll Configuration",
+        "passed": 14,
+        "failed": 0,
+        "skipped": 0,
+        "score": 100,
+        "status": "Healthy",
+        "critical": true
+      },
+      {
+        "name": "Signup",
+        "passed": 21,
+        "failed": 0,
+        "skipped": 1,
+        "score": 100,
+        "status": "Healthy",
+        "critical": true
+      }
+    ]
+  },
+  "archive": [
+    {
+      "id": "air-1793100841694",
+      "at": "10/27/2026, 5:04:01 PM",
+      "generatedAt": "2026-10-27T11:34:01.694Z",
+      "duration": "165m 9s",
+      "durationMs": 9909111,
+      "total": 775,
+      "passed": 603,
+      "failed": 0,
+      "skipped": 169,
+      "flaky": 3,
+      "executed": 603,
+      "passRate": 100,
+      "unexpectedSkipped": 10,
+      "decision": "NO GO",
+      "risk": "HIGH",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Access Control",
+          "passed": 0,
+          "failed": 0,
+          "skipped": 1,
+          "score": 0,
+          "status": "Not Executed",
+          "critical": true
+        },
+        {
+          "name": "Accessibility",
+          "passed": 28,
+          "failed": 1,
+          "skipped": 0,
+          "score": 97,
+          "status": "Warning",
+          "critical": false
+        },
+        {
+          "name": "Authentication",
+          "passed": 66,
+          "failed": 0,
+          "skipped": 9,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Beta",
+          "passed": 6,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Billing",
+          "passed": 303,
+          "failed": 1,
+          "skipped": 141,
+          "score": 100,
+          "status": "Critical",
+          "critical": true
+        },
+        {
+          "name": "Dashboard",
+          "passed": 93,
+          "failed": 1,
+          "skipped": 4,
+          "score": 99,
+          "status": "Critical",
+          "critical": true
+        },
+        {
+          "name": "General",
+          "passed": 40,
+          "failed": 0,
+          "skipped": 6,
+          "score": 100,
+          "status": "Warning",
+          "critical": false
+        },
+        {
+          "name": "MFA",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 7,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Onboarding",
+          "passed": 10,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Password",
+          "passed": 18,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Profile",
+          "passed": 3,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Roll Configuration",
+          "passed": 14,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Signup",
+          "passed": 21,
+          "failed": 0,
+          "skipped": 1,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793116932988",
+      "at": "10/27/2026, 9:32:12 PM",
+      "generatedAt": "2026-10-27T16:02:12.988Z",
+      "duration": "181m 51s",
+      "durationMs": 10910581,
+      "total": 775,
+      "passed": 615,
+      "failed": 0,
+      "skipped": 153,
+      "notRun": 153,
+      "flaky": 7,
+      "executed": 615,
+      "documentedSkipped": 151,
+      "passRate": 100,
+      "unexpectedSkipped": 2,
+      "decision": "NO GO",
+      "risk": "HIGH",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Access Control",
+          "passed": 0,
+          "failed": 0,
+          "skipped": 1,
+          "score": 0,
+          "status": "Not Executed",
+          "critical": true
+        },
+        {
+          "name": "Accessibility",
+          "passed": 29,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Authentication",
+          "passed": 65,
+          "failed": 1,
+          "skipped": 9,
+          "score": 98,
+          "status": "Critical",
+          "critical": true
+        },
+        {
+          "name": "Beta",
+          "passed": 6,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Billing",
+          "passed": 309,
+          "failed": 3,
+          "skipped": 133,
+          "score": 99,
+          "status": "Critical",
+          "critical": true
+        },
+        {
+          "name": "Dashboard",
+          "passed": 96,
+          "failed": 1,
+          "skipped": 1,
+          "score": 99,
+          "status": "Warning",
+          "critical": true
+        },
+        {
+          "name": "General",
+          "passed": 43,
+          "failed": 2,
+          "skipped": 1,
+          "score": 96,
+          "status": "Warning",
+          "critical": false
+        },
+        {
+          "name": "MFA",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 7,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Onboarding",
+          "passed": 10,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Password",
+          "passed": 18,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Profile",
+          "passed": 3,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Roll Configuration",
+          "passed": 14,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Signup",
+          "passed": 21,
+          "failed": 0,
+          "skipped": 1,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793167737534",
+      "at": "10/28/2026, 11:38:57 AM",
+      "generatedAt": "2026-10-28T06:08:57.534Z",
+      "duration": "0s",
+      "durationMs": 0,
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0,
+      "flaky": 0,
+      "executed": 1,
+      "documentedSkipped": 0,
+      "passRate": 100,
+      "unexpectedSkipped": 0,
+      "decision": "CONDITIONAL GO",
+      "risk": "MEDIUM",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Billing",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793167869410",
+      "at": "10/28/2026, 11:41:09 AM",
+      "generatedAt": "2026-10-28T06:11:09.410Z",
+      "duration": "0s",
+      "durationMs": 0,
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0,
+      "flaky": 0,
+      "executed": 1,
+      "documentedSkipped": 0,
+      "passRate": 100,
+      "unexpectedSkipped": 0,
+      "decision": "CONDITIONAL GO",
+      "risk": "MEDIUM",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Billing",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793168331317",
+      "at": "10/28/2026, 11:48:51 AM",
+      "generatedAt": "2026-10-28T06:18:51.317Z",
+      "duration": "0s",
+      "durationMs": 0,
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0,
+      "flaky": 0,
+      "executed": 1,
+      "documentedSkipped": 0,
+      "passRate": 100,
+      "unexpectedSkipped": 0,
+      "decision": "CONDITIONAL GO",
+      "risk": "MEDIUM",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Billing",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793168701076",
+      "at": "10/28/2026, 11:55:01 AM",
+      "generatedAt": "2026-10-28T06:25:01.076Z",
+      "duration": "0s",
+      "durationMs": 0,
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0,
+      "flaky": 0,
+      "executed": 1,
+      "documentedSkipped": 0,
+      "passRate": 100,
+      "unexpectedSkipped": 0,
+      "decision": "CONDITIONAL GO",
+      "risk": "MEDIUM",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Billing",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793169002569",
+      "at": "10/28/2026, 12:00:02 PM",
+      "generatedAt": "2026-10-28T06:30:02.569Z",
+      "duration": "0s",
+      "durationMs": 0,
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0,
+      "flaky": 0,
+      "executed": 1,
+      "documentedSkipped": 0,
+      "passRate": 100,
+      "unexpectedSkipped": 0,
+      "decision": "CONDITIONAL GO",
+      "risk": "MEDIUM",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Billing",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793169374504",
+      "at": "10/28/2026, 12:06:14 PM",
+      "generatedAt": "2026-10-28T06:36:14.504Z",
+      "duration": "0s",
+      "durationMs": 0,
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0,
+      "flaky": 0,
+      "executed": 1,
+      "documentedSkipped": 0,
+      "passRate": 100,
+      "unexpectedSkipped": 0,
+      "decision": "CONDITIONAL GO",
+      "risk": "MEDIUM",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Billing",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793169410725",
+      "at": "10/28/2026, 12:06:50 PM",
+      "generatedAt": "2026-10-28T06:36:50.725Z",
+      "duration": "0s",
+      "durationMs": 0,
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0,
+      "flaky": 0,
+      "executed": 1,
+      "documentedSkipped": 0,
+      "passRate": 100,
+      "unexpectedSkipped": 0,
+      "decision": "CONDITIONAL GO",
+      "risk": "MEDIUM",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Billing",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793169572859",
+      "at": "10/28/2026, 12:09:32 PM",
+      "generatedAt": "2026-10-28T06:39:32.859Z",
+      "duration": "0s",
+      "durationMs": 0,
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0,
+      "flaky": 0,
+      "executed": 1,
+      "documentedSkipped": 0,
+      "passRate": 100,
+      "unexpectedSkipped": 0,
+      "decision": "CONDITIONAL GO",
+      "risk": "MEDIUM",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Billing",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793170670938",
+      "at": "10/28/2026, 12:27:50 PM",
+      "generatedAt": "2026-10-28T06:57:50.938Z",
+      "duration": "0s",
+      "durationMs": 0,
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0,
+      "flaky": 0,
+      "executed": 1,
+      "documentedSkipped": 0,
+      "passRate": 100,
+      "unexpectedSkipped": 0,
+      "decision": "CONDITIONAL GO",
+      "risk": "MEDIUM",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Billing",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793171382763",
+      "at": "10/28/2026, 12:39:42 PM",
+      "generatedAt": "2026-10-28T07:09:42.763Z",
+      "duration": "0s",
+      "durationMs": 0,
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0,
+      "flaky": 0,
+      "executed": 1,
+      "documentedSkipped": 0,
+      "passRate": 100,
+      "unexpectedSkipped": 0,
+      "decision": "CONDITIONAL GO",
+      "risk": "MEDIUM",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Billing",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793171468387",
+      "at": "10/28/2026, 12:41:08 PM",
+      "generatedAt": "2026-10-28T07:11:08.387Z",
+      "duration": "0s",
+      "durationMs": 0,
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0,
+      "flaky": 0,
+      "executed": 1,
+      "documentedSkipped": 0,
+      "passRate": 100,
+      "unexpectedSkipped": 0,
+      "decision": "CONDITIONAL GO",
+      "risk": "MEDIUM",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Billing",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793172282137",
+      "at": "10/28/2026, 12:54:42 PM",
+      "generatedAt": "2026-10-28T07:24:42.137Z",
+      "duration": "0s",
+      "durationMs": 0,
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0,
+      "flaky": 0,
+      "executed": 1,
+      "documentedSkipped": 0,
+      "passRate": 100,
+      "unexpectedSkipped": 0,
+      "decision": "CONDITIONAL GO",
+      "risk": "MEDIUM",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Billing",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793172499048",
+      "at": "10/28/2026, 12:58:19 PM",
+      "generatedAt": "2026-10-28T07:28:19.048Z",
+      "duration": "0s",
+      "durationMs": 0,
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "notRun": 0,
+      "flaky": 0,
+      "executed": 1,
+      "documentedSkipped": 0,
+      "passRate": 100,
+      "unexpectedSkipped": 0,
+      "decision": "CONDITIONAL GO",
+      "risk": "MEDIUM",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Billing",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793180341590",
+      "at": "10/28/2026, 3:09:01 PM",
+      "generatedAt": "2026-10-28T09:39:01.590Z",
+      "duration": "186m 43s",
+      "durationMs": 11202930,
+      "total": 778,
+      "passed": 618,
+      "failed": 7,
+      "skipped": 153,
+      "notRun": 153,
+      "flaky": 0,
+      "executed": 625,
+      "documentedSkipped": 152,
+      "passRate": 99,
+      "unexpectedSkipped": 1,
+      "decision": "NO GO",
+      "risk": "HIGH",
+      "qualityScore": 87,
+      "failedTitles": [
+        {
+          "title": "Subscription Lifecycle Execution > Prepared paid user exposes upgrade downgrade and interval controls",
+          "file": "SubscriptionLifecycleExecution.spec.ts",
+          "status": "failed",
+          "error": "Test timeout of 180000ms exceeded."
+        },
+        {
+          "title": "Subscription Lifecycle Execution > Prepared paid user can preview monthly and annual upgrade calculations",
+          "file": "SubscriptionLifecycleExecution.spec.ts",
+          "status": "failed",
+          "error": "Error: Could not reopen upgrade preview for Overlay Strategists annual after correcting interval. Visible controls: Dashboard | Opportunities | Portfolio | Research | Academy |…"
+        },
+        {
+          "title": "Subscription Lifecycle Execution > Prepared paid user exposes non-destructive cancellation form",
+          "file": "SubscriptionLifecycleExecution.spec.ts",
+          "status": "failed",
+          "error": "Test timeout of 180000ms exceeded."
+        },
+        {
+          "title": "Subscription Lifecycle Execution > Prepared monthly fixture shows monthly cancel options",
+          "file": "SubscriptionLifecycleExecution.spec.ts",
+          "status": "failed",
+          "error": "Test timeout of 180000ms exceeded."
+        },
+        {
+          "title": "Subscription Cancellation Use Case 7 Matrix > SC-299 - Cancellation matrix coverage appears in AIR blocked and skipped coverage",
+          "file": "SubscriptionCancellationMatrix.spec.ts",
+          "status": "failed",
+          "error": "Error: AIR should list cancellation Controlled coverage gaps; found categories: Traceability, Blocked. expect(received).toBeTruthy() Received: false"
+        },
+        {
+          "title": "Failed Payment And Dunning Use Case 8 Matrix > SC-349 - AIR records failed payment evidence when available",
+          "file": "FailedPaymentDunningMatrix.spec.ts",
+          "status": "failed",
+          "error": "Error: AIR should hold executed failed-payment rows (declined or invalid card). expect(received).toBeGreaterThan(expected) Expected: > 0 Received: 0"
+        },
+        {
+          "title": "Subscription Lifecycle E2E Matrix > LC-045 - AIR shows subscription lifecycle coverage, blocked gaps, known bugs, and executable coverage status",
+          "file": "SubscriptionLifecycleE2EMatrix.spec.ts",
+          "status": "failed",
+          "error": "Error: AIR coverage gaps should list the subscription lifecycle matrix rows that are blocked or skipped. expect(received).toBeGreaterThan(expected) Expected: > 0 Received: 0"
+        }
+      ],
+      "modules": [
+        {
+          "name": "Access Control",
+          "passed": 0,
+          "failed": 0,
+          "skipped": 1,
+          "score": 0,
+          "status": "Not Executed",
+          "critical": true
+        },
+        {
+          "name": "Accessibility",
+          "passed": 28,
+          "failed": 0,
+          "skipped": 1,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Authentication",
+          "passed": 66,
+          "failed": 0,
+          "skipped": 9,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Beta",
+          "passed": 6,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Billing",
+          "passed": 308,
+          "failed": 7,
+          "skipped": 133,
+          "score": 98,
+          "status": "Critical",
+          "critical": true
+        },
+        {
+          "name": "Dashboard",
+          "passed": 98,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "General",
+          "passed": 45,
+          "failed": 0,
+          "skipped": 1,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "MFA",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 7,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Onboarding",
+          "passed": 10,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Password",
+          "passed": 18,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Profile",
+          "passed": 3,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Roll Configuration",
+          "passed": 14,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Signup",
+          "passed": 21,
+          "failed": 0,
+          "skipped": 1,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793196922644",
+      "at": "10/28/2026, 7:45:22 PM",
+      "generatedAt": "2026-10-28T14:15:22.644Z",
+      "duration": "176m 46s",
+      "durationMs": 10606112,
+      "total": 778,
+      "passed": 618,
+      "failed": 0,
+      "skipped": 156,
+      "notRun": 156,
+      "flaky": 4,
+      "executed": 618,
+      "documentedSkipped": 150,
+      "passRate": 100,
+      "unexpectedSkipped": 6,
+      "decision": "NO GO",
+      "risk": "HIGH",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Access Control",
+          "passed": 0,
+          "failed": 0,
+          "skipped": 1,
+          "score": 0,
+          "status": "Not Executed",
+          "critical": true
+        },
+        {
+          "name": "Accessibility",
+          "passed": 28,
+          "failed": 1,
+          "skipped": 0,
+          "score": 97,
+          "status": "Warning",
+          "critical": false
+        },
+        {
+          "name": "Authentication",
+          "passed": 66,
+          "failed": 0,
+          "skipped": 9,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Beta",
+          "passed": 6,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Billing",
+          "passed": 308,
+          "failed": 3,
+          "skipped": 137,
+          "score": 99,
+          "status": "Critical",
+          "critical": true
+        },
+        {
+          "name": "Dashboard",
+          "passed": 98,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "General",
+          "passed": 45,
+          "failed": 0,
+          "skipped": 1,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "MFA",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 7,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Onboarding",
+          "passed": 10,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Password",
+          "passed": 18,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Profile",
+          "passed": 3,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Roll Configuration",
+          "passed": 14,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Signup",
+          "passed": 21,
+          "failed": 0,
+          "skipped": 1,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    },
+    {
+      "id": "air-1793253956720",
+      "at": "10/29/2026, 11:35:56 AM",
+      "generatedAt": "2026-10-29T06:05:56.720Z",
+      "duration": "176m 46s",
+      "durationMs": 10606112,
+      "total": 778,
+      "passed": 622,
+      "failed": 0,
+      "skipped": 156,
+      "notRun": 156,
+      "flaky": 4,
+      "executed": 622,
+      "documentedSkipped": 156,
+      "passRate": 100,
+      "unexpectedSkipped": 0,
+      "decision": "CONDITIONAL GO",
+      "risk": "MEDIUM",
+      "qualityScore": 100,
+      "failedTitles": [],
+      "modules": [
+        {
+          "name": "Access Control",
+          "passed": 0,
+          "failed": 0,
+          "skipped": 1,
+          "score": 0,
+          "status": "Not Executed",
+          "critical": true
+        },
+        {
+          "name": "Accessibility",
+          "passed": 29,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Authentication",
+          "passed": 66,
+          "failed": 0,
+          "skipped": 9,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Beta",
+          "passed": 6,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Billing",
+          "passed": 311,
+          "failed": 0,
+          "skipped": 137,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Dashboard",
+          "passed": 98,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "General",
+          "passed": 45,
+          "failed": 0,
+          "skipped": 1,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "MFA",
+          "passed": 1,
+          "failed": 0,
+          "skipped": 7,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Onboarding",
+          "passed": 10,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Password",
+          "passed": 18,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Profile",
+          "passed": 3,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": false
+        },
+        {
+          "name": "Roll Configuration",
+          "passed": 14,
+          "failed": 0,
+          "skipped": 0,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        },
+        {
+          "name": "Signup",
+          "passed": 21,
+          "failed": 0,
+          "skipped": 1,
+          "score": 100,
+          "status": "Healthy",
+          "critical": true
+        }
+      ]
+    }
+  ]
+}

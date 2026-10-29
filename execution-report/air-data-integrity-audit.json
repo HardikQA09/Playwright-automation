@@ -1,0 +1,169 @@
+{
+  "generatedAt": "2026-10-29T06:05:57.080Z",
+  "provenance": {
+    "mode": "CURRENT_EXECUTION",
+    "sourceArtifact": "test-results/results.json",
+    "sourceFramework": "Playwright",
+    "generatedAt": "2026-10-29T06:05:56.720Z",
+    "restoredFromHistory": false,
+    "warning": ""
+  },
+  "sourceExecution": {
+    "source": "json-reporter",
+    "total": 778,
+    "rawTestCount": 778,
+    "attempts": 782,
+    "passed": 618,
+    "failed": 0,
+    "skipped": 156,
+    "flaky": 4,
+    "interrupted": 0,
+    "statuses": {
+      "expected": 618,
+      "flaky": 4,
+      "skipped": 156
+    }
+  },
+  "airExecution": {
+    "total": 778,
+    "attempts": 782,
+    "passed": 622,
+    "failed": 0,
+    "skipped": 156,
+    "flaky": 4,
+    "interrupted": 0,
+    "retryCount": 4
+  },
+  "reconciliation": {
+    "status": "PASS",
+    "sourceTotal": 778,
+    "expectedAirTotal": 778,
+    "airTotal": 778,
+    "difference": 0
+  },
+  "duplicates": {
+    "canonicalTestIds": [],
+    "count": 0,
+    "sourceDuplicateExtraCount": 0,
+    "pipelineDuplicateExtraCount": 0
+  },
+  "orphanEvidence": [],
+  "evidenceClassification": {
+    "perTestEvidence": 8,
+    "executionArtifacts": 2,
+    "rawReports": 2,
+    "totalWithRawReports": 10,
+    "rawReportsCountAsFailureEvidence": false
+  },
+  "invalidModuleReferences": [],
+  "invalidJourneyReferences": [],
+  "historicalContaminationDetected": false,
+  "evidenceTraceability": {
+    "failedTests": []
+  },
+  "releaseTraceability": {
+    "status": "PASS",
+    "reasons": [
+      "Critical journeys are not blocked",
+      "Warnings require review",
+      "Release can proceed after evidence review"
+    ],
+    "reasonTraceability": [
+      {
+        "reason": "Critical journeys are not blocked",
+        "source": "warnings",
+        "references": [
+          {
+            "type": "Business Journey",
+            "name": "Access Control",
+            "detail": "Journey status is Not Executed."
+          },
+          {
+            "type": "Business Journey",
+            "name": "Session Security",
+            "detail": "Journey status is Not Executed."
+          },
+          {
+            "type": "Coverage",
+            "name": "Blocked scenarios",
+            "detail": "139 blocked scenario(s) still need fixtures, admin, API, or third-party support before GO."
+          },
+          {
+            "type": "Reliability",
+            "name": "Flaky checks",
+            "detail": "4 check(s) passed only after retry — treat release confidence as provisional until reliability stabilizes."
+          },
+          {
+            "type": "Execution",
+            "name": "Partial execution",
+            "detail": "Execution contains unexpected skips, blocked coverage, interrupted tests, or not-executed critical journeys."
+          }
+        ]
+      },
+      {
+        "reason": "Warnings require review",
+        "source": "warnings",
+        "references": [
+          {
+            "type": "Business Journey",
+            "name": "Access Control",
+            "detail": "Journey status is Not Executed."
+          },
+          {
+            "type": "Business Journey",
+            "name": "Session Security",
+            "detail": "Journey status is Not Executed."
+          },
+          {
+            "type": "Coverage",
+            "name": "Blocked scenarios",
+            "detail": "139 blocked scenario(s) still need fixtures, admin, API, or third-party support before GO."
+          },
+          {
+            "type": "Reliability",
+            "name": "Flaky checks",
+            "detail": "4 check(s) passed only after retry — treat release confidence as provisional until reliability stabilizes."
+          },
+          {
+            "type": "Execution",
+            "name": "Partial execution",
+            "detail": "Execution contains unexpected skips, blocked coverage, interrupted tests, or not-executed critical journeys."
+          }
+        ]
+      },
+      {
+        "reason": "Release can proceed after evidence review",
+        "source": "warnings",
+        "references": [
+          {
+            "type": "Business Journey",
+            "name": "Access Control",
+            "detail": "Journey status is Not Executed."
+          },
+          {
+            "type": "Business Journey",
+            "name": "Session Security",
+            "detail": "Journey status is Not Executed."
+          },
+          {
+            "type": "Coverage",
+            "name": "Blocked scenarios",
+            "detail": "139 blocked scenario(s) still need fixtures, admin, API, or third-party support before GO."
+          },
+          {
+            "type": "Reliability",
+            "name": "Flaky checks",
+            "detail": "4 check(s) passed only after retry — treat release confidence as provisional until reliability stabilizes."
+          },
+          {
+            "type": "Execution",
+            "name": "Partial execution",
+            "detail": "Execution contains unexpected skips, blocked coverage, interrupted tests, or not-executed critical journeys."
+          }
+        ]
+      }
+    ],
+    "warnings": 5,
+    "blockers": 0
+  }
+}

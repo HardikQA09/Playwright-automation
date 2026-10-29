@@ -1,0 +1,20 @@
+AIR report layout (same folder for client + detail)
+
+DEFAULT (clients open this):
+  execution-report/index.html     ← simple overview
+  npm run report:simple:open
+
+DETAILED (same place, one click):
+  execution-report/details.html   ← full AIR
+  Button on overview: "Open detailed report"
+  Banner on details: "Back to overview"
+
+Also available:
+  execution-report/summary.html   → redirects to index.html
+  execution-report/dashboard/     → same overview UI
+
+Delete old saved run folders:
+  npm run report:dashboard:prune
+
+Current keep-days: 14
+Last prune: removed 0, kept 18

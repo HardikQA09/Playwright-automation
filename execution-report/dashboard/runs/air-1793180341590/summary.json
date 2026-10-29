@@ -1,0 +1,183 @@
+{
+  "id": "air-1793180341590",
+  "at": "10/28/2026, 3:09:01 PM",
+  "generatedAt": "2026-10-28T09:39:01.590Z",
+  "duration": "186m 43s",
+  "durationMs": 11202930,
+  "total": 778,
+  "passed": 618,
+  "failed": 7,
+  "skipped": 153,
+  "notRun": 153,
+  "flaky": 0,
+  "executed": 625,
+  "documentedSkipped": 152,
+  "passRate": 99,
+  "unexpectedSkipped": 1,
+  "decision": "NO GO",
+  "risk": "HIGH",
+  "qualityScore": 87,
+  "failedTitles": [
+    {
+      "title": "Subscription Lifecycle Execution > Prepared paid user exposes upgrade downgrade and interval controls",
+      "file": "SubscriptionLifecycleExecution.spec.ts",
+      "status": "failed",
+      "error": "Test timeout of 180000ms exceeded."
+    },
+    {
+      "title": "Subscription Lifecycle Execution > Prepared paid user can preview monthly and annual upgrade calculations",
+      "file": "SubscriptionLifecycleExecution.spec.ts",
+      "status": "failed",
+      "error": "Error: Could not reopen upgrade preview for Overlay Strategists annual after correcting interval. Visible controls: Dashboard | Opportunities | Portfolio | Research | Academy |…"
+    },
+    {
+      "title": "Subscription Lifecycle Execution > Prepared paid user exposes non-destructive cancellation form",
+      "file": "SubscriptionLifecycleExecution.spec.ts",
+      "status": "failed",
+      "error": "Test timeout of 180000ms exceeded."
+    },
+    {
+      "title": "Subscription Lifecycle Execution > Prepared monthly fixture shows monthly cancel options",
+      "file": "SubscriptionLifecycleExecution.spec.ts",
+      "status": "failed",
+      "error": "Test timeout of 180000ms exceeded."
+    },
+    {
+      "title": "Subscription Cancellation Use Case 7 Matrix > SC-299 - Cancellation matrix coverage appears in AIR blocked and skipped coverage",
+      "file": "SubscriptionCancellationMatrix.spec.ts",
+      "status": "failed",
+      "error": "Error: AIR should list cancellation Controlled coverage gaps; found categories: Traceability, Blocked. expect(received).toBeTruthy() Received: false"
+    },
+    {
+      "title": "Failed Payment And Dunning Use Case 8 Matrix > SC-349 - AIR records failed payment evidence when available",
+      "file": "FailedPaymentDunningMatrix.spec.ts",
+      "status": "failed",
+      "error": "Error: AIR should hold executed failed-payment rows (declined or invalid card). expect(received).toBeGreaterThan(expected) Expected: > 0 Received: 0"
+    },
+    {
+      "title": "Subscription Lifecycle E2E Matrix > LC-045 - AIR shows subscription lifecycle coverage, blocked gaps, known bugs, and executable coverage status",
+      "file": "SubscriptionLifecycleE2EMatrix.spec.ts",
+      "status": "failed",
+      "error": "Error: AIR coverage gaps should list the subscription lifecycle matrix rows that are blocked or skipped. expect(received).toBeGreaterThan(expected) Expected: > 0 Received: 0"
+    }
+  ],
+  "modules": [
+    {
+      "name": "Access Control",
+      "passed": 0,
+      "failed": 0,
+      "skipped": 1,
+      "score": 0,
+      "status": "Not Executed",
+      "critical": true
+    },
+    {
+      "name": "Accessibility",
+      "passed": 28,
+      "failed": 0,
+      "skipped": 1,
+      "score": 100,
+      "status": "Healthy",
+      "critical": false
+    },
+    {
+      "name": "Authentication",
+      "passed": 66,
+      "failed": 0,
+      "skipped": 9,
+      "score": 100,
+      "status": "Healthy",
+      "critical": true
+    },
+    {
+      "name": "Beta",
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "score": 100,
+      "status": "Healthy",
+      "critical": false
+    },
+    {
+      "name": "Billing",
+      "passed": 308,
+      "failed": 7,
+      "skipped": 133,
+      "score": 98,
+      "status": "Critical",
+      "critical": true
+    },
+    {
+      "name": "Dashboard",
+      "passed": 98,
+      "failed": 0,
+      "skipped": 0,
+      "score": 100,
+      "status": "Healthy",
+      "critical": true
+    },
+    {
+      "name": "General",
+      "passed": 45,
+      "failed": 0,
+      "skipped": 1,
+      "score": 100,
+      "status": "Healthy",
+      "critical": false
+    },
+    {
+      "name": "MFA",
+      "passed": 1,
+      "failed": 0,
+      "skipped": 7,
+      "score": 100,
+      "status": "Healthy",
+      "critical": true
+    },
+    {
+      "name": "Onboarding",
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0,
+      "score": 100,
+      "status": "Healthy",
+      "critical": true
+    },
+    {
+      "name": "Password",
+      "passed": 18,
+      "failed": 0,
+      "skipped": 0,
+      "score": 100,
+      "status": "Healthy",
+      "critical": true
+    },
+    {
+      "name": "Profile",
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "score": 100,
+      "status": "Healthy",
+      "critical": false
+    },
+    {
+      "name": "Roll Configuration",
+      "passed": 14,
+      "failed": 0,
+      "skipped": 0,
+      "score": 100,
+      "status": "Healthy",
+      "critical": true
+    },
+    {
+      "name": "Signup",
+      "passed": 21,
+      "failed": 0,
+      "skipped": 1,
+      "score": 100,
+      "status": "Healthy",
+      "critical": true
+    }
+  ]
+}

@@ -1,0 +1,191 @@
+[
+  {
+    "viewport": "desktop",
+    "bodyScrollWidth": 1440,
+    "docClientWidth": 1440,
+    "hasHorizontalScroll": false,
+    "sections": [
+      {
+        "selector": "#cover",
+        "exists": true,
+        "issues": []
+      },
+      {
+        "selector": "#executive",
+        "exists": true,
+        "issues": []
+      },
+      {
+        "selector": "#health",
+        "exists": true,
+        "issues": []
+      },
+      {
+        "selector": "#journey",
+        "exists": true,
+        "issues": []
+      },
+      {
+        "selector": "#module-dashboard",
+        "exists": true,
+        "issues": []
+      },
+      {
+        "selector": "#failures",
+        "exists": true,
+        "issues": []
+      },
+      {
+        "selector": "#evidence",
+        "exists": true,
+        "issues": []
+      },
+      {
+        "selector": "#insight",
+        "exists": true,
+        "issues": []
+      },
+      {
+        "selector": "#comparison",
+        "exists": true,
+        "issues": []
+      },
+      {
+        "selector": "#air-core",
+        "exists": true,
+        "issues": []
+      },
+      {
+        "selector": "#roadmap",
+        "exists": true,
+        "issues": []
+      }
+    ]
+  },
+  {
+    "viewport": "tablet",
+    "bodyScrollWidth": 900,
+    "docClientWidth": 900,
+    "hasHorizontalScroll": false,
+    "sections": [
+      {
+        "selector": "#cover",
+        "exists": true,
+        "issues": []
+      },
+      {
+        "selector": "#executive",
+        "exists": true,
+        "issues": []
+      },
+      {
+        "selector": "#health",
+        "exists": true,
+        "issues": []
+      },
+      {
+        "selector": "#journey",
+        "exists": true,
+        "issues": []
+      },
+      {
+        "selector": "#module-dashboard",
+        "exists": true,
+        "issues": []
+      },
+      {
+        "selector": "#failures",
+        "exists": true,
+        "issues": []
+      },
+      {
+        "selector": "#evidence",
+        "exists": true,
+        "issues": []
+      },
+      {
+        "selector": "#insight",
+        "exists": true,
+        "issues": []
+      },
+      {
+        "selector": "#comparison",
+        "exists": true,
+        "issues": []
+      },
+      {
+        "selector": "#air-core",
+        "exists": true,
+        "issues": []
+      },
+      {
+        "selector": "#roadmap",
+        "exists": true,
+        "issues": []
+      }
+    ]
+  },
+  {
+    "viewport": "mobile",
+    "bodyScrollWidth": 390,
+    "docClientWidth": 390,
+    "hasHorizontalScroll": false,
+    "sections": [
+      {
+        "selector": "#cover",
+        "exists": true,
+        "issues": []
+      },
+      {
+        "selector": "#executive",
+        "exists": true,
+        "issues": []
+      },
+      {
+        "selector": "#health",
+        "exists": true,
+        "issues": []
+      },
+      {
+        "selector": "#journey",
+        "exists": true,
+        "issues": []
+      },
+      {
+        "selector": "#module-dashboard",
+        "exists": true,
+        "issues": []
+      },
+      {
+        "selector": "#failures",
+        "exists": true,
+        "issues": []
+      },
+      {
+        "selector": "#evidence",
+        "exists": true,
+        "issues": []
+      },
+      {
+        "selector": "#insight",
+        "exists": true,
+        "issues": []
+      },
+      {
+        "selector": "#comparison",
+        "exists": true,
+        "issues": []
+      },
+      {
+        "selector": "#air-core",
+        "exists": true,
+        "issues": []
+      },
+      {
+        "selector": "#roadmap",
+        "exists": true,
+        "issues": []
+      }
+    ]
+  }
+]

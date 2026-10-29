@@ -1,0 +1,1048 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OolTool AIR · Overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#f4f7fb;
+  --muted:#9eb0c6;
+  --dim:#6f8299;
+  --line:rgba(186,210,235,.12);
+  --line-strong:rgba(186,210,235,.26);
+  --good:#39e75f;
+  --bad:#ff7b72;
+  --warn:#f5c542;
+  --info:#8ec5ff;
+  --accent:#39e75f;
+  --accent-2:#9af7ad;
+  --champagne:#9af7ad;
+  --bg0:#03060b;
+  --bg1:#0a121c;
+  --panel:rgba(16,24,38,.72);
+  --glass:rgba(18,26,40,.55);
+  --shadow:0 40px 100px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.03);
+  --font:"Outfit",Segoe UI,sans-serif;
+  --display:"Syne",Georgia,sans-serif;
+  --radius:26px;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;color:var(--ink);font-family:var(--font);
+  background:
+    radial-gradient(900px 480px at 8% -8%,rgba(57,231,95,.16),transparent 58%),
+    radial-gradient(800px 420px at 92% 0%,rgba(57,231,95,.07),transparent 52%),
+    radial-gradient(700px 500px at 70% 100%,rgba(34,197,94,.06),transparent 55%),
+    linear-gradient(168deg,var(--bg0),var(--bg1) 42%,#101826);
+  min-height:100vh;
+}
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.45'/%3E%3C/svg%3E");
+  mix-blend-mode:soft-light;
+}
+body:after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse at center,transparent 40%,rgba(0,0,0,.45) 100%);
+}
+.shell{position:relative;z-index:1;max-width:1160px;margin:0 auto;padding:34px 22px 88px}
+.topnav{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:28px}
+.brand{display:flex;align-items:center;gap:16px}
+.mark{
+  width:54px;height:54px;border-radius:18px;
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.28),transparent 42%),
+    linear-gradient(145deg,#39e75f,#9af7ad 55%,#22c55e);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.18),
+    0 18px 40px rgba(57,231,95,.22),
+    inset 0 1px 0 rgba(255,255,255,.35);
+  display:grid;place-items:center;font-weight:800;color:#061018;font-size:13px;letter-spacing:.08em;
+  animation:mark-glow 5s var(--ease) infinite;
+}
+@keyframes mark-glow{
+  0%,100%{filter:brightness(1);transform:translateY(0)}
+  50%{filter:brightness(1.08);transform:translateY(-1px)}
+}
+.brand-copy strong{
+  display:block;font-family:var(--display);font-size:30px;font-weight:500;
+  letter-spacing:-.035em;color:#fff;
+  background:linear-gradient(180deg,#fff 30%,#c8d6e8);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.brand-copy span{display:block;color:var(--muted);font-size:12px;margin-top:5px;letter-spacing:.04em}
+.top-actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn{
+  border:1px solid var(--line-strong);background:var(--glass);color:var(--ink);
+  border-radius:999px;padding:12px 18px;font:inherit;font-size:12.5px;font-weight:700;
+  text-decoration:none;display:inline-flex;align-items:center;gap:8px;cursor:pointer;
+  backdrop-filter:blur(18px) saturate(1.2);-webkit-backdrop-filter:blur(18px) saturate(1.2);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
+  transition:border-color .25s var(--ease),transform .25s var(--ease),background .25s,box-shadow .25s;
+}
+.btn:hover{border-color:rgba(57,231,95,.5);transform:translateY(-2px);color:#fff;box-shadow:0 12px 28px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.08)}
+.btn.primary{
+  position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#9af7ad,#39e75f 40%,#22c55e);
+  border-color:transparent;color:#041018;
+  box-shadow:0 12px 32px rgba(57,231,95,.28),inset 0 1px 0 rgba(255,255,255,.45);
+}
+.btn.primary:before{
+  content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.45) 50%,transparent 65%);
+  transform:translateX(-120%);transition:transform .7s var(--ease);
+}
+.btn.primary:hover:before{transform:translateX(120%)}
+.btn.primary:hover{filter:brightness(1.04);color:#041018;transform:translateY(-2px)}
+.btn.ghost{background:transparent;border-color:rgba(186,210,235,.22);color:#dbe7f3}
+.btn.ghost:hover{border-color:rgba(57,231,95,.4);color:#fff;background:rgba(57,231,95,.06)}
+.hero{
+  position:relative;overflow:hidden;border:1px solid var(--line-strong);border-radius:36px;
+  padding:44px 40px 34px;margin-bottom:20px;
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.05),transparent 35%),
+    linear-gradient(125deg,rgba(57,231,95,.12),transparent 45%),
+    linear-gradient(210deg,rgba(57,231,95,.06),transparent 48%),
+    linear-gradient(180deg,rgba(22,32,48,.88),rgba(10,16,26,.92));
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(24px) saturate(1.15);-webkit-backdrop-filter:blur(24px) saturate(1.15);
+  animation:rise .7s var(--ease);
+}
+.hero:before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(520px 260px at 10% 0%,rgba(57,231,95,.14),transparent 62%),
+    linear-gradient(180deg,rgba(255,255,255,.04),transparent 28%);
+}
+.hero:after{
+  content:"";position:absolute;right:-100px;top:-90px;width:380px;height:380px;border-radius:50%;
+  background:radial-gradient(circle,rgba(57,231,95,.2),transparent 68%);pointer-events:none;
+  animation:drift 10s ease-in-out infinite alternate;
+}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(-22px,16px) scale(1.05)}}
+.hero-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:32px;align-items:end;position:relative;z-index:1}
+.eyebrow{
+  font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--champagne);
+  font-weight:750;margin-bottom:14px;opacity:.92;
+}
+.hero h1{
+  font-family:var(--display);font-weight:500;font-size:clamp(46px,6.2vw,68px);
+  line-height:.94;margin:0 0 16px;letter-spacing:-.045em;color:#fafcff;
+  text-shadow:0 2px 40px rgba(0,0,0,.35);
+}
+.hero h1 em{
+  font-style:italic;font-weight:500;
+  background:linear-gradient(120deg,#9af7ad,#39e75f 45%,#22c55e);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.lede{color:var(--muted);font-size:15.5px;line-height:1.75;max-width:42ch;margin:0;font-weight:500}
+.trust-strip{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.trust-strip span{
+  display:inline-flex;align-items:center;gap:7px;padding:8px 13px;border-radius:999px;
+  border:1px solid rgba(255,255,255,.08);background:rgba(8,14,24,.45);
+  color:var(--muted);font-size:12px;font-weight:650;
+  backdrop-filter:blur(10px);box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+}
+.trust-strip b{color:#f1f5f9;font-weight:750;font-variant-numeric:tabular-nums}
+.gate-panel{
+  border:1px solid rgba(255,255,255,.1);border-radius:28px;padding:26px 24px;
+  background:
+    linear-gradient(160deg,rgba(255,255,255,.06),transparent 40%),
+    linear-gradient(165deg,rgba(12,18,28,.85),rgba(18,26,40,.7));
+  min-height:204px;display:flex;flex-direction:column;justify-content:space-between;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 20px 50px rgba(0,0,0,.25);
+  backdrop-filter:blur(16px);transition:border-color .3s var(--ease),transform .3s var(--ease),box-shadow .3s;
+}
+.gate-panel:hover{transform:translateY(-3px);box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 28px 60px rgba(0,0,0,.32)}
+.gate-label{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);font-weight:800}
+.gate-value{font-family:var(--display);font-size:clamp(32px,3.4vw,44px);line-height:1.05;margin:14px 0 12px;font-weight:500;letter-spacing:-.03em}
+.gate-value.go{color:var(--good)}.gate-value.nogo{color:var(--bad)}.gate-value.cond{color:var(--warn)}
+.gate-meta{color:var(--muted);font-size:13.5px;line-height:1.6;font-weight:500}
+.gate-panel.go{border-color:rgba(57,231,95,.38);background:linear-gradient(160deg,rgba(57,231,95,.14),rgba(10,18,28,.88))}
+.gate-panel.cond{border-color:rgba(232,192,122,.4);background:linear-gradient(160deg,rgba(232,192,122,.14),rgba(10,18,28,.88))}
+.gate-panel.nogo{border-color:rgba(242,139,144,.4);background:linear-gradient(160deg,rgba(242,139,144,.14),rgba(10,18,28,.88))}
+.hero.mood-go{border-color:rgba(57,231,95,.28);box-shadow:0 40px 100px rgba(0,0,0,.55),0 0 80px rgba(57,231,95,.08)}
+.hero.mood-cond{border-color:rgba(232,192,122,.3);box-shadow:0 40px 100px rgba(0,0,0,.55),0 0 80px rgba(232,192,122,.08)}
+.hero.mood-nogo{border-color:rgba(242,139,144,.32);box-shadow:0 40px 100px rgba(0,0,0,.55),0 0 80px rgba(242,139,144,.08)}
+.cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;align-items:center}
+.cta-row .btn.ghost{opacity:.95}
+.trust-strip{display:none!important}
+.mix{margin-top:22px;position:relative;z-index:1}
+.mix-labels{display:flex;justify-content:space-between;gap:12px;margin-bottom:10px;font-size:12px;color:var(--muted)}
+.mix-bar{height:12px;border-radius:999px;overflow:hidden;display:flex;gap:3px;background:rgba(255,255,255,.04);padding:3px;border:1px solid var(--line)}
+.mix-bar span{display:block;height:100%;border-radius:999px}
+.mix-bar .p{background:linear-gradient(90deg,#39e75f,#3ecf9a)}
+.mix-bar .f{background:linear-gradient(90deg,#f0a0a4,#f07178)}
+.mix-bar .s{background:linear-gradient(90deg,#f0c98a,#e8b86d)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:12px;color:var(--dim)}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.legend .lp{background:var(--good)}.legend .lf{background:var(--bad)}.legend .ls{background:var(--warn)}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:18px 0 22px}
+.kpi{
+  border:1px solid var(--line);border-radius:var(--radius);padding:20px 18px 18px;
+  background:
+    linear-gradient(165deg,rgba(255,255,255,.05),transparent 38%),
+    linear-gradient(165deg,rgba(22,30,44,.82),rgba(12,18,28,.88));
+  position:relative;overflow:hidden;
+  transition:transform .28s var(--ease),border-color .28s,box-shadow .28s;
+  animation:rise .7s var(--ease) both;text-decoration:none;color:inherit;display:block;cursor:pointer;
+  backdrop-filter:blur(18px);box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 16px 40px rgba(0,0,0,.2);
+}
+.kpi:nth-child(1){animation-delay:.05s}.kpi:nth-child(2){animation-delay:.1s}
+.kpi:nth-child(3){animation-delay:.15s}.kpi:nth-child(4){animation-delay:.2s}
+.kpi:before{
+  content:"";position:absolute;left:0;top:14px;bottom:14px;width:2px;border-radius:2px;
+  background:rgba(186,210,235,.25);
+}
+.kpi:has(.good):before{background:linear-gradient(180deg,var(--good),transparent)}
+.kpi:has(.bad):before{background:linear-gradient(180deg,var(--bad),transparent)}
+.kpi:has(.warn):before{background:linear-gradient(180deg,var(--warn),transparent)}
+.kpi:has(.info):before{background:linear-gradient(180deg,var(--info),transparent)}
+a.kpi:hover{
+  transform:translateY(-4px);
+  border-color:rgba(57,231,95,.4);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 22px 48px rgba(0,0,0,.32);
+}
+.kpi .label{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.kpi .value{font-size:36px;font-weight:750;margin:12px 0 4px;letter-spacing:-.045em;font-variant-numeric:tabular-nums}
+.kpi .delta{font-size:12px;color:var(--dim);line-height:1.4;font-weight:500}
+.kpi .hint{display:block;margin-top:12px;font-size:11.5px;color:var(--accent);font-weight:750;opacity:.92}
+.good{color:var(--good)}.bad{color:var(--bad)}.warn{color:var(--warn)}.info{color:var(--info)}
+.section-label{
+  display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap;
+  margin:10px 0 14px;
+}
+.section-label h2{margin:0;font-family:var(--display);font-size:22px;font-weight:500;letter-spacing:-.02em;color:#fafcff}
+.section-label p{margin:0;color:var(--muted);font-size:13.5px;font-weight:500}
+.tabs{
+  display:flex;gap:6px;flex-wrap:wrap;padding:6px;margin:0 0 18px;
+  border:1px solid rgba(255,255,255,.1);border-radius:999px;width:max-content;max-width:100%;
+  background:rgba(10,16,26,.72);backdrop-filter:blur(18px);box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
+}
+.tabs button{
+  border:0;background:transparent;color:var(--muted);border-radius:999px;
+  padding:11px 16px;font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;transition:.22s var(--ease);
+}
+.tabs button.active,.tabs button:hover{
+  background:linear-gradient(135deg,rgba(57,231,95,.2),rgba(57,231,95,.1));color:#ecfeff;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
+}
+.panel{display:none}
+.panel.active{display:block;animation:rise .45s var(--ease)}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.grid-2{display:grid;grid-template-columns:1.15fr .85fr;gap:12px}
+.card{
+  border:1px solid var(--line);border-radius:28px;padding:26px;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.04),transparent 30%),
+    linear-gradient(180deg,rgba(20,28,42,.9),rgba(12,18,28,.94));
+  box-shadow:0 28px 64px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.05);
+  backdrop-filter:blur(16px);
+}
+.card-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:12px}
+.card-head h3{margin:0;font-family:var(--display);font-size:22px;font-weight:500;letter-spacing:-.025em;color:#fafcff}
+.card-head span{color:var(--dim);font-size:11px;font-weight:750;letter-spacing:.08em;text-transform:uppercase}
+.chart-wrap{height:250px;position:relative;border-radius:20px;padding:10px 6px 0;background:linear-gradient(180deg,rgba(8,12,20,.45),rgba(8,12,20,.12));border:1px solid rgba(255,255,255,.06);box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+svg.chart{width:100%;height:100%;overflow:visible}
+.chart-grid line{stroke:rgba(154,168,188,.12);stroke-width:1}
+.chart-line{fill:none;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round}
+.chart-area{opacity:.28}
+.chart-dot{fill:#0c121c;stroke-width:2.2}
+.compare-controls{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+label.field{display:grid;gap:8px;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);font-weight:800}
+select{
+  width:100%;appearance:none;border:1px solid rgba(255,255,255,.12);border-radius:14px;
+  background:rgba(12,18,28,.85) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%237ef0dc' d='M1 1l5 5 5-5'/%3E%3C/svg%3E") right 14px center/12px no-repeat;
+  color:var(--ink);padding:13px 38px 13px 14px;font:inherit;font-size:13px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+}
+select:focus{outline:none;border-color:rgba(57,231,95,.5);box-shadow:0 0 0 3px rgba(57,231,95,.12)}
+table{width:100%;border-collapse:collapse}
+th,td{padding:14px 12px;border-bottom:1px solid rgba(255,255,255,.06);text-align:left;font-size:13px;vertical-align:top;overflow-wrap:anywhere;word-break:break-word}
+th{color:var(--dim);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:800}
+tr:hover td{background:rgba(57,231,95,.04)}
+#failures td:last-child{color:var(--muted);line-height:1.5;max-width:42ch}
+.pill{display:inline-flex;align-items:center;border-radius:999px;padding:6px 11px;font-size:11px;font-weight:800;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03)}
+.pill.go{color:var(--good);border-color:rgba(57,231,95,.4);background:rgba(57,231,95,.1)}
+.pill.nogo{color:var(--bad);border-color:rgba(242,139,144,.4);background:rgba(242,139,144,.1)}
+.pill.cond{color:var(--warn);border-color:rgba(232,192,122,.4);background:rgba(232,192,122,.1)}
+.pill.warn{color:var(--warn);border-color:rgba(232,192,122,.4);background:rgba(232,192,122,.1)}
+.empty{color:var(--muted);padding:32px 16px;text-align:center;line-height:1.7;border:1px dashed rgba(255,255,255,.12);border-radius:20px;background:rgba(8,12,20,.35);box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
+.module-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.mod{
+  border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:18px;
+  background:linear-gradient(165deg,rgba(255,255,255,.04),transparent 42%),linear-gradient(165deg,rgba(22,30,44,.9),rgba(12,18,28,.84));
+  min-height:136px;display:flex;flex-direction:column;gap:10px;
+  transition:border-color .24s var(--ease),transform .24s var(--ease),box-shadow .24s;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+}
+.mod:hover{border-color:rgba(57,231,95,.35);transform:translateY(-3px);box-shadow:0 16px 36px rgba(0,0,0,.25)}
+.mod strong{font-size:14.5px;color:#fafcff;font-weight:750}
+.mod .scores{display:flex;gap:10px;flex-wrap:wrap;margin-top:auto}
+.mod .scores span{font-size:11px;color:var(--muted);letter-spacing:.04em}
+.mod .scores b{color:var(--ink);font-size:13px}
+.help{
+  margin-top:20px;border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:20px 22px;
+  background:linear-gradient(180deg,rgba(255,255,255,.03),transparent 40%),rgba(12,18,28,.72);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+}
+.help summary{cursor:pointer;font-weight:750;color:#fff;list-style:none;font-family:var(--display);font-size:17px;font-weight:500}
+.help summary::-webkit-details-marker{display:none}
+.help summary:before{content:"▸ ";color:var(--accent)}
+.help[open] summary:before{content:"▾ "}
+.help-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}
+.help-grid div{border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:14px 15px;background:rgba(8,12,20,.4);box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
+.help-grid strong{display:block;color:#fff;font-size:13px;margin-bottom:5px}
+.help-grid span{display:block;color:var(--muted);font-size:12.5px;line-height:1.5}
+.footer{
+  margin-top:32px;padding-top:18px;border-top:1px solid rgba(255,255,255,.08);
+  color:var(--dim);font-size:12px;line-height:1.7;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+}
+.footer a{color:var(--accent);text-decoration:none;font-weight:750}
+.footer a:hover{color:#9af7ad;text-decoration:underline}
+.muted{color:var(--muted)}
+code{font-family:ui-monospace,Consolas,monospace;font-size:12px;color:#cbd5e1;background:rgba(255,255,255,.04);padding:2px 6px;border-radius:6px}
+.kpis{grid-template-columns:repeat(4,minmax(0,1fr));margin-top:0}
+.hero .mix{display:none}
+.attention-lead{margin:0 0 16px;font-size:13.5px;line-height:1.55;max-width:62ch}
+#panel-failures .card{margin-top:2px}
+.empty{
+  padding:36px 20px;border-radius:22px;
+  border:1px solid rgba(57,231,95,.2);
+  background:linear-gradient(165deg,rgba(57,231,95,.07),rgba(8,12,20,.4));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+}
+.empty strong{display:block;font-family:var(--display);font-size:22px;font-weight:500;color:#fafcff;margin-bottom:8px}
+.shell{padding-bottom:72px}
+.topnav{margin-bottom:22px;padding-bottom:2px}
+.hero{padding:36px 34px 28px;margin-bottom:16px;border-radius:32px}
+.hero h1{font-size:clamp(34px,4.5vw,48px)}
+.trust-strip{margin-top:18px;gap:8px}
+.trust-strip span{padding:8px 12px;border-radius:999px;font-size:12px}
+.kpis{gap:12px;margin-top:14px}
+.kpi{padding:16px 14px;border-radius:18px;min-height:0}
+.kpi strong{font-size:28px}
+.tabs{margin:14px 0 12px;padding:5px}
+.section-label{margin:18px 0 10px}
+.footer{margin-top:24px;opacity:.9}
+html{scrollbar-width:thin;scrollbar-color:rgba(57,231,95,.4) #07101f}
+.find-list{display:grid;gap:12px}
+.find-card{
+  border:1px solid var(--line);border-radius:20px;padding:18px;
+  background:linear-gradient(165deg,rgba(255,255,255,.04),transparent 40%),linear-gradient(165deg,rgba(22,30,44,.9),rgba(12,18,28,.86));
+  display:grid;gap:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+}
+.find-card .row{display:grid;gap:4px}
+.find-card .row span{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:800}
+.find-card .row strong{font-size:15px;color:#fff;line-height:1.35}
+.find-card .row p{margin:0;color:var(--muted);font-size:13.5px;line-height:1.5}
+.find-card .find-next{
+  display:inline-flex;align-items:center;justify-content:center;width:fit-content;
+  margin-top:2px;padding:11px 15px;border-radius:999px;text-decoration:none;font-weight:800;font-size:12.5px;
+  background:linear-gradient(135deg,#9af7ad,#39e75f 40%,#22c55e);color:#041018;
+  box-shadow:0 10px 24px rgba(57,231,95,.22),inset 0 1px 0 rgba(255,255,255,.4);
+}
+.find-card.ok{border-color:rgba(57,231,95,.3);padding:16px 18px}
+.find-card.ok .find-next{margin-top:4px}
+.find-success{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  border:1px solid rgba(57,231,95,.28);border-radius:20px;padding:16px 18px;
+  background:linear-gradient(165deg,rgba(57,231,95,.1),rgba(12,18,28,.82));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
+}
+.find-success strong{display:block;color:#fff;font-size:15px;font-family:var(--display);font-weight:500}
+.find-success p{margin:4px 0 0;color:var(--muted);font-size:13px;line-height:1.45}
+.find-success a{
+  display:inline-flex;align-items:center;padding:11px 15px;border-radius:999px;text-decoration:none;
+  font-weight:800;font-size:12.5px;background:linear-gradient(135deg,#9af7ad,#39e75f 40%,#22c55e);color:#041018;
+  box-shadow:0 10px 24px rgba(57,231,95,.22);
+}
+.more-explore{
+  margin-top:20px;border:1px solid rgba(255,255,255,.08);border-radius:26px;padding:6px 6px 12px;
+  background:linear-gradient(180deg,rgba(255,255,255,.03),transparent 35%),rgba(12,18,28,.62);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 20px 50px rgba(0,0,0,.2);
+}
+.more-explore > summary{
+  cursor:pointer;list-style:none;padding:16px 18px;font-weight:600;color:#fff;
+  font-family:var(--display);font-size:17px;letter-spacing:-.01em;
+}
+.more-explore > summary::-webkit-details-marker{display:none}
+.more-explore > summary:before{content:"▸ ";color:var(--accent)}
+.more-explore[open] > summary:before{content:"▾ "}
+.more-explore .more-body{padding:0 14px 10px}
+.more-explore .section-label{margin-top:10px}
+@media(max-width:980px){
+  .hero-grid,.grid-2,.kpis,.module-grid,.compare-controls,.help-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:640px){
+  .hero{padding:24px 18px}
+  .hero-grid,.grid-2,.kpis,.module-grid,.compare-controls,.help-grid{grid-template-columns:1fr}
+  .tabs{width:100%;border-radius:18px}
+  .btn.primary{width:100%;justify-content:center}
+}
+
+/* Final major — OolTool green theme */
+body{
+  background:
+    radial-gradient(1100px 560px at 12% -12%,rgba(57,231,95,.2),transparent 55%),
+    radial-gradient(900px 480px at 88% 8%,rgba(57,231,95,.08),transparent 50%),
+    radial-gradient(700px 520px at 70% 110%,rgba(34,197,94,.08),transparent 52%),
+    linear-gradient(168deg,#03060c,#0a121c 40%,#07101f)!important;
+}
+body:after{
+  background:
+    radial-gradient(ellipse at 20% 0%,rgba(57,231,95,.08),transparent 45%),
+    radial-gradient(ellipse at center,transparent 35%,rgba(0,0,0,.55) 100%)!important;
+  animation:aurora-breathe 12s ease-in-out infinite alternate;
+}
+@keyframes aurora-breathe{
+  from{opacity:.85;transform:scale(1)}
+  to{opacity:1;transform:scale(1.03)}
+}
+.shell{max-width:1180px;padding-top:28px}
+.topnav{margin-bottom:18px}
+.mark{
+  width:58px;height:58px;border-radius:20px;font-size:14px;
+  box-shadow:0 0 0 1px rgba(255,255,255,.2),0 0 48px rgba(57,231,95,.35),inset 0 1px 0 rgba(255,255,255,.4);
+}
+.brand-copy strong{font-size:34px;letter-spacing:-.04em}
+.eyebrow{color:#9af7ad!important}
+.hero{
+  padding:42px 40px 36px!important;border-radius:38px!important;margin-bottom:18px!important;
+  border:1px solid rgba(57,231,95,.22)!important;
+  box-shadow:0 48px 120px rgba(0,0,0,.55),0 0 0 1px rgba(57,231,95,.1),inset 0 1px 0 rgba(255,255,255,.08)!important;
+}
+.hero:after{
+  width:460px;height:460px;right:-120px;top:-110px;
+  background:radial-gradient(circle,rgba(57,231,95,.28),rgba(154,247,173,.08),transparent 70%)!important;
+  filter:blur(2px);
+}
+.hero h1{font-size:clamp(48px,7vw,76px)!important;line-height:.9!important;margin-bottom:14px!important}
+.hero h1 em{
+  background:linear-gradient(115deg,#d7fbe0 10%,#9af7ad 40%,#39e75f 75%)!important;
+  -webkit-background-clip:text!important;background-clip:text!important;
+  filter:drop-shadow(0 0 28px rgba(57,231,95,.35));
+}
+.lede{font-size:16px!important;color:#c5d4e6!important;max-width:38ch}
+.gate-panel{
+  position:relative;overflow:hidden;min-height:220px!important;padding:28px 26px!important;border-radius:30px!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 28px 70px rgba(0,0,0,.35)!important;
+}
+.gate-panel:before{
+  content:"";position:absolute;inset:-40% -20% auto;height:70%;pointer-events:none;
+  background:radial-gradient(circle,rgba(255,255,255,.12),transparent 65%);
+  animation:gate-shine 7s ease-in-out infinite;
+}
+@keyframes gate-shine{0%,100%{opacity:.4;transform:translateX(-8%)}50%{opacity:.9;transform:translateX(8%)}}
+.gate-value{font-size:clamp(36px,3.8vw,50px)!important;margin:16px 0 14px!important}
+.gate-panel.cond .gate-value{text-shadow:0 0 40px rgba(245,197,66,.35)}
+.gate-panel.go .gate-value{text-shadow:0 0 40px rgba(57,231,95,.35)}
+.gate-panel.nogo .gate-value{text-shadow:0 0 40px rgba(255,123,114,.35)}
+.cta-row .btn.primary{
+  padding:14px 22px;font-size:13.5px;
+  box-shadow:0 16px 40px rgba(57,231,95,.32),inset 0 1px 0 rgba(255,255,255,.5)!important;
+}
+.kpis{gap:14px!important;margin:16px 0 20px!important}
+.kpi{
+  padding:22px 18px 18px!important;border-radius:24px!important;
+  background:
+    linear-gradient(160deg,rgba(255,255,255,.07),transparent 42%),
+    linear-gradient(165deg,rgba(18,28,44,.92),rgba(8,14,24,.94))!important;
+  border-color:rgba(57,231,95,.18)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 20px 50px rgba(0,0,0,.28)!important;
+}
+.kpi .value{
+  font-family:var(--display)!important;font-weight:500!important;font-size:42px!important;
+  letter-spacing:-.05em!important;margin:14px 0 6px!important;
+}
+.kpi .hint{margin-top:14px!important;font-size:12px!important;color:#39e75f!important}
+a.kpi:hover{
+  transform:translateY(-6px)!important;
+  border-color:rgba(57,231,95,.45)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 28px 60px rgba(0,0,0,.4),0 0 40px rgba(57,231,95,.1)!important;
+}
+#panel-failures .card{
+  border-radius:30px!important;padding:28px!important;
+  border-color:rgba(57,231,95,.18)!important;
+  box-shadow:0 36px 90px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.06)!important;
+}
+.card-head h3{font-size:26px!important}
+.find-success{
+  padding:22px 22px!important;border-radius:24px!important;
+  background:
+    linear-gradient(135deg,rgba(57,231,95,.16),transparent 50%),
+    linear-gradient(165deg,rgba(12,22,34,.9),rgba(8,14,24,.95))!important;
+  border-color:rgba(57,231,95,.35)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 0 50px rgba(57,231,95,.08)!important;
+}
+.find-success strong{font-size:22px!important;letter-spacing:-.02em}
+.find-success p{font-size:14px!important;max-width:52ch}
+.more-explore{
+  border-radius:28px!important;margin-top:22px!important;
+  border-color:rgba(57,231,95,.16)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 28px 70px rgba(0,0,0,.28)!important;
+}
+.more-explore > summary{font-size:19px!important;padding:18px 20px!important}
+
+.history-delta-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0 0 8px}
+.history-delta{border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:14px 14px 12px;background:linear-gradient(165deg,rgba(255,255,255,.05),rgba(8,14,24,.85))}
+.history-delta span{display:block;color:var(--dim);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:800}
+.history-delta strong{display:block;font-family:var(--display);font-size:28px;margin:8px 0 4px;letter-spacing:-.03em}
+.history-delta small{color:var(--muted);font-size:12px}
+.archive-fold{margin-top:18px;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:4px 12px 12px;background:rgba(8,14,24,.4)}
+.archive-fold > summary{cursor:pointer;padding:12px 4px;font-weight:700;color:#fff}
+.find-card.air-fail-card .row span{color:var(--accent)}
+.air-repro-list{margin:6px 0 0;padding-left:18px;color:var(--muted);line-height:1.55}
+.air-repro-list li{margin:4px 0}
+@media(max-width:760px){.history-delta-row{grid-template-columns:1fr 1fr}}
+@media (prefers-reduced-motion:reduce){
+  body:after,.hero:after,.gate-panel:before,.mark,.hero-atmosphere,.brand-air,.atelier-scan{animation:none!important}
+}
+
+/* —— Atelier skin: brand-first, one composition —— */
+.shell{max-width:1220px;padding:22px 22px 96px}
+.topnav.atelier-nav{
+  margin:0 0 14px;padding:0;
+  justify-content:flex-end;
+}
+.topnav.atelier-nav .brand{display:none}
+.hero.atelier-hero{
+  position:relative;isolation:isolate;
+  min-height:min(72vh,720px);
+  padding:48px 44px 40px!important;
+  border-radius:42px!important;
+  overflow:hidden;
+  border:1px solid rgba(57,231,95,.22)!important;
+  background:
+    linear-gradient(120deg,rgba(3,8,14,.2),rgba(3,8,14,.72) 48%,rgba(3,10,16,.55)),
+    radial-gradient(900px 480px at 78% 18%,rgba(57,231,95,.28),transparent 58%),
+    radial-gradient(700px 420px at 12% 88%,rgba(154,247,173,.12),transparent 55%),
+    linear-gradient(155deg,#071018,#0b1724 45%,#050a12)!important;
+  box-shadow:
+    0 50px 140px rgba(0,0,0,.58),
+    0 0 0 1px rgba(255,255,255,.04),
+    inset 0 1px 0 rgba(255,255,255,.08)!important;
+  animation:hero-rise .85s var(--ease) both;
+}
+@keyframes hero-rise{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
+.hero-atmosphere{
+  position:absolute;inset:-20%;z-index:0;pointer-events:none;
+  background:
+    conic-gradient(from 210deg at 70% 30%,rgba(57,231,95,.16),transparent 28%,rgba(154,247,173,.08),transparent 55%,rgba(57,231,95,.1)),
+    radial-gradient(circle at 30% 20%,rgba(255,255,255,.05),transparent 40%);
+  filter:blur(18px) saturate(1.15);
+  animation:atmosphere-drift 14s ease-in-out infinite alternate;
+}
+@keyframes atmosphere-drift{from{transform:translate3d(-2%,1%,0) rotate(-2deg)}to{transform:translate3d(3%,-2%,0) rotate(2deg)}}
+.atelier-scan{
+  position:absolute;left:-10%;right:-10%;top:0;height:42%;z-index:0;pointer-events:none;opacity:.35;
+  background:linear-gradient(180deg,rgba(255,255,255,.1),transparent 70%);
+  mix-blend-mode:soft-light;
+  animation:scan-sweep 9s var(--ease) infinite;
+}
+@keyframes scan-sweep{0%,100%{transform:translateY(-8%);opacity:.2}50%{transform:translateY(18%);opacity:.42}}
+.atelier-hero .hero-grid{position:relative;z-index:1;gap:36px;align-items:center;min-height:420px}
+.brand-lockup{
+  display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
+  margin:0 0 18px;animation:rise .7s var(--ease) .05s both;
+}
+.brand-air{
+  font-family:var(--display);font-weight:800;font-size:clamp(72px,11vw,128px);
+  line-height:.82;letter-spacing:-.07em;
+  background:linear-gradient(115deg,#ffffff 8%,#9af7ad 42%,#39e75f 78%,#22c55e);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 10px 40px rgba(57,231,95,.28));
+  animation:air-breathe 6s ease-in-out infinite;
+}
+@keyframes air-breathe{0%,100%{filter:drop-shadow(0 10px 36px rgba(57,231,95,.22))}50%{filter:drop-shadow(0 14px 52px rgba(57,231,95,.4))}}
+.brand-product{
+  font-family:var(--font);font-size:13px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
+  color:#9af7ad;opacity:.92;padding-bottom:10px;
+}
+.atelier-hero .eyebrow{display:none}
+.atelier-hero h1{
+  font-family:var(--display)!important;font-weight:600!important;
+  font-size:clamp(34px,4.6vw,52px)!important;line-height:.98!important;
+  letter-spacing:-.04em!important;margin:0 0 14px!important;
+  color:#f7fbff!important;max-width:14ch;
+  animation:rise .7s var(--ease) .12s both;
+}
+.atelier-hero h1 em{
+  font-style:normal;font-weight:700;
+  background:linear-gradient(115deg,#d7fbe0,#9af7ad 45%,#39e75f)!important;
+  -webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;
+}
+.atelier-hero .lede{
+  font-size:16.5px!important;line-height:1.7!important;color:#c2d2e4!important;
+  max-width:36ch!important;margin:0 0 8px!important;
+  animation:rise .7s var(--ease) .18s both;
+}
+.atelier-hero .cta-row{animation:rise .7s var(--ease) .24s both;margin-top:22px!important}
+.atelier-hero .gate-panel{
+  min-height:260px!important;border-radius:32px!important;
+  background:
+    linear-gradient(160deg,rgba(255,255,255,.08),transparent 42%),
+    linear-gradient(165deg,rgba(10,18,28,.78),rgba(8,16,26,.88))!important;
+  backdrop-filter:blur(22px) saturate(1.2);
+  -webkit-backdrop-filter:blur(22px) saturate(1.2);
+  border:1px solid rgba(255,255,255,.12)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.12),
+    0 30px 80px rgba(0,0,0,.4),
+    0 0 60px rgba(57,231,95,.08)!important;
+  animation:rise .8s var(--ease) .16s both;
+}
+.atelier-hero .gate-label{
+  font-size:11px;letter-spacing:.2em;color:#9af7ad;font-weight:700;
+}
+.atelier-hero .gate-value{
+  font-family:var(--display)!important;font-weight:700!important;
+  letter-spacing:-.03em!important;
+}
+.kpis .kpi,.panel .card,.more-explore,.find-card,.find-success{
+  animation:rise .65s var(--ease) both;
+}
+.section-label h2,.card-head h3,.more-explore > summary,.find-success strong,.help summary{
+  font-family:var(--display)!important;font-weight:600!important;letter-spacing:-.03em!important;
+}
+.btn{font-family:var(--font);letter-spacing:.01em}
+.btn.primary{
+  background:linear-gradient(135deg,#b6f9c4,#39e75f 48%,#1fbf55)!important;
+  box-shadow:0 16px 40px rgba(57,231,95,.34),inset 0 1px 0 rgba(255,255,255,.5)!important;
+}
+@media(max-width:900px){
+  .hero.atelier-hero{min-height:0;padding:28px 20px 24px!important;border-radius:28px!important}
+  .brand-air{font-size:clamp(64px,18vw,96px)}
+  .atelier-hero .hero-grid{min-height:0;gap:22px}
+}
+</style>
+</head>
+<body data-air-simple-overview="true">
+<div class="shell">
+  <div class="topnav atelier-nav">
+    <div class="top-actions">
+      <button type="button" class="btn" id="btn-refresh">Refresh</button>
+      <a class="btn ghost" id="btn-details" href="../details.html">Full report</a>
+    </div>
+  </div>
+
+  <section class="hero atelier-hero" id="start">
+    <div class="hero-atmosphere" aria-hidden="true"></div>
+    <div class="atelier-scan" aria-hidden="true"></div>
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <p class="brand-lockup"><span class="brand-air">AIR</span><span class="brand-product">OolTool</span></p>
+        <h1>Can we <em>ship</em>?</h1>
+        <p class="lede" id="subtitle">Loading your latest results…</p>
+        <div class="cta-row" id="hero-cta"></div>
+      </div>
+      <div class="gate-panel" id="gate-panel">
+        <div class="gate-label">Release decision</div>
+        <div class="gate-value" id="gate-value">—</div>
+        <div class="gate-meta" id="gate-meta"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="kpis" id="kpis"></div>
+
+  <section class="panel active" id="panel-failures">
+    <div class="card">
+      <div class="card-head">
+        <h3>What needs attention</h3>
+        <span id="fail-count"></span>
+      </div>
+      <p class="muted attention-lead">Start here if anything failed. Each card says what broke and what to do next.</p>
+      <div id="failures"></div>
+    </div>
+  </section>
+
+  <details class="more-explore" id="more-explore">
+    <summary>More detail</summary>
+    <div class="more-body">
+      <div class="section-label">
+        <div>
+          <h2>Areas and history</h2>
+          <p>Optional detail beyond the decision and failures.</p>
+        </div>
+      </div>
+
+      <div class="tabs" role="tablist">
+        <button type="button" data-tab="modules">By area</button>
+        <button type="button" data-tab="history">History</button>
+      </div>
+
+      <section class="panel" id="panel-modules">
+        <div class="card">
+          <div class="card-head">
+            <h3>Results by product area</h3>
+            <span>latest suite</span>
+          </div>
+          <p class="muted" style="margin:0 0 14px;font-size:13px">Billing, dashboard, auth, and other product areas.</p>
+          <div class="module-grid" id="modules"></div>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-history">
+        <div class="card history-card">
+          <div class="card-head">
+            <h3 id="history-answer">Vs last run</h3>
+            <span id="history-caption">failures over time</span>
+          </div>
+          <p class="muted" id="history-lead" style="margin:0 0 14px;font-size:13.5px">Loading…</p>
+          <div class="history-delta-row" id="history-deltas"></div>
+          <p class="muted" style="margin:18px 0 8px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:800">Failures over recent runs</p>
+          <div class="chart-wrap" id="chart-fails"></div>
+          <div class="compare-controls" style="margin-top:22px">
+            <label class="field">Older run<select id="sel-a"></select></label>
+            <label class="field">Newer run<select id="sel-b"></select></label>
+          </div>
+          <table>
+            <thead><tr><th>Measure</th><th>Older</th><th>Newer</th><th>Change</th></tr></thead>
+            <tbody id="compare-body"></tbody>
+          </table>
+          <details class="archive-fold">
+            <summary>All saved runs</summary>
+            <table>
+              <thead><tr><th>When</th><th>Passed / Failed / Not run</th><th>Decision</th></tr></thead>
+              <tbody id="archive-body"></tbody>
+            </table>
+          </details>
+        </div>
+      </section>
+    </div>
+  </details>
+
+  <details class="help">
+    <summary>Quick glossary — what the words mean</summary>
+    <div class="help-grid">
+      <div><strong>GO</strong><span>No blocking failures for the release gate.</span></div>
+      <div><strong>Conditional GO</strong><span>You can proceed, but review notes or not-run coverage first.</span></div>
+      <div><strong>NO GO</strong><span>Fix failures or missing critical coverage before release.</span></div>
+      <div><strong>Passed</strong><span>Check ran and succeeded.</span></div>
+      <div><strong>Failed</strong><span>Check ran and broke — needs a fix.</span></div>
+      <div><strong>Not run</strong><span>Skipped (blocked, setup needed, later, or unexpected).</span></div>
+    </div>
+  </details>
+
+  <div class="footer">
+    <div id="footer-left"></div>
+    <div>Keeps about <span id="keep-days"></span> days of saved runs · local only</div>
+  </div>
+</div>
+<script>
+const DATA = {"generatedAt":"2026-10-29T06:06:13.371Z","keepDays":14,"source":{"history":"execution-report/history/air-history.json","latest":"execution-report/air-results.json","fullReport":"execution-report/details.html","overview":"execution-report/index.html"},"runs":[{"id":"air-1792392739790","at":"10/19/2026, 12:22:19 PM","generatedAt":"2026-10-19T06:52:19.790Z","duration":"149m 2s","durationMs":8941928,"total":726,"passed":461,"failed":14,"skipped":251,"notRun":251,"flaky":0,"executed":475,"documentedSkipped":245,"passRate":97,"unexpectedSkipped":6,"decision":"NO GO","risk":"HIGH","qualityScore":87,"failedTitles":[{"title":"Dashboard Widgets > Dashboard shows portfolio score events allocation and opportunities","file":"","status":"failed","error":"","scenario":"Dashboard Widgets > Dashboard shows portfolio score events allocation and opportunities","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Opportunities > Opportunity save view research watch and pagination","file":"","status":"failed","error":"","scenario":"Opportunities > Opportunity save view research watch and pagination","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"More dashboard screens > Option chain strike count keeps calls and puts","file":"","status":"failed","error":"","scenario":"More dashboard screens > Option chain strike count keeps calls and puts","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Deeper dashboard controls > News switches portfolio and watchlist, then searches a symbol","file":"","status":"failed","error":"","scenario":"Deeper dashboard controls > News switches portfolio and watchlist, then searches a symbol","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Deeper dashboard controls > Support changes ticket fields and status without submitting","file":"","status":"failed","error":"","scenario":"Deeper dashboard controls > Support changes ticket fields and status without submitting","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Billing Edge Validation > Billing overview plans and history in one session","file":"","status":"failed","error":"","scenario":"Billing Edge Validation > Billing overview plans and history in one session","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Disposable user resets password from the email link and signs in with the new password","file":"","status":"failed","error":"","scenario":"Disposable user resets password from the email link and signs in with the new password","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Overlay Strategists Trial FRD Matrix > SC-03 - Broker account limit is one","file":"","status":"failed","error":"","scenario":"Overlay Strategists Trial FRD Matrix > SC-03 - Broker account limit is one","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Overlay Strategists Trial FRD Matrix > SC-07 - Start trial with valid card","file":"","status":"failed","error":"","scenario":"Overlay Strategists Trial FRD Matrix > SC-07 - Start trial with valid card","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"New Subscription Purchase Use Case 2 Matrix > SC-75I - Invoice PDF amount, currency, and plan match the purchased subscription","file":"","status":"failed","error":"","scenario":"New Subscription Purchase Use Case 2 Matrix > SC-75I - Invoice PDF amount, currency, and plan match the purchased subscription","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Upgrade Subscription Use Case 3 Matrix > SC-76 - Current lower-tier paid subscription is displayed before upgrade","file":"","status":"failed","error":"","scenario":"Upgrade Subscription Use Case 3 Matrix > SC-76 - Current lower-tier paid subscription is displayed before upgrade","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Upgrade Subscription Use Case 3 Matrix > SC-95 - Upgrade confirmation email is sent","file":"","status":"failed","error":"","scenario":"Upgrade Subscription Use Case 3 Matrix > SC-95 - Upgrade confirmation email is sent","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Monthly To Annual Billing Change Use Case 5 Matrix > SC-182 - Confirmation email is sent after monthly-to-annual change","file":"","status":"failed","error":"","scenario":"Monthly To Annual Billing Change Use Case 5 Matrix > SC-182 - Confirmation email is sent after monthly-to-annual change","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Subscription Cancellation Use Case 7 Matrix > SC-262 - Cancellation confirmation email is sent","file":"","status":"failed","error":"","scenario":"Subscription Cancellation Use Case 7 Matrix > SC-262 - Cancellation confirmation email is sent","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"}],"modules":[{"name":"Access Control","passed":0,"failed":0,"skipped":1,"score":0,"status":"Not Executed","critical":true},{"name":"Accessibility","passed":24,"failed":0,"skipped":5,"score":100,"status":"Healthy","critical":false},{"name":"Authentication","passed":65,"failed":0,"skipped":9,"score":100,"status":"Healthy","critical":true},{"name":"Billing","passed":207,"failed":8,"skipped":227,"score":96,"status":"Critical","critical":true},{"name":"Dashboard","passed":71,"failed":4,"skipped":0,"score":95,"status":"Warning","critical":true},{"name":"General","passed":42,"failed":1,"skipped":1,"score":98,"status":"Warning","critical":false},{"name":"MFA","passed":1,"failed":0,"skipped":7,"score":100,"status":"Healthy","critical":true},{"name":"Onboarding","passed":10,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Password","passed":17,"failed":1,"skipped":0,"score":94,"status":"Critical","critical":true},{"name":"Profile","passed":3,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Signup","passed":21,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1792587577733","at":"10/21/2026, 6:29:37 PM","generatedAt":"2026-10-21T12:59:37.733Z","duration":"143m 30s","durationMs":8609968,"total":746,"passed":487,"failed":17,"skipped":242,"notRun":242,"flaky":0,"executed":504,"documentedSkipped":241,"passRate":97,"unexpectedSkipped":1,"decision":"NO GO","risk":"HIGH","qualityScore":71,"failedTitles":[{"title":"Overlay Strategists Trial Experience > New user can reach Overlay Strategists trial option","file":"","status":"failed","error":"","scenario":"Overlay Strategists Trial Experience > New user can reach Overlay Strategists trial option","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Overlay Strategists Trial Experience > New user can start Overlay Strategists trial with card","file":"","status":"failed","error":"","scenario":"Overlay Strategists Trial Experience > New user can start Overlay Strategists trial with card","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Direct Subscription Purchase > Paid plan checkout summaries currency refresh and return use one user","file":"","status":"failed","error":"","scenario":"Direct Subscription Purchase > Paid plan checkout summaries currency refresh and return use one user","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Direct Subscription Purchase > Income Builder monthly checkout shows subscription summary before payment","file":"","status":"failed","error":"","scenario":"Direct Subscription Purchase > Income Builder monthly checkout shows subscription summary before payment","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Direct Subscription Purchase > Portfolio Hedger annual checkout shows subscription summary before payment","file":"","status":"failed","error":"","scenario":"Direct Subscription Purchase > Portfolio Hedger annual checkout shows subscription summary before payment","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Direct Subscription Purchase > Income Builder annual checkout shows subscription summary before payment","file":"","status":"failed","error":"","scenario":"Direct Subscription Purchase > Income Builder annual checkout shows subscription summary before payment","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Direct Subscription Purchase > Income Builder checkout shows currency and conversion details before payment","file":"","status":"failed","error":"","scenario":"Direct Subscription Purchase > Income Builder checkout shows currency and conversion details before payment","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Direct Subscription Purchase > Income Builder checkout preserves context on refresh and returns safely before payment","file":"","status":"failed","error":"","scenario":"Direct Subscription Purchase > Income Builder checkout preserves context on refresh and returns safely before payment","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Subscription Lifecycle Execution > Prepared paid user can preview monthly and annual upgrade calculations","file":"","status":"failed","error":"","scenario":"Subscription Lifecycle Execution > Prepared paid user can preview monthly and annual upgrade calculations","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Subscription Lifecycle Execution > Prepared paid user can preview downgrade calculations without submitting","file":"","status":"failed","error":"","scenario":"Subscription Lifecycle Execution > Prepared paid user can preview downgrade calculations without submitting","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Subscription Lifecycle Execution > User A monthly plan ladder then period-end cancel","file":"","status":"failed","error":"","scenario":"Subscription Lifecycle Execution > User A monthly plan ladder then period-end cancel","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Option Expiry Overview revamp > Dashboard expiry overview call distance matches ((S - K) / K) x 100","file":"","status":"failed","error":"","scenario":"Option Expiry Overview revamp > Dashboard expiry overview call distance matches ((S - K) / K) x 100","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Deeper dashboard controls > Support changes ticket fields and status without submitting","file":"","status":"failed","error":"","scenario":"Deeper dashboard controls > Support changes ticket fields and status without submitting","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Password mismatch and wrong current password in one session","file":"","status":"failed","error":"","scenario":"Password mismatch and wrong current password in one session","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Disposable user resets password from the email link and signs in with the new password","file":"","status":"failed","error":"","scenario":"Disposable user resets password from the email link and signs in with the new password","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Overlay Strategists Trial FRD Matrix > SC-03 - Broker account limit is one","file":"","status":"failed","error":"","scenario":"Overlay Strategists Trial FRD Matrix > SC-03 - Broker account limit is one","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Subscription Cancellation Use Case 7 Matrix > SC-262 - Cancellation confirmation email is sent","file":"","status":"failed","error":"","scenario":"Subscription Cancellation Use Case 7 Matrix > SC-262 - Cancellation confirmation email is sent","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"}],"modules":[{"name":"Access Control","passed":0,"failed":0,"skipped":1,"score":0,"status":"Not Executed","critical":true},{"name":"Accessibility","passed":23,"failed":0,"skipped":6,"score":100,"status":"Healthy","critical":false},{"name":"Authentication","passed":65,"failed":0,"skipped":9,"score":100,"status":"Healthy","critical":true},{"name":"Billing","passed":212,"failed":13,"skipped":217,"score":94,"status":"Critical","critical":true},{"name":"Dashboard","passed":93,"failed":2,"skipped":0,"score":98,"status":"Critical","critical":true},{"name":"General","passed":43,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":false},{"name":"MFA","passed":1,"failed":0,"skipped":7,"score":100,"status":"Healthy","critical":true},{"name":"Onboarding","passed":10,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Password","passed":16,"failed":2,"skipped":0,"score":89,"status":"Critical","critical":true},{"name":"Profile","passed":3,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Signup","passed":21,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1792653901290","at":"10/22/2026, 12:55:01 PM","generatedAt":"2026-10-22T07:25:01.290Z","duration":"162m 14s","durationMs":9734208,"total":746,"passed":474,"failed":32,"skipped":240,"notRun":240,"flaky":0,"executed":506,"documentedSkipped":235,"passRate":94,"unexpectedSkipped":5,"decision":"NO GO","risk":"HIGH","qualityScore":70,"failedTitles":[{"title":"Subscription Lifecycle Execution > Prepared paid user can preview monthly and annual upgrade calculations","file":"","status":"failed","error":"","scenario":"Subscription Lifecycle Execution > Prepared paid user can preview monthly and annual upgrade calculations","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Subscription Lifecycle Execution > Prepared paid user can preview downgrade calculations without submitting","file":"","status":"failed","error":"","scenario":"Subscription Lifecycle Execution > Prepared paid user can preview downgrade calculations without submitting","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Option Expiry Overview revamp > Dashboard expiry overview has Short and Long tabs and OTM to ITM legend","file":"","status":"failed","error":"","scenario":"Option Expiry Overview revamp > Dashboard expiry overview has Short and Long tabs and OTM to ITM legend","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Option Expiry Overview revamp > Dashboard expiry overview footer lists OTM NTM ATM ITM counts","file":"","status":"failed","error":"","scenario":"Option Expiry Overview revamp > Dashboard expiry overview footer lists OTM NTM ATM ITM counts","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Option Expiry Overview revamp > Dashboard expiry overview breakdown uses integer contract counts","file":"","status":"failed","error":"","scenario":"Option Expiry Overview revamp > Dashboard expiry overview breakdown uses integer contract counts","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Option Expiry Overview revamp > Dashboard expiry overview row opens a drill-down modal","file":"","status":"failed","error":"","scenario":"Option Expiry Overview revamp > Dashboard expiry overview row opens a drill-down modal","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Positions dynamic grid > Dashboard positions call filter shows active filter chips","file":"","status":"failed","error":"","scenario":"Positions dynamic grid > Dashboard positions call filter shows active filter chips","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Opportunities > Opportunity save view research watch and pagination","file":"","status":"failed","error":"","scenario":"Opportunities > Opportunity save view research watch and pagination","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Deeper dashboard controls > Support changes ticket fields and status without submitting","file":"","status":"failed","error":"","scenario":"Deeper dashboard controls > Support changes ticket fields and status without submitting","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Remaining dashboard scenarios > Support walks every category, priority, and status without submitting","file":"","status":"failed","error":"","scenario":"Remaining dashboard scenarios > Support walks every category, priority, and status without submitting","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Upgrade Subscription Use Case 3 Matrix > SC-86 - Upgrade starts a new billing cycle and displays next renewal date","file":"","status":"failed","error":"","scenario":"Upgrade Subscription Use Case 3 Matrix > SC-86 - Upgrade starts a new billing cycle and displays next renewal date","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Upgrade Subscription Use Case 3 Matrix > SC-88 - Successful upgrade immediately updates active plan","file":"","status":"failed","error":"","scenario":"Upgrade Subscription Use Case 3 Matrix > SC-88 - Successful upgrade immediately updates active plan","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Upgrade Subscription Use Case 3 Matrix > SC-91 - Successful upgrade records subscription history entry","file":"","status":"failed","error":"","scenario":"Upgrade Subscription Use Case 3 Matrix > SC-91 - Successful upgrade records subscription history entry","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Upgrade Subscription Use Case 3 Matrix > SC-109 - Upgrade is available for subscription scheduled to cancel before end date when allowed","file":"","status":"failed","error":"","scenario":"Upgrade Subscription Use Case 3 Matrix > SC-109 - Upgrade is available for subscription scheduled to cancel before end date when allowed","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Downgrade Subscription Use Case 4 Matrix > SC-121 - Downgrade confirmation displays lost feature warning","file":"","status":"failed","error":"","scenario":"Downgrade Subscription Use Case 4 Matrix > SC-121 - Downgrade confirmation displays lost feature warning","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Downgrade Subscription Use Case 4 Matrix > SC-143 - Downgrade confirmation email is sent","file":"","status":"failed","error":"","scenario":"Downgrade Subscription Use Case 4 Matrix > SC-143 - Downgrade confirmation email is sent","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Monthly To Annual Billing Change Use Case 5 Matrix > SC-187 - Browser refresh during monthly-to-annual confirmation does not charge or change the plan","file":"","status":"failed","error":"","scenario":"Monthly To Annual Billing Change Use Case 5 Matrix > SC-187 - Browser refresh during monthly-to-annual confirmation does not charge or change the plan","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Subscription Cancellation Use Case 7 Matrix > SC-262 - Cancellation confirmation email is sent","file":"","status":"failed","error":"","scenario":"Subscription Cancellation Use Case 7 Matrix > SC-262 - Cancellation confirmation email is sent","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Failed Payment And Dunning Use Case 8 Matrix > SC-313 - Add payment method screen opens from Stripe portal","file":"","status":"failed","error":"","scenario":"Failed Payment And Dunning Use Case 8 Matrix > SC-313 - Add payment method screen opens from Stripe portal","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Failed Payment And Dunning Use Case 8 Matrix > SC-314 - Billing information update screen opens from Stripe portal","file":"","status":"failed","error":"","scenario":"Failed Payment And Dunning Use Case 8 Matrix > SC-314 - Billing information update screen opens from Stripe portal","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Failed Payment And Dunning Use Case 8 Matrix > SC-328 - Update payment link opens Stripe portal","file":"","status":"failed","error":"","scenario":"Failed Payment And Dunning Use Case 8 Matrix > SC-328 - Update payment link opens Stripe portal","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Subscription Lifecycle E2E Matrix > LC-009 - Existing paid subscriber cannot start another Overlay Strategists trial","file":"","status":"failed","error":"","scenario":"Subscription Lifecycle E2E Matrix > LC-009 - Existing paid subscriber cannot start another Overlay Strategists trial","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Subscription Lifecycle E2E Matrix > LC-018 - Successful paid checkout activates subscription and redirects back to dashboard","file":"","status":"failed","error":"","scenario":"Subscription Lifecycle E2E Matrix > LC-018 - Successful paid checkout activates subscription and redirects back to dashboard","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Subscription Lifecycle E2E Matrix > LC-023 - Subscribed user can see upgrade action or current plan status controls","file":"","status":"failed","error":"","scenario":"Subscription Lifecycle E2E Matrix > LC-023 - Subscribed user can see upgrade action or current plan status controls","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Subscription Lifecycle E2E Matrix > LC-024 - Upgrade to higher plan starts immediate Stripe proration checkout","file":"","status":"failed","error":"","scenario":"Subscription Lifecycle E2E Matrix > LC-024 - Upgrade to higher plan starts immediate Stripe proration checkout","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Subscription Lifecycle E2E Matrix > LC-025 - Upgrade payment starts a new billing cycle immediately","file":"","status":"failed","error":"","scenario":"Subscription Lifecycle E2E Matrix > LC-025 - Upgrade payment starts a new billing cycle immediately","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Subscription Lifecycle E2E Matrix > LC-026 - Subscribed user can see downgrade action or current plan status controls","file":"","status":"failed","error":"","scenario":"Subscription Lifecycle E2E Matrix > LC-026 - Subscribed user can see downgrade action or current plan status controls","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Subscription Lifecycle E2E Matrix > LC-031 - Billing interval toggles and interval-specific prices remain visible before change","file":"","status":"failed","error":"","scenario":"Subscription Lifecycle E2E Matrix > LC-031 - Billing interval toggles and interval-specific prices remain visible before change","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Subscription Lifecycle E2E Matrix > LC-032 - Subscription management portal opens with current subscription details","file":"","status":"failed","error":"","scenario":"Subscription Lifecycle E2E Matrix > LC-032 - Subscription management portal opens with current subscription details","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Subscription Lifecycle E2E Matrix > LC-033 - Cancel-at-period-end form accepts reason and feedback without immediate cancellation","file":"","status":"failed","error":"","scenario":"Subscription Lifecycle E2E Matrix > LC-033 - Cancel-at-period-end form accepts reason and feedback without immediate cancellation","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Subscription Lifecycle E2E Matrix > LC-035 - Cancelled subscription shows scheduled cancellation state and renewal/end date","file":"","status":"failed","error":"","scenario":"Subscription Lifecycle E2E Matrix > LC-035 - Cancelled subscription shows scheduled cancellation state and renewal/end date","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Subscription Lifecycle E2E Matrix > LC-043 - Payment recovery portal allows updating payment method without losing subscription context","file":"","status":"failed","error":"","scenario":"Subscription Lifecycle E2E Matrix > LC-043 - Payment recovery portal allows updating payment method without losing subscription context","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"}],"modules":[{"name":"Access Control","passed":0,"failed":0,"skipped":1,"score":0,"status":"Not Executed","critical":true},{"name":"Accessibility","passed":23,"failed":1,"skipped":5,"score":96,"status":"Warning","critical":false},{"name":"Authentication","passed":65,"failed":0,"skipped":9,"score":100,"status":"Healthy","critical":true},{"name":"Billing","passed":204,"failed":23,"skipped":215,"score":90,"status":"Critical","critical":true},{"name":"Dashboard","passed":87,"failed":7,"skipped":1,"score":93,"status":"Critical","critical":true},{"name":"General","passed":42,"failed":1,"skipped":1,"score":98,"status":"Warning","critical":false},{"name":"MFA","passed":1,"failed":0,"skipped":7,"score":100,"status":"Healthy","critical":true},{"name":"Onboarding","passed":10,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Password","passed":18,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Profile","passed":3,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Signup","passed":21,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1792675902208","at":"10/22/2026, 7:01:42 PM","generatedAt":"2026-10-22T13:31:42.208Z","duration":"162m 10s","durationMs":9729689,"total":746,"passed":487,"failed":5,"skipped":252,"notRun":252,"flaky":2,"executed":492,"documentedSkipped":242,"passRate":99,"unexpectedSkipped":10,"decision":"NO GO","risk":"HIGH","qualityScore":94,"failedTitles":[{"title":"Signup Negative Scenarios > Signup OTP input trims pasted value to 8 digits","file":"","status":"failed","error":"","scenario":"Signup Negative Scenarios > Signup OTP input trims pasted value to 8 digits","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Subscription Lifecycle Execution > Disposable user climbs every monthly then yearly plan and sees yearly cancel options","file":"","status":"failed","error":"","scenario":"Subscription Lifecycle Execution > Disposable user climbs every monthly then yearly plan and sees yearly cancel options","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Deeper dashboard screens > Company Finance shows statements for a symbol","file":"","status":"failed","error":"","scenario":"Deeper dashboard screens > Company Finance shows statements for a symbol","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Remaining dashboard scenarios > Strategy library applies every category and filter","file":"","status":"failed","error":"","scenario":"Remaining dashboard scenarios > Strategy library applies every category and filter","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Add Manual Position > Enter Manually from the plus popup opens Add Position with all position types","file":"","status":"failed","error":"","scenario":"Add Manual Position > Enter Manually from the plus popup opens Add Position with all position types","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"}],"modules":[{"name":"Access Control","passed":0,"failed":0,"skipped":1,"score":0,"status":"Not Executed","critical":true},{"name":"Accessibility","passed":23,"failed":0,"skipped":6,"score":100,"status":"Healthy","critical":false},{"name":"Authentication","passed":65,"failed":0,"skipped":9,"score":100,"status":"Healthy","critical":true},{"name":"Beta","passed":1,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Billing","passed":218,"failed":1,"skipped":223,"score":100,"status":"Critical","critical":true},{"name":"Dashboard","passed":88,"failed":2,"skipped":4,"score":98,"status":"Critical","critical":true},{"name":"General","passed":40,"failed":3,"skipped":1,"score":93,"status":"Warning","critical":false},{"name":"MFA","passed":1,"failed":0,"skipped":7,"score":100,"status":"Healthy","critical":true},{"name":"Onboarding","passed":10,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Password","passed":18,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Profile","passed":3,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Signup","passed":20,"failed":1,"skipped":1,"score":95,"status":"Warning","critical":true}]},{"id":"air-1792681831470","at":"10/22/2026, 8:40:31 PM","generatedAt":"2026-10-22T15:10:31.470Z","duration":"152m 28s","durationMs":9147746,"total":764,"passed":505,"failed":7,"skipped":252,"notRun":252,"flaky":0,"executed":512,"documentedSkipped":244,"passRate":99,"unexpectedSkipped":8,"decision":"NO GO","risk":"HIGH","qualityScore":90,"failedTitles":[{"title":"Auth UI Validation > Login password visibility control is exposed without submitting form","file":"","status":"failed","error":"","scenario":"Auth UI Validation > Login password visibility control is exposed without submitting form","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Subscription Lifecycle Execution > Disposable user climbs every monthly then yearly plan and sees yearly cancel options","file":"","status":"failed","error":"","scenario":"Subscription Lifecycle Execution > Disposable user climbs every monthly then yearly plan and sees yearly cancel options","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Roll Configuration > Tax-Aware field-level validation blocks empty and zeroed fields","file":"","status":"failed","error":"","scenario":"Roll Configuration > Tax-Aware field-level validation blocks empty and zeroed fields","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Roll Configuration > Balanced field-level validation blocks empty and zeroed fields","file":"","status":"failed","error":"","scenario":"Roll Configuration > Balanced field-level validation blocks empty and zeroed fields","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Remaining dashboard screens > Footer legal pages open","file":"","status":"failed","error":"","scenario":"Remaining dashboard screens > Footer legal pages open","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Remaining dashboard scenarios > Strategy library applies every category and filter","file":"","status":"failed","error":"","scenario":"Remaining dashboard scenarios > Strategy library applies every category and filter","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Downgrade Subscription Use Case 4 Matrix > SC-141 - Scheduled downgrade appears in billing overview","file":"","status":"failed","error":"","scenario":"Downgrade Subscription Use Case 4 Matrix > SC-141 - Scheduled downgrade appears in billing overview","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"}],"modules":[{"name":"Access Control","passed":0,"failed":0,"skipped":1,"score":0,"status":"Not Executed","critical":true},{"name":"Accessibility","passed":23,"failed":0,"skipped":6,"score":100,"status":"Healthy","critical":false},{"name":"Authentication","passed":64,"failed":1,"skipped":9,"score":98,"status":"Warning","critical":true},{"name":"Beta","passed":5,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Billing","passed":216,"failed":2,"skipped":224,"score":99,"status":"Critical","critical":true},{"name":"Dashboard","passed":91,"failed":2,"skipped":1,"score":98,"status":"Critical","critical":true},{"name":"General","passed":43,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":false},{"name":"MFA","passed":1,"failed":0,"skipped":7,"score":100,"status":"Healthy","critical":true},{"name":"Onboarding","passed":9,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":true},{"name":"Password","passed":18,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Profile","passed":3,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Roll Configuration","passed":12,"failed":2,"skipped":0,"score":86,"status":"Critical","critical":true},{"name":"Signup","passed":20,"failed":0,"skipped":2,"score":100,"status":"Warning","critical":true}]},{"id":"air-1792730149231","at":"10/23/2026, 10:05:49 AM","generatedAt":"2026-10-23T04:35:49.231Z","duration":"152m 28s","durationMs":9147746,"total":764,"passed":505,"failed":7,"skipped":252,"notRun":252,"flaky":0,"executed":512,"documentedSkipped":244,"passRate":99,"unexpectedSkipped":8,"decision":"NO GO","risk":"HIGH","qualityScore":90,"failedTitles":[{"title":"Auth UI Validation > Login password visibility control is exposed without submitting form","file":"","status":"failed","error":"","scenario":"Auth UI Validation > Login password visibility control is exposed without submitting form","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Subscription Lifecycle Execution > Disposable user climbs every monthly then yearly plan and sees yearly cancel options","file":"","status":"failed","error":"","scenario":"Subscription Lifecycle Execution > Disposable user climbs every monthly then yearly plan and sees yearly cancel options","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Roll Configuration > Tax-Aware field-level validation blocks empty and zeroed fields","file":"","status":"failed","error":"","scenario":"Roll Configuration > Tax-Aware field-level validation blocks empty and zeroed fields","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Roll Configuration > Balanced field-level validation blocks empty and zeroed fields","file":"","status":"failed","error":"","scenario":"Roll Configuration > Balanced field-level validation blocks empty and zeroed fields","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Remaining dashboard screens > Footer legal pages open","file":"","status":"failed","error":"","scenario":"Remaining dashboard screens > Footer legal pages open","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Remaining dashboard scenarios > Strategy library applies every category and filter","file":"","status":"failed","error":"","scenario":"Remaining dashboard scenarios > Strategy library applies every category and filter","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Downgrade Subscription Use Case 4 Matrix > SC-141 - Scheduled downgrade appears in billing overview","file":"","status":"failed","error":"","scenario":"Downgrade Subscription Use Case 4 Matrix > SC-141 - Scheduled downgrade appears in billing overview","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"}],"modules":[{"name":"Access Control","passed":0,"failed":0,"skipped":1,"score":0,"status":"Not Executed","critical":true},{"name":"Accessibility","passed":23,"failed":0,"skipped":6,"score":100,"status":"Healthy","critical":false},{"name":"Authentication","passed":64,"failed":1,"skipped":9,"score":98,"status":"Warning","critical":true},{"name":"Beta","passed":5,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Billing","passed":216,"failed":2,"skipped":224,"score":99,"status":"Critical","critical":true},{"name":"Dashboard","passed":91,"failed":2,"skipped":1,"score":98,"status":"Critical","critical":true},{"name":"General","passed":43,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":false},{"name":"MFA","passed":1,"failed":0,"skipped":7,"score":100,"status":"Healthy","critical":true},{"name":"Onboarding","passed":9,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":true},{"name":"Password","passed":18,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Profile","passed":3,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Roll Configuration","passed":12,"failed":2,"skipped":0,"score":86,"status":"Critical","critical":true},{"name":"Signup","passed":20,"failed":0,"skipped":2,"score":100,"status":"Warning","critical":true}]},{"id":"air-1793032804345","at":"10/26/2026, 10:10:04 PM","generatedAt":"2026-10-26T16:40:04.345Z","duration":"0s","durationMs":0,"total":8,"passed":7,"failed":0,"skipped":1,"notRun":1,"flaky":0,"executed":7,"documentedSkipped":1,"passRate":100,"unexpectedSkipped":0,"decision":"CONDITIONAL GO","risk":"MEDIUM","qualityScore":100,"failedTitles":[],"modules":[{"name":"Billing","passed":1,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":true},{"name":"Dashboard","passed":6,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793044567833","at":"10/27/2026, 1:26:07 AM","generatedAt":"2026-10-26T19:56:07.833Z","duration":"185m 38s","durationMs":11138303,"total":766,"passed":579,"failed":0,"skipped":187,"notRun":187,"flaky":0,"executed":579,"documentedSkipped":177,"passRate":100,"unexpectedSkipped":10,"decision":"CONDITIONAL GO","risk":"MEDIUM","qualityScore":100,"failedTitles":[],"modules":[{"name":"Access Control","passed":0,"failed":0,"skipped":1,"score":0,"status":"Not Executed","critical":true},{"name":"Accessibility","passed":29,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Authentication","passed":65,"failed":0,"skipped":9,"score":100,"status":"Healthy","critical":true},{"name":"Beta","passed":5,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Billing","passed":285,"failed":0,"skipped":159,"score":100,"status":"Warning","critical":true},{"name":"Dashboard","passed":90,"failed":0,"skipped":4,"score":100,"status":"Warning","critical":true},{"name":"General","passed":38,"failed":0,"skipped":6,"score":100,"status":"Warning","critical":false},{"name":"MFA","passed":1,"failed":0,"skipped":7,"score":100,"status":"Healthy","critical":true},{"name":"Onboarding","passed":10,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Password","passed":18,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Profile","passed":3,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Roll Configuration","passed":14,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Signup","passed":21,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793090165507","at":"10/27/2026, 2:06:05 PM","generatedAt":"2026-10-27T08:36:05.507Z","duration":"163m 17s","durationMs":9797141,"total":770,"passed":597,"failed":1,"skipped":171,"notRun":171,"flaky":1,"executed":598,"documentedSkipped":160,"passRate":100,"unexpectedSkipped":11,"decision":"NO GO","risk":"HIGH","qualityScore":98,"failedTitles":[{"title":"Dashboard menus > Research menu opens fundamentals finance news calendar and simulator","file":"","status":"failed","error":"","scenario":"Dashboard menus > Research menu opens fundamentals finance news calendar and simulator","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"}],"modules":[{"name":"Access Control","passed":0,"failed":0,"skipped":1,"score":0,"status":"Not Executed","critical":true},{"name":"Accessibility","passed":28,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":false},{"name":"Authentication","passed":65,"failed":0,"skipped":9,"score":100,"status":"Healthy","critical":true},{"name":"Beta","passed":5,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Billing","passed":303,"failed":1,"skipped":141,"score":100,"status":"Warning","critical":true},{"name":"Dashboard","passed":90,"failed":1,"skipped":4,"score":99,"status":"Critical","critical":true},{"name":"General","passed":39,"failed":0,"skipped":7,"score":100,"status":"Warning","critical":false},{"name":"MFA","passed":1,"failed":0,"skipped":7,"score":100,"status":"Healthy","critical":true},{"name":"Onboarding","passed":10,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Password","passed":18,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Profile","passed":3,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Roll Configuration","passed":14,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Signup","passed":21,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793090289761","at":"10/27/2026, 2:08:09 PM","generatedAt":"2026-10-27T08:38:09.761Z","duration":"0s","durationMs":0,"total":3,"passed":3,"failed":0,"skipped":0,"notRun":0,"flaky":0,"executed":3,"documentedSkipped":0,"passRate":100,"unexpectedSkipped":0,"decision":"CONDITIONAL GO","risk":"MEDIUM","qualityScore":100,"failedTitles":[],"modules":[{"name":"Billing","passed":2,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Password","passed":1,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793090309435","at":"10/27/2026, 2:08:29 PM","generatedAt":"2026-10-27T08:38:29.435Z","duration":"163m 13s","durationMs":9793228,"total":770,"passed":594,"failed":4,"skipped":171,"notRun":171,"flaky":1,"executed":598,"documentedSkipped":160,"passRate":99,"unexpectedSkipped":11,"decision":"NO GO","risk":"HIGH","qualityScore":96,"failedTitles":[{"title":"Dashboard menus > Research menu opens fundamentals finance news calendar and simulator","file":"","status":"failed","error":"","scenario":"Dashboard menus > Research menu opens fundamentals finance news calendar and simulator","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Profile Negative Scenarios > Profile identity drafts password toggles and navigation in one session","file":"","status":"failed","error":"","scenario":"Profile Negative Scenarios > Profile identity drafts password toggles and navigation in one session","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Billing Subscription Management > Billing portal plans invoices and return in one session","file":"","status":"failed","error":"","scenario":"Billing Subscription Management > Billing portal plans invoices and return in one session","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Subscription Cancellation Use Case 7 Matrix > SC-289 - Transaction history does not create an unexpected extra charge on cancellation","file":"","status":"failed","error":"","scenario":"Subscription Cancellation Use Case 7 Matrix > SC-289 - Transaction history does not create an unexpected extra charge on cancellation","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"}],"modules":[{"name":"Access Control","passed":0,"failed":0,"skipped":1,"score":0,"status":"Not Executed","critical":true},{"name":"Accessibility","passed":28,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":false},{"name":"Authentication","passed":65,"failed":0,"skipped":9,"score":100,"status":"Healthy","critical":true},{"name":"Beta","passed":5,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Billing","passed":301,"failed":3,"skipped":141,"score":99,"status":"Warning","critical":true},{"name":"Dashboard","passed":90,"failed":1,"skipped":4,"score":99,"status":"Critical","critical":true},{"name":"General","passed":39,"failed":0,"skipped":7,"score":100,"status":"Warning","critical":false},{"name":"MFA","passed":1,"failed":0,"skipped":7,"score":100,"status":"Healthy","critical":true},{"name":"Onboarding","passed":10,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Password","passed":17,"failed":1,"skipped":0,"score":94,"status":"Critical","critical":true},{"name":"Profile","passed":3,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Roll Configuration","passed":14,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Signup","passed":21,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793090336238","at":"10/27/2026, 2:08:56 PM","generatedAt":"2026-10-27T08:38:56.238Z","duration":"163m 13s","durationMs":9793228,"total":770,"passed":598,"failed":0,"skipped":171,"notRun":171,"flaky":1,"executed":598,"documentedSkipped":160,"passRate":100,"unexpectedSkipped":11,"decision":"CONDITIONAL GO","risk":"MEDIUM","qualityScore":100,"failedTitles":[],"modules":[{"name":"Access Control","passed":0,"failed":0,"skipped":1,"score":0,"status":"Not Executed","critical":true},{"name":"Accessibility","passed":28,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":false},{"name":"Authentication","passed":65,"failed":0,"skipped":9,"score":100,"status":"Healthy","critical":true},{"name":"Beta","passed":5,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Billing","passed":303,"failed":1,"skipped":141,"score":100,"status":"Warning","critical":true},{"name":"Dashboard","passed":91,"failed":0,"skipped":4,"score":100,"status":"Warning","critical":true},{"name":"General","passed":39,"failed":0,"skipped":7,"score":100,"status":"Warning","critical":false},{"name":"MFA","passed":1,"failed":0,"skipped":7,"score":100,"status":"Healthy","critical":true},{"name":"Onboarding","passed":10,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Password","passed":18,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Profile","passed":3,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Roll Configuration","passed":14,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Signup","passed":21,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793100841694","at":"10/27/2026, 5:04:01 PM","generatedAt":"2026-10-27T11:34:01.694Z","duration":"165m 9s","durationMs":9909111,"total":775,"passed":603,"failed":0,"skipped":169,"notRun":169,"flaky":3,"executed":603,"documentedSkipped":159,"passRate":100,"unexpectedSkipped":10,"decision":"NO GO","risk":"HIGH","qualityScore":100,"failedTitles":[],"modules":[{"name":"Access Control","passed":0,"failed":0,"skipped":1,"score":0,"status":"Not Executed","critical":true},{"name":"Accessibility","passed":28,"failed":1,"skipped":0,"score":97,"status":"Warning","critical":false},{"name":"Authentication","passed":66,"failed":0,"skipped":9,"score":100,"status":"Healthy","critical":true},{"name":"Beta","passed":6,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Billing","passed":303,"failed":1,"skipped":141,"score":100,"status":"Critical","critical":true},{"name":"Dashboard","passed":93,"failed":1,"skipped":4,"score":99,"status":"Critical","critical":true},{"name":"General","passed":40,"failed":0,"skipped":6,"score":100,"status":"Warning","critical":false},{"name":"MFA","passed":1,"failed":0,"skipped":7,"score":100,"status":"Healthy","critical":true},{"name":"Onboarding","passed":10,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Password","passed":18,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Profile","passed":3,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Roll Configuration","passed":14,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Signup","passed":21,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793116932988","at":"10/27/2026, 9:32:12 PM","generatedAt":"2026-10-27T16:02:12.988Z","duration":"181m 51s","durationMs":10910581,"total":775,"passed":615,"failed":0,"skipped":153,"notRun":153,"flaky":7,"executed":615,"documentedSkipped":151,"passRate":100,"unexpectedSkipped":2,"decision":"NO GO","risk":"HIGH","qualityScore":100,"failedTitles":[],"modules":[{"name":"Access Control","passed":0,"failed":0,"skipped":1,"score":0,"status":"Not Executed","critical":true},{"name":"Accessibility","passed":29,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Authentication","passed":65,"failed":1,"skipped":9,"score":98,"status":"Critical","critical":true},{"name":"Beta","passed":6,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Billing","passed":309,"failed":3,"skipped":133,"score":99,"status":"Critical","critical":true},{"name":"Dashboard","passed":96,"failed":1,"skipped":1,"score":99,"status":"Warning","critical":true},{"name":"General","passed":43,"failed":2,"skipped":1,"score":96,"status":"Warning","critical":false},{"name":"MFA","passed":1,"failed":0,"skipped":7,"score":100,"status":"Healthy","critical":true},{"name":"Onboarding","passed":10,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Password","passed":18,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Profile","passed":3,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Roll Configuration","passed":14,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Signup","passed":21,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793167737534","at":"10/28/2026, 11:38:57 AM","generatedAt":"2026-10-28T06:08:57.534Z","duration":"0s","durationMs":0,"total":1,"passed":1,"failed":0,"skipped":0,"notRun":0,"flaky":0,"executed":1,"documentedSkipped":0,"passRate":100,"unexpectedSkipped":0,"decision":"CONDITIONAL GO","risk":"MEDIUM","qualityScore":100,"failedTitles":[],"modules":[{"name":"Billing","passed":1,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793167869410","at":"10/28/2026, 11:41:09 AM","generatedAt":"2026-10-28T06:11:09.410Z","duration":"0s","durationMs":0,"total":1,"passed":1,"failed":0,"skipped":0,"notRun":0,"flaky":0,"executed":1,"documentedSkipped":0,"passRate":100,"unexpectedSkipped":0,"decision":"CONDITIONAL GO","risk":"MEDIUM","qualityScore":100,"failedTitles":[],"modules":[{"name":"Billing","passed":1,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793168331317","at":"10/28/2026, 11:48:51 AM","generatedAt":"2026-10-28T06:18:51.317Z","duration":"0s","durationMs":0,"total":1,"passed":1,"failed":0,"skipped":0,"notRun":0,"flaky":0,"executed":1,"documentedSkipped":0,"passRate":100,"unexpectedSkipped":0,"decision":"CONDITIONAL GO","risk":"MEDIUM","qualityScore":100,"failedTitles":[],"modules":[{"name":"Billing","passed":1,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793168701076","at":"10/28/2026, 11:55:01 AM","generatedAt":"2026-10-28T06:25:01.076Z","duration":"0s","durationMs":0,"total":1,"passed":1,"failed":0,"skipped":0,"notRun":0,"flaky":0,"executed":1,"documentedSkipped":0,"passRate":100,"unexpectedSkipped":0,"decision":"CONDITIONAL GO","risk":"MEDIUM","qualityScore":100,"failedTitles":[],"modules":[{"name":"Billing","passed":1,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793169002569","at":"10/28/2026, 12:00:02 PM","generatedAt":"2026-10-28T06:30:02.569Z","duration":"0s","durationMs":0,"total":1,"passed":1,"failed":0,"skipped":0,"notRun":0,"flaky":0,"executed":1,"documentedSkipped":0,"passRate":100,"unexpectedSkipped":0,"decision":"CONDITIONAL GO","risk":"MEDIUM","qualityScore":100,"failedTitles":[],"modules":[{"name":"Billing","passed":1,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793169374504","at":"10/28/2026, 12:06:14 PM","generatedAt":"2026-10-28T06:36:14.504Z","duration":"0s","durationMs":0,"total":1,"passed":1,"failed":0,"skipped":0,"notRun":0,"flaky":0,"executed":1,"documentedSkipped":0,"passRate":100,"unexpectedSkipped":0,"decision":"CONDITIONAL GO","risk":"MEDIUM","qualityScore":100,"failedTitles":[],"modules":[{"name":"Billing","passed":1,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793169410725","at":"10/28/2026, 12:06:50 PM","generatedAt":"2026-10-28T06:36:50.725Z","duration":"0s","durationMs":0,"total":1,"passed":1,"failed":0,"skipped":0,"notRun":0,"flaky":0,"executed":1,"documentedSkipped":0,"passRate":100,"unexpectedSkipped":0,"decision":"CONDITIONAL GO","risk":"MEDIUM","qualityScore":100,"failedTitles":[],"modules":[{"name":"Billing","passed":1,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793169572859","at":"10/28/2026, 12:09:32 PM","generatedAt":"2026-10-28T06:39:32.859Z","duration":"0s","durationMs":0,"total":1,"passed":1,"failed":0,"skipped":0,"notRun":0,"flaky":0,"executed":1,"documentedSkipped":0,"passRate":100,"unexpectedSkipped":0,"decision":"CONDITIONAL GO","risk":"MEDIUM","qualityScore":100,"failedTitles":[],"modules":[{"name":"Billing","passed":1,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793170670938","at":"10/28/2026, 12:27:50 PM","generatedAt":"2026-10-28T06:57:50.938Z","duration":"0s","durationMs":0,"total":1,"passed":1,"failed":0,"skipped":0,"notRun":0,"flaky":0,"executed":1,"documentedSkipped":0,"passRate":100,"unexpectedSkipped":0,"decision":"CONDITIONAL GO","risk":"MEDIUM","qualityScore":100,"failedTitles":[],"modules":[{"name":"Billing","passed":1,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793171382763","at":"10/28/2026, 12:39:42 PM","generatedAt":"2026-10-28T07:09:42.763Z","duration":"0s","durationMs":0,"total":1,"passed":1,"failed":0,"skipped":0,"notRun":0,"flaky":0,"executed":1,"documentedSkipped":0,"passRate":100,"unexpectedSkipped":0,"decision":"CONDITIONAL GO","risk":"MEDIUM","qualityScore":100,"failedTitles":[],"modules":[{"name":"Billing","passed":1,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793171468387","at":"10/28/2026, 12:41:08 PM","generatedAt":"2026-10-28T07:11:08.387Z","duration":"0s","durationMs":0,"total":1,"passed":1,"failed":0,"skipped":0,"notRun":0,"flaky":0,"executed":1,"documentedSkipped":0,"passRate":100,"unexpectedSkipped":0,"decision":"CONDITIONAL GO","risk":"MEDIUM","qualityScore":100,"failedTitles":[],"modules":[{"name":"Billing","passed":1,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793172282137","at":"10/28/2026, 12:54:42 PM","generatedAt":"2026-10-28T07:24:42.137Z","duration":"0s","durationMs":0,"total":1,"passed":1,"failed":0,"skipped":0,"notRun":0,"flaky":0,"executed":1,"documentedSkipped":0,"passRate":100,"unexpectedSkipped":0,"decision":"CONDITIONAL GO","risk":"MEDIUM","qualityScore":100,"failedTitles":[],"modules":[{"name":"Billing","passed":1,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793172499048","at":"10/28/2026, 12:58:19 PM","generatedAt":"2026-10-28T07:28:19.048Z","duration":"0s","durationMs":0,"total":1,"passed":1,"failed":0,"skipped":0,"notRun":0,"flaky":0,"executed":1,"documentedSkipped":0,"passRate":100,"unexpectedSkipped":0,"decision":"CONDITIONAL GO","risk":"MEDIUM","qualityScore":100,"failedTitles":[],"modules":[{"name":"Billing","passed":1,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793180341590","at":"10/28/2026, 3:09:01 PM","generatedAt":"2026-10-28T09:39:01.590Z","duration":"186m 43s","durationMs":11202930,"total":778,"passed":618,"failed":7,"skipped":153,"notRun":153,"flaky":0,"executed":625,"documentedSkipped":152,"passRate":99,"unexpectedSkipped":1,"decision":"NO GO","risk":"HIGH","qualityScore":87,"failedTitles":[{"title":"Subscription Lifecycle Execution > Prepared paid user exposes upgrade downgrade and interval controls","file":"","status":"failed","error":"","scenario":"Subscription Lifecycle Execution > Prepared paid user exposes upgrade downgrade and interval controls","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Subscription Lifecycle Execution > Prepared paid user can preview monthly and annual upgrade calculations","file":"","status":"failed","error":"","scenario":"Subscription Lifecycle Execution > Prepared paid user can preview monthly and annual upgrade calculations","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Subscription Lifecycle Execution > Prepared paid user exposes non-destructive cancellation form","file":"","status":"failed","error":"","scenario":"Subscription Lifecycle Execution > Prepared paid user exposes non-destructive cancellation form","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Subscription Lifecycle Execution > Prepared monthly fixture shows monthly cancel options","file":"","status":"failed","error":"","scenario":"Subscription Lifecycle Execution > Prepared monthly fixture shows monthly cancel options","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Subscription Cancellation Use Case 7 Matrix > SC-299 - Cancellation matrix coverage appears in AIR blocked and skipped coverage","file":"","status":"failed","error":"","scenario":"Subscription Cancellation Use Case 7 Matrix > SC-299 - Cancellation matrix coverage appears in AIR blocked and skipped coverage","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Failed Payment And Dunning Use Case 8 Matrix > SC-349 - AIR records failed payment evidence when available","file":"","status":"failed","error":"","scenario":"Failed Payment And Dunning Use Case 8 Matrix > SC-349 - AIR records failed payment evidence when available","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"},{"title":"Subscription Lifecycle E2E Matrix > LC-045 - AIR shows subscription lifecycle coverage, blocked gaps, known bugs, and executable coverage status","file":"","status":"failed","error":"","scenario":"Subscription Lifecycle E2E Matrix > LC-045 - AIR shows subscription lifecycle coverage, blocked gaps, known bugs, and executable coverage status","expected":"The check should complete with the expected product result.","actual":"The check failed.","repro":"1. Open the app. 2. Repeat this check. 3. Confirm the expected result.","evidenceHref":"","badge":"Failed"}],"modules":[{"name":"Access Control","passed":0,"failed":0,"skipped":1,"score":0,"status":"Not Executed","critical":true},{"name":"Accessibility","passed":28,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":false},{"name":"Authentication","passed":66,"failed":0,"skipped":9,"score":100,"status":"Healthy","critical":true},{"name":"Beta","passed":6,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Billing","passed":308,"failed":7,"skipped":133,"score":98,"status":"Critical","critical":true},{"name":"Dashboard","passed":98,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"General","passed":45,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":false},{"name":"MFA","passed":1,"failed":0,"skipped":7,"score":100,"status":"Healthy","critical":true},{"name":"Onboarding","passed":10,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Password","passed":18,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Profile","passed":3,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Roll Configuration","passed":14,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Signup","passed":21,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793196922644","at":"10/28/2026, 7:45:22 PM","generatedAt":"2026-10-28T14:15:22.644Z","duration":"176m 46s","durationMs":10606112,"total":778,"passed":618,"failed":0,"skipped":156,"notRun":156,"flaky":4,"executed":618,"documentedSkipped":150,"passRate":100,"unexpectedSkipped":6,"decision":"NO GO","risk":"HIGH","qualityScore":100,"failedTitles":[],"modules":[{"name":"Access Control","passed":0,"failed":0,"skipped":1,"score":0,"status":"Not Executed","critical":true},{"name":"Accessibility","passed":28,"failed":1,"skipped":0,"score":97,"status":"Warning","critical":false},{"name":"Authentication","passed":66,"failed":0,"skipped":9,"score":100,"status":"Healthy","critical":true},{"name":"Beta","passed":6,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Billing","passed":308,"failed":3,"skipped":137,"score":99,"status":"Critical","critical":true},{"name":"Dashboard","passed":98,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"General","passed":45,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":false},{"name":"MFA","passed":1,"failed":0,"skipped":7,"score":100,"status":"Healthy","critical":true},{"name":"Onboarding","passed":10,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Password","passed":18,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Profile","passed":3,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Roll Configuration","passed":14,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Signup","passed":21,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793253956720","at":"10/29/2026, 11:35:56 AM","generatedAt":"2026-10-29T06:05:56.720Z","duration":"176m 46s","durationMs":10606112,"total":778,"passed":622,"failed":0,"skipped":156,"notRun":156,"flaky":4,"executed":622,"documentedSkipped":156,"passRate":100,"unexpectedSkipped":0,"decision":"CONDITIONAL GO","risk":"MEDIUM","qualityScore":100,"failedTitles":[],"modules":[{"name":"Access Control","passed":0,"failed":0,"skipped":1,"score":0,"status":"Not Executed","critical":true},{"name":"Accessibility","passed":29,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Authentication","passed":66,"failed":0,"skipped":9,"score":100,"status":"Healthy","critical":true},{"name":"Beta","passed":6,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Billing","passed":311,"failed":0,"skipped":137,"score":100,"status":"Healthy","critical":true},{"name":"Dashboard","passed":98,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"General","passed":45,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":false},{"name":"MFA","passed":1,"failed":0,"skipped":7,"score":100,"status":"Healthy","critical":true},{"name":"Onboarding","passed":10,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Password","passed":18,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Profile","passed":3,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Roll Configuration","passed":14,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Signup","passed":21,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":true}]}],"latest":{"id":"air-1793253956720","at":"10/29/2026, 11:35:56 AM","generatedAt":"2026-10-29T06:05:56.720Z","duration":"176m 46s","durationMs":10606112,"total":778,"passed":622,"failed":0,"skipped":156,"notRun":156,"flaky":4,"executed":622,"documentedSkipped":156,"passRate":100,"unexpectedSkipped":0,"decision":"CONDITIONAL GO","risk":"MEDIUM","qualityScore":100,"failedTitles":[],"modules":[{"name":"Access Control","passed":0,"failed":0,"skipped":1,"score":0,"status":"Not Executed","critical":true},{"name":"Accessibility","passed":29,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Authentication","passed":66,"failed":0,"skipped":9,"score":100,"status":"Healthy","critical":true},{"name":"Beta","passed":6,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Billing","passed":311,"failed":0,"skipped":137,"score":100,"status":"Healthy","critical":true},{"name":"Dashboard","passed":98,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"General","passed":45,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":false},{"name":"MFA","passed":1,"failed":0,"skipped":7,"score":100,"status":"Healthy","critical":true},{"name":"Onboarding","passed":10,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Password","passed":18,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Profile","passed":3,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Roll Configuration","passed":14,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Signup","passed":21,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":true}]},"archive":[{"id":"air-1793100841694","at":"10/27/2026, 5:04:01 PM","generatedAt":"2026-10-27T11:34:01.694Z","duration":"165m 9s","durationMs":9909111,"total":775,"passed":603,"failed":0,"skipped":169,"flaky":3,"executed":603,"passRate":100,"unexpectedSkipped":10,"decision":"NO GO","risk":"HIGH","qualityScore":100,"failedTitles":[],"modules":[{"name":"Access Control","passed":0,"failed":0,"skipped":1,"score":0,"status":"Not Executed","critical":true},{"name":"Accessibility","passed":28,"failed":1,"skipped":0,"score":97,"status":"Warning","critical":false},{"name":"Authentication","passed":66,"failed":0,"skipped":9,"score":100,"status":"Healthy","critical":true},{"name":"Beta","passed":6,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Billing","passed":303,"failed":1,"skipped":141,"score":100,"status":"Critical","critical":true},{"name":"Dashboard","passed":93,"failed":1,"skipped":4,"score":99,"status":"Critical","critical":true},{"name":"General","passed":40,"failed":0,"skipped":6,"score":100,"status":"Warning","critical":false},{"name":"MFA","passed":1,"failed":0,"skipped":7,"score":100,"status":"Healthy","critical":true},{"name":"Onboarding","passed":10,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Password","passed":18,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Profile","passed":3,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Roll Configuration","passed":14,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Signup","passed":21,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793116932988","at":"10/27/2026, 9:32:12 PM","generatedAt":"2026-10-27T16:02:12.988Z","duration":"181m 51s","durationMs":10910581,"total":775,"passed":615,"failed":0,"skipped":153,"notRun":153,"flaky":7,"executed":615,"documentedSkipped":151,"passRate":100,"unexpectedSkipped":2,"decision":"NO GO","risk":"HIGH","qualityScore":100,"failedTitles":[],"modules":[{"name":"Access Control","passed":0,"failed":0,"skipped":1,"score":0,"status":"Not Executed","critical":true},{"name":"Accessibility","passed":29,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Authentication","passed":65,"failed":1,"skipped":9,"score":98,"status":"Critical","critical":true},{"name":"Beta","passed":6,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Billing","passed":309,"failed":3,"skipped":133,"score":99,"status":"Critical","critical":true},{"name":"Dashboard","passed":96,"failed":1,"skipped":1,"score":99,"status":"Warning","critical":true},{"name":"General","passed":43,"failed":2,"skipped":1,"score":96,"status":"Warning","critical":false},{"name":"MFA","passed":1,"failed":0,"skipped":7,"score":100,"status":"Healthy","critical":true},{"name":"Onboarding","passed":10,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Password","passed":18,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Profile","passed":3,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Roll Configuration","passed":14,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Signup","passed":21,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793167737534","at":"10/28/2026, 11:38:57 AM","generatedAt":"2026-10-28T06:08:57.534Z","duration":"0s","durationMs":0,"total":1,"passed":1,"failed":0,"skipped":0,"notRun":0,"flaky":0,"executed":1,"documentedSkipped":0,"passRate":100,"unexpectedSkipped":0,"decision":"CONDITIONAL GO","risk":"MEDIUM","qualityScore":100,"failedTitles":[],"modules":[{"name":"Billing","passed":1,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793167869410","at":"10/28/2026, 11:41:09 AM","generatedAt":"2026-10-28T06:11:09.410Z","duration":"0s","durationMs":0,"total":1,"passed":1,"failed":0,"skipped":0,"notRun":0,"flaky":0,"executed":1,"documentedSkipped":0,"passRate":100,"unexpectedSkipped":0,"decision":"CONDITIONAL GO","risk":"MEDIUM","qualityScore":100,"failedTitles":[],"modules":[{"name":"Billing","passed":1,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793168331317","at":"10/28/2026, 11:48:51 AM","generatedAt":"2026-10-28T06:18:51.317Z","duration":"0s","durationMs":0,"total":1,"passed":1,"failed":0,"skipped":0,"notRun":0,"flaky":0,"executed":1,"documentedSkipped":0,"passRate":100,"unexpectedSkipped":0,"decision":"CONDITIONAL GO","risk":"MEDIUM","qualityScore":100,"failedTitles":[],"modules":[{"name":"Billing","passed":1,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793168701076","at":"10/28/2026, 11:55:01 AM","generatedAt":"2026-10-28T06:25:01.076Z","duration":"0s","durationMs":0,"total":1,"passed":1,"failed":0,"skipped":0,"notRun":0,"flaky":0,"executed":1,"documentedSkipped":0,"passRate":100,"unexpectedSkipped":0,"decision":"CONDITIONAL GO","risk":"MEDIUM","qualityScore":100,"failedTitles":[],"modules":[{"name":"Billing","passed":1,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793169002569","at":"10/28/2026, 12:00:02 PM","generatedAt":"2026-10-28T06:30:02.569Z","duration":"0s","durationMs":0,"total":1,"passed":1,"failed":0,"skipped":0,"notRun":0,"flaky":0,"executed":1,"documentedSkipped":0,"passRate":100,"unexpectedSkipped":0,"decision":"CONDITIONAL GO","risk":"MEDIUM","qualityScore":100,"failedTitles":[],"modules":[{"name":"Billing","passed":1,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793169374504","at":"10/28/2026, 12:06:14 PM","generatedAt":"2026-10-28T06:36:14.504Z","duration":"0s","durationMs":0,"total":1,"passed":1,"failed":0,"skipped":0,"notRun":0,"flaky":0,"executed":1,"documentedSkipped":0,"passRate":100,"unexpectedSkipped":0,"decision":"CONDITIONAL GO","risk":"MEDIUM","qualityScore":100,"failedTitles":[],"modules":[{"name":"Billing","passed":1,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793169410725","at":"10/28/2026, 12:06:50 PM","generatedAt":"2026-10-28T06:36:50.725Z","duration":"0s","durationMs":0,"total":1,"passed":1,"failed":0,"skipped":0,"notRun":0,"flaky":0,"executed":1,"documentedSkipped":0,"passRate":100,"unexpectedSkipped":0,"decision":"CONDITIONAL GO","risk":"MEDIUM","qualityScore":100,"failedTitles":[],"modules":[{"name":"Billing","passed":1,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793169572859","at":"10/28/2026, 12:09:32 PM","generatedAt":"2026-10-28T06:39:32.859Z","duration":"0s","durationMs":0,"total":1,"passed":1,"failed":0,"skipped":0,"notRun":0,"flaky":0,"executed":1,"documentedSkipped":0,"passRate":100,"unexpectedSkipped":0,"decision":"CONDITIONAL GO","risk":"MEDIUM","qualityScore":100,"failedTitles":[],"modules":[{"name":"Billing","passed":1,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793170670938","at":"10/28/2026, 12:27:50 PM","generatedAt":"2026-10-28T06:57:50.938Z","duration":"0s","durationMs":0,"total":1,"passed":1,"failed":0,"skipped":0,"notRun":0,"flaky":0,"executed":1,"documentedSkipped":0,"passRate":100,"unexpectedSkipped":0,"decision":"CONDITIONAL GO","risk":"MEDIUM","qualityScore":100,"failedTitles":[],"modules":[{"name":"Billing","passed":1,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793171382763","at":"10/28/2026, 12:39:42 PM","generatedAt":"2026-10-28T07:09:42.763Z","duration":"0s","durationMs":0,"total":1,"passed":1,"failed":0,"skipped":0,"notRun":0,"flaky":0,"executed":1,"documentedSkipped":0,"passRate":100,"unexpectedSkipped":0,"decision":"CONDITIONAL GO","risk":"MEDIUM","qualityScore":100,"failedTitles":[],"modules":[{"name":"Billing","passed":1,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793171468387","at":"10/28/2026, 12:41:08 PM","generatedAt":"2026-10-28T07:11:08.387Z","duration":"0s","durationMs":0,"total":1,"passed":1,"failed":0,"skipped":0,"notRun":0,"flaky":0,"executed":1,"documentedSkipped":0,"passRate":100,"unexpectedSkipped":0,"decision":"CONDITIONAL GO","risk":"MEDIUM","qualityScore":100,"failedTitles":[],"modules":[{"name":"Billing","passed":1,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793172282137","at":"10/28/2026, 12:54:42 PM","generatedAt":"2026-10-28T07:24:42.137Z","duration":"0s","durationMs":0,"total":1,"passed":1,"failed":0,"skipped":0,"notRun":0,"flaky":0,"executed":1,"documentedSkipped":0,"passRate":100,"unexpectedSkipped":0,"decision":"CONDITIONAL GO","risk":"MEDIUM","qualityScore":100,"failedTitles":[],"modules":[{"name":"Billing","passed":1,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793172499048","at":"10/28/2026, 12:58:19 PM","generatedAt":"2026-10-28T07:28:19.048Z","duration":"0s","durationMs":0,"total":1,"passed":1,"failed":0,"skipped":0,"notRun":0,"flaky":0,"executed":1,"documentedSkipped":0,"passRate":100,"unexpectedSkipped":0,"decision":"CONDITIONAL GO","risk":"MEDIUM","qualityScore":100,"failedTitles":[],"modules":[{"name":"Billing","passed":1,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793180341590","at":"10/28/2026, 3:09:01 PM","generatedAt":"2026-10-28T09:39:01.590Z","duration":"186m 43s","durationMs":11202930,"total":778,"passed":618,"failed":7,"skipped":153,"notRun":153,"flaky":0,"executed":625,"documentedSkipped":152,"passRate":99,"unexpectedSkipped":1,"decision":"NO GO","risk":"HIGH","qualityScore":87,"failedTitles":[{"title":"Subscription Lifecycle Execution > Prepared paid user exposes upgrade downgrade and interval controls","file":"SubscriptionLifecycleExecution.spec.ts","status":"failed","error":"Test timeout of 180000ms exceeded."},{"title":"Subscription Lifecycle Execution > Prepared paid user can preview monthly and annual upgrade calculations","file":"SubscriptionLifecycleExecution.spec.ts","status":"failed","error":"Error: Could not reopen upgrade preview for Overlay Strategists annual after correcting interval. Visible controls: Dashboard | Opportunities | Portfolio | Research | Academy |…"},{"title":"Subscription Lifecycle Execution > Prepared paid user exposes non-destructive cancellation form","file":"SubscriptionLifecycleExecution.spec.ts","status":"failed","error":"Test timeout of 180000ms exceeded."},{"title":"Subscription Lifecycle Execution > Prepared monthly fixture shows monthly cancel options","file":"SubscriptionLifecycleExecution.spec.ts","status":"failed","error":"Test timeout of 180000ms exceeded."},{"title":"Subscription Cancellation Use Case 7 Matrix > SC-299 - Cancellation matrix coverage appears in AIR blocked and skipped coverage","file":"SubscriptionCancellationMatrix.spec.ts","status":"failed","error":"Error: AIR should list cancellation Controlled coverage gaps; found categories: Traceability, Blocked. expect(received).toBeTruthy() Received: false"},{"title":"Failed Payment And Dunning Use Case 8 Matrix > SC-349 - AIR records failed payment evidence when available","file":"FailedPaymentDunningMatrix.spec.ts","status":"failed","error":"Error: AIR should hold executed failed-payment rows (declined or invalid card). expect(received).toBeGreaterThan(expected) Expected: > 0 Received: 0"},{"title":"Subscription Lifecycle E2E Matrix > LC-045 - AIR shows subscription lifecycle coverage, blocked gaps, known bugs, and executable coverage status","file":"SubscriptionLifecycleE2EMatrix.spec.ts","status":"failed","error":"Error: AIR coverage gaps should list the subscription lifecycle matrix rows that are blocked or skipped. expect(received).toBeGreaterThan(expected) Expected: > 0 Received: 0"}],"modules":[{"name":"Access Control","passed":0,"failed":0,"skipped":1,"score":0,"status":"Not Executed","critical":true},{"name":"Accessibility","passed":28,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":false},{"name":"Authentication","passed":66,"failed":0,"skipped":9,"score":100,"status":"Healthy","critical":true},{"name":"Beta","passed":6,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Billing","passed":308,"failed":7,"skipped":133,"score":98,"status":"Critical","critical":true},{"name":"Dashboard","passed":98,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"General","passed":45,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":false},{"name":"MFA","passed":1,"failed":0,"skipped":7,"score":100,"status":"Healthy","critical":true},{"name":"Onboarding","passed":10,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Password","passed":18,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Profile","passed":3,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Roll Configuration","passed":14,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Signup","passed":21,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793196922644","at":"10/28/2026, 7:45:22 PM","generatedAt":"2026-10-28T14:15:22.644Z","duration":"176m 46s","durationMs":10606112,"total":778,"passed":618,"failed":0,"skipped":156,"notRun":156,"flaky":4,"executed":618,"documentedSkipped":150,"passRate":100,"unexpectedSkipped":6,"decision":"NO GO","risk":"HIGH","qualityScore":100,"failedTitles":[],"modules":[{"name":"Access Control","passed":0,"failed":0,"skipped":1,"score":0,"status":"Not Executed","critical":true},{"name":"Accessibility","passed":28,"failed":1,"skipped":0,"score":97,"status":"Warning","critical":false},{"name":"Authentication","passed":66,"failed":0,"skipped":9,"score":100,"status":"Healthy","critical":true},{"name":"Beta","passed":6,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Billing","passed":308,"failed":3,"skipped":137,"score":99,"status":"Critical","critical":true},{"name":"Dashboard","passed":98,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"General","passed":45,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":false},{"name":"MFA","passed":1,"failed":0,"skipped":7,"score":100,"status":"Healthy","critical":true},{"name":"Onboarding","passed":10,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Password","passed":18,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Profile","passed":3,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Roll Configuration","passed":14,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Signup","passed":21,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":true}]},{"id":"air-1793253956720","at":"10/29/2026, 11:35:56 AM","generatedAt":"2026-10-29T06:05:56.720Z","duration":"176m 46s","durationMs":10606112,"total":778,"passed":622,"failed":0,"skipped":156,"notRun":156,"flaky":4,"executed":622,"documentedSkipped":156,"passRate":100,"unexpectedSkipped":0,"decision":"CONDITIONAL GO","risk":"MEDIUM","qualityScore":100,"failedTitles":[],"modules":[{"name":"Access Control","passed":0,"failed":0,"skipped":1,"score":0,"status":"Not Executed","critical":true},{"name":"Accessibility","passed":29,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Authentication","passed":66,"failed":0,"skipped":9,"score":100,"status":"Healthy","critical":true},{"name":"Beta","passed":6,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Billing","passed":311,"failed":0,"skipped":137,"score":100,"status":"Healthy","critical":true},{"name":"Dashboard","passed":98,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"General","passed":45,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":false},{"name":"MFA","passed":1,"failed":0,"skipped":7,"score":100,"status":"Healthy","critical":true},{"name":"Onboarding","passed":10,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Password","passed":18,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Profile","passed":3,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":false},{"name":"Roll Configuration","passed":14,"failed":0,"skipped":0,"score":100,"status":"Healthy","critical":true},{"name":"Signup","passed":21,"failed":0,"skipped":1,"score":100,"status":"Healthy","critical":true}]}]};
+
+function gateClass(d){
+  const s = String(d||'').toUpperCase();
+  if(s.includes('CONDITIONAL')) return 'cond';
+  if(s === 'GO') return 'go';
+  if(s.includes('NO')) return 'nogo';
+  return '';
+}
+function decisionLabel(d){
+  const s = String(d||'').toUpperCase().replace(/_/g,' ');
+  if(s.includes('CONDITIONAL')) return 'Conditional GO';
+  if(s === 'GO') return 'GO';
+  if(s.includes('NO')) return 'NO GO';
+  return d || 'Unknown';
+}
+function decisionHint(d, failCount, notRun){
+  const s = String(d||'').toUpperCase();
+  if(s.includes('CONDITIONAL')) {
+    if(failCount > 0) return 'Conditional GO: failures still need review before final approval.';
+    if((notRun||0) > 0) return 'Conditional GO: ' + notRun + ' checks did not run — review coverage before sign-off.';
+    return 'Conditional GO: executed checks passed — confirm remaining risk with the team.';
+  }
+  if(s === 'GO') return 'GO: no blocking issues for the release gate.';
+  if(s.includes('NO')) return 'NO GO: fix failing checks or missing critical coverage first.';
+  return 'Decision could not be determined.';
+}
+function nextAction(d, failCount, notRun){
+  const s = String(d||'').toUpperCase();
+  if(failCount > 0 || s.includes('NO')) {
+    return { kind:'failures', label:'Review failed checks', href:'#panel-failures' };
+  }
+  if((notRun||0) > 0) {
+    return { kind:'details', label:'Review not-run checks', href:'../details.html#coverage-gaps' };
+  }
+  if(s.includes('CONDITIONAL')) {
+    return { kind:'details', label:'See why in full report', href:'../details.html#cover' };
+  }
+  return { kind:'details', label:'Open full report', href:'../details.html' };
+}
+function delta(a,b){ const d=b-a; return d===0?'same':(d>0?'+'+d:String(d)); }
+function changeWords(a,b,goodWhenUp){
+  const d = b-a;
+  if(d===0) return 'No change';
+  const better = goodWhenUp ? d>0 : d<0;
+  return (better ? 'Better' : 'Worse') + ' by ' + Math.abs(d);
+}
+function esc(s){ return String(s??'').replace(/[&<>"']/g,c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
+function shortDate(s){
+  const raw = String(s||'').trim();
+  if(!raw) return '—';
+  const parsed = Date.parse(raw);
+  if(Number.isFinite(parsed)){
+    return new Date(parsed).toLocaleDateString(undefined,{ month:'short', day:'numeric' });
+  }
+  return raw.replace(/,.*/,'').trim() || '—';
+}
+function friendlyWhen(s){
+  const parsed = Date.parse(String(s||'').trim());
+  if(!Number.isFinite(parsed)) return shortDate(s);
+  const diffMs = Date.now() - parsed;
+  const mins = Math.round(diffMs / 60000);
+  if(mins < 1) return 'Just now';
+  if(mins < 60) return mins + ' min ago';
+  const hours = Math.round(mins / 60);
+  if(hours < 24) return hours + 'h ago';
+  const days = Math.round(hours / 24);
+  if(days === 1) return 'Yesterday';
+  if(days < 7) return days + ' days ago';
+  return shortDate(s);
+}
+function cleanError(s){
+  const t = String(s??'').replace(/\s+/g,' ').trim();
+  if(!t) return 'See full report for details';
+  if(t.length<=160) return t;
+  const cut = t.slice(0,159);
+  const space = cut.lastIndexOf(' ');
+  return (space>80?cut.slice(0,space):cut).replace(/[.,;:]+$/g,'').trim() + '…';
+}
+function activateTab(name){
+  const more = document.getElementById('more-explore');
+  const inMore = name !== 'failures' && name !== 'start';
+  if(more && inMore) more.open = true;
+  document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('active', b.dataset.tab===name));
+  document.querySelectorAll('.panel').forEach(p=>{
+    if(p.id === 'panel-failures'){
+      p.classList.toggle('active', name === 'failures' || !inMore);
+      return;
+    }
+    p.classList.toggle('active', p.id==='panel-'+name);
+  });
+}
+
+const runs = DATA.runs || [];
+const latest = DATA.latest || runs[runs.length-1] || null;
+const trend = (runs.filter(r => (r.total||0) >= 500).length ? runs.filter(r => (r.total||0) >= 500) : runs).slice(-18);
+const fails = (latest && latest.failedTitles) || [];
+
+document.getElementById('btn-refresh').onclick = () => location.reload();
+document.getElementById('keep-days').textContent = String(DATA.keepDays ?? 14);
+document.getElementById('footer-left').innerHTML =
+  'Updated ' + esc(friendlyWhen(DATA.generatedAt || (latest && latest.at))) +
+  ' · <a href="../details.html">Full report</a> has evidence, modules, and history';
+
+if(latest){
+  const prev = runs.length > 1 ? runs[runs.length-2] : null;
+  const notRun = latest.notRun != null ? latest.notRun : latest.skipped;
+  const mood = gateClass(latest.decision) || 'go';
+  document.getElementById('start')?.classList.add('mood-' + mood);
+  document.getElementById('subtitle').textContent =
+    friendlyWhen(latest.at) + ' · ' + (latest.executed ?? latest.passed) + ' of ' + latest.total + ' checks ran' +
+    (latest.duration && latest.duration !== '0s' ? ' · ' + latest.duration : '');
+
+  const g = document.getElementById('gate-value');
+  g.textContent = decisionLabel(latest.decision);
+  g.className = 'gate-value ' + mood;
+  const gatePanel = document.querySelector('.gate-panel');
+  if(gatePanel) gatePanel.className = 'gate-panel ' + mood;
+  document.getElementById('gate-meta').textContent = decisionHint(latest.decision, fails.length, notRun);
+
+  const action = nextAction(latest.decision, fails.length, notRun);
+  const primaryCta = action.kind === 'details'
+    ? '<a class="btn primary" href="'+esc(action.href)+'">'+esc(action.label)+'</a>'
+    : '<button type="button" class="btn primary" id="btn-next-action">'+esc(action.label)+'</button>';
+  const secondaryCta = action.kind === 'details'
+    ? ''
+    : '<a class="btn ghost" href="../details.html">Browse full report</a>';
+  document.getElementById('hero-cta').innerHTML = primaryCta + secondaryCta;
+  const nextBtn = document.getElementById('btn-next-action');
+  if(nextBtn){
+    nextBtn.onclick = () => {
+      document.getElementById('panel-failures')?.scrollIntoView({ behavior:'smooth', block:'start' });
+    };
+  }
+
+  const vsPrior = (key, goodWhenUp) => {
+    if(!prev) return 'This run';
+    return changeWords(prev[key], latest[key], goodWhenUp) + ' vs last run';
+  };
+  const kpiCards = [
+    ['Passed', latest.passed, 'good', vsPrior('passed', true), '../details.html#validation-summary', 'See what passed →'],
+    ['Failed', latest.failed, latest.failed?'bad':'good', vsPrior('failed', false), '#panel-failures', latest.failed ? 'Review failures →' : 'None to fix'],
+    ['Not run', notRun, 'warn', latest.documentedSkipped ? (latest.documentedSkipped + ' expected') : 'Skipped or gated', '../details.html#coverage-gaps', notRun ? 'Review not-run →' : 'All ran'],
+    ['Pass rate', latest.passRate + '%', 'info', vsPrior('passRate', true), '../details.html#health', 'Product health →']
+  ];
+  document.getElementById('kpis').innerHTML = kpiCards.map(([label,value,tone,deltaText,href,hint]) =>
+    '<a class="kpi" href="'+esc(href)+'"><div class="label">'+esc(label)+'</div><div class="value '+tone+'">'+esc(value)+'</div><div class="delta">'+esc(deltaText)+'</div><span class="hint">'+esc(hint)+'</span></a>'
+  ).join('');
+
+  const moreSummary = document.querySelector('#more-explore > summary');
+  if(moreSummary){
+    moreSummary.textContent = 'More detail';
+  }
+}
+
+function lineChart(el, values, color, suffix){
+  if(!values.length){ el.innerHTML = '<div class="empty">No past runs to chart yet.</div>'; return; }
+  const w=640,h=240,padL=36,padR=12,padT=18,padB=36;
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const span = Math.max(1, max-min);
+  const x = (i)=> padL + (i*(w-padL-padR))/Math.max(1,values.length-1);
+  const y = (v)=> padT + (1-((v-min)/span))*(h-padT-padB);
+  const pts = values.map((v,i)=>[x(i),y(v)]);
+  const line = pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
+  const area = line + ' L'+pts[pts.length-1][0].toFixed(1)+','+(h-padB)+' L'+pts[0][0].toFixed(1)+','+(h-padB)+' Z';
+  const grid = [0,.25,.5,.75,1].map(t=>{
+    const gy = padT + t*(h-padT-padB);
+    return '<line x1="'+padL+'" x2="'+(w-padR)+'" y1="'+gy+'" y2="'+gy+'"/>';
+  }).join('');
+  const labels = trend.map((r,i)=> i%Math.ceil(trend.length/6)===0 || i===trend.length-1
+    ? '<text x="'+x(i)+'" y="'+(h-10)+'" text-anchor="middle" fill="#8fa3b8" font-size="10">'+esc(shortDate(r.at))+'</text>'
+    : '');
+  const dots = pts.map((p,i)=>'<circle class="chart-dot" cx="'+p[0]+'" cy="'+p[1]+'" r="3.5" stroke="'+color+'"><title>'+esc(trend[i].at)+': '+values[i]+(suffix||'')+'</title></circle>').join('');
+  el.innerHTML = '<svg class="chart" viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none">' +
+    '<defs><linearGradient id="g'+color.replace('#','')+'" x1="0" y1="0" x2="0" y2="1">' +
+    '<stop offset="0%" stop-color="'+color+'" stop-opacity=".45"/><stop offset="100%" stop-color="'+color+'" stop-opacity="0"/></linearGradient></defs>' +
+    '<g class="chart-grid">'+grid+'</g>' +
+    '<path class="chart-area" d="'+area+'" fill="url(#g'+color.replace('#','')+')"/>' +
+    '<path class="chart-line" d="'+line+'" stroke="'+color+'"/>' +
+    dots + labels.join('') +
+    '<text x="'+padL+'" y="12" fill="#8fa398" font-size="10">'+max+(suffix||'')+'</text>' +
+    '<text x="'+padL+'" y="'+(h-padB+4)+'" fill="#8fa398" font-size="10">'+min+(suffix||'')+'</text>' +
+    '</svg>';
+}
+
+if(trend.length){
+  const failCounts = trend.map(r=>Number(r.failed)||0);
+  const histCap = document.getElementById('history-caption');
+  if(histCap) histCap.textContent = 'last ' + trend.length + ' full runs';
+  lineChart(document.getElementById('chart-fails'), failCounts, '#f07178', '');
+}
+
+(function renderHistoryStory(){
+  const answer = document.getElementById('history-answer');
+  const lead = document.getElementById('history-lead');
+  const deltas = document.getElementById('history-deltas');
+  if(!answer || !lead || !deltas) return;
+  if(!latest){
+    lead.textContent = 'No run data yet.';
+    return;
+  }
+  const prev = runs.length > 1 ? runs[runs.length-2] : null;
+  if(!prev){
+    answer.textContent = 'First saved run';
+    lead.textContent = 'Comparison appears after the next full suite.';
+    deltas.innerHTML = '';
+    return;
+  }
+  const failD = (latest.failed||0) - (prev.failed||0);
+  const passD = (latest.passRate||0) - (prev.passRate||0);
+  const better = failD < 0 || (failD === 0 && passD > 0);
+  const worse = failD > 0 || (failD === 0 && passD < 0);
+  const label = better ? 'Better than last run' : worse ? 'Worse than last run' : 'Same as last run';
+  answer.textContent = label;
+  lead.textContent = label + ' — ' + (latest.failed||0) + ' failed now · ' + decisionLabel(latest.decision) + ' (was ' + decisionLabel(prev.decision) + ').';
+  const tiles = [
+    ['Failures', latest.failed, changeWords(prev.failed, latest.failed, false)],
+    ['Pass rate', (latest.passRate||0) + '%', changeWords(prev.passRate, latest.passRate, true)],
+    ['Decision', decisionLabel(latest.decision), decisionLabel(prev.decision)],
+    ['Duration', latest.duration || '—', prev.duration || '—']
+  ];
+  deltas.innerHTML = tiles.map(([n,v,d]) =>
+    '<div class="history-delta"><span>'+esc(n)+'</span><strong>'+esc(v)+'</strong><small>'+esc(d)+'</small></div>'
+  ).join('');
+})();
+
+const selA = document.getElementById('sel-a');
+const selB = document.getElementById('sel-b');
+selA.innerHTML = runs.map(r=>
+  '<option value="'+esc(r.id)+'">'+esc(r.at)+' — '+r.passed+' passed, '+r.failed+' failed</option>'
+).join('');
+selB.innerHTML = selA.innerHTML;
+if(runs.length>=2){ selA.value = runs[runs.length-2].id; selB.value = runs[runs.length-1].id; }
+else if(runs.length){ selA.value = runs[0].id; selB.value = runs[0].id; }
+
+function renderCompare(){
+  const a = runs.find(r=>r.id===selA.value) || runs[0];
+  const b = runs.find(r=>r.id===selB.value) || runs[runs.length-1];
+  if(!a||!b) return;
+  const rows = [
+    ['Passed', a.passed, b.passed, true],
+    ['Failed', a.failed, b.failed, false],
+    ['Skipped', a.notRun != null ? a.notRun : a.skipped, b.notRun != null ? b.notRun : b.skipped, false],
+    ['Flaky', a.flaky, b.flaky, false],
+    ['Total checks', a.total, b.total, true],
+    ['Pass rate (%)', a.passRate, b.passRate, true],
+  ];
+  document.getElementById('compare-body').innerHTML = rows.map(([n,x,y,goodWhenUp])=>
+    '<tr><td>'+n+'</td><td>'+x+'</td><td>'+y+'</td><td>'+esc(changeWords(x,y,goodWhenUp))+' ('+delta(x,y)+')</td></tr>'
+  ).join('') +
+  '<tr><td>Decision</td>' +
+  '<td><span class="pill '+gateClass(a.decision)+'">'+esc(decisionLabel(a.decision))+'</span></td>' +
+  '<td><span class="pill '+gateClass(b.decision)+'">'+esc(decisionLabel(b.decision))+'</span></td>' +
+  '<td class="muted">See labels</td></tr>';
+}
+selA.onchange = selB.onchange = renderCompare;
+renderCompare();
+
+document.getElementById('fail-count').textContent =
+  fails.length ? fails.length + ' failed' : 'None failed';
+const notRunCount = latest ? (latest.notRun != null ? latest.notRun : latest.skipped) : 0;
+document.getElementById('failures').innerHTML = fails.length
+  ? '<div class="find-list">' + fails.map(f => {
+      const repro = String(f.repro||'').split(/s*(?=d+.s)/).map(s=>s.trim()).filter(Boolean);
+      const reproHtml = repro.length
+        ? '<ol class="air-repro-list">'+repro.map(s=>'<li>'+esc(s.replace(/^d+.s*/,''))+'</li>').join('')+'</ol>'
+        : '<p>'+esc(f.repro||'Open the full report for numbered steps.')+'</p>';
+      return '<article class="find-card air-fail-card">' +
+        '<div class="row"><span>Scenario</span><strong>'+esc(f.scenario||f.title)+'</strong></div>' +
+        '<div class="row"><span>Expected</span><p>'+esc(f.expected||'The check should complete as expected.')+'</p></div>' +
+        '<div class="row"><span>Actual</span><p>'+esc(f.actual||cleanError(f.error)||'The check failed.')+'</p></div>' +
+        '<div class="row"><span>Steps to reproduce</span>'+reproHtml+'</div>' +
+        '<div class="row"><span>Evidence</span><p>'+(f.evidenceHref
+          ? '<a href="'+esc(f.evidenceHref)+'">Open screenshot</a> · '
+          : '')+'<a href="../details.html#failures">Full proof in report →</a></p></div>' +
+        (f.badge ? '<span class="pill warn">'+esc(f.badge)+'</span>' : '') +
+      '</article>';
+    }).join('') + '</div>'
+  : (notRunCount > 0
+    ? '<div class="find-success"><div><strong>Nothing failed</strong><p>'+notRunCount+' checks did not run — review before sign-off.</p></div><a href="../details.html#coverage-gaps">Review not-run →</a></div>'
+    : '<div class="find-success"><div><strong>All clear</strong><p>Every executed check passed. Open the full report if you want the evidence trail behind this decision.</p></div></div>');
+
+const mods = (latest && latest.modules) || [];
+document.getElementById('modules').innerHTML = mods.length
+  ? mods.map(m =>
+      '<div class="mod"><strong>'+esc(m.name)+(m.critical?' <span class="pill warn">important</span>':'')+'</strong>' +
+      '<div class="scores">' +
+      '<span>Passed <b class="good">'+m.passed+'</b></span>' +
+      '<span>Failed <b class="'+(m.failed?'bad':'muted')+'">'+m.failed+'</b></span>' +
+      '<span>Skipped <b class="warn">'+m.skipped+'</b></span>' +
+      '<span>Score <b>'+(m.score??'—')+'</b></span>' +
+      '</div><div class="muted" style="font-size:12px">'+esc(m.status||'')+'</div></div>'
+    ).join('')
+  : '<div class="empty">No area breakdown for this run yet.</div>';
+
+document.getElementById('archive-body').innerHTML = (DATA.archive||[]).map(a=>
+  '<tr><td>'+esc(friendlyWhen(a.at)||a.at)+'</td><td>'+a.passed+' / '+a.failed+' / '+(a.notRun != null ? a.notRun : a.skipped)+
+  '</td><td><span class="pill '+gateClass(a.decision)+'">'+esc(decisionLabel(a.decision))+'</span></td></tr>'
+).join('') || '<tr><td colspan="3" class="muted">No saved runs yet.</td></tr>';
+
+document.querySelectorAll('.tabs button').forEach(btn=>{
+  btn.addEventListener('click',()=> activateTab(btn.dataset.tab));
+});
+
+activateTab('failures');
+document.getElementById('panel-failures')?.classList.add('active');
+</script>
+</body>
+</html>
