@@ -362,6 +362,35 @@ export const TEST_USERS = {
       'H@rdik9944'
   },
 
+  /** Broker Integration / Manage Accounts (dedicated UAT subscriber). */
+  brokerIntegration: {
+
+    email:
+      process.env.BROKER_INTEGRATION_EMAIL ??
+      'amit.vadgama@quantuminfoway.com',
+
+    password:
+      process.env.BROKER_INTEGRATION_PASSWORD ??
+      'Ab@111222'
+  },
+
+  /**
+   * Alpaca Paper login used by Broker Integration connect → disconnect.
+   * SnapTrade redirects to app.alpaca.markets; OolTool credentials alone are not enough.
+   */
+  brokerAlpacaPaper: {
+
+    email:
+      process.env.BROKER_ALPACA_EMAIL ??
+      process.env.BROKER_INTEGRATION_EMAIL ??
+      'amit.vadgama@quantuminfoway.com',
+
+    password:
+      process.env.BROKER_ALPACA_PASSWORD ??
+      process.env.BROKER_INTEGRATION_PASSWORD ??
+      'Ab@111222'
+  },
+
   cancelYearly: {
 
     email:

@@ -16,6 +16,8 @@ Whenever upgrade calculation, cancel, or refund scenarios run (or are fixed/skip
 | Yearly cancel + refund options | `CANCEL_YEARLY_INSPECT` | `fx-cxyr-overlay-yr` | Overlay Strategists **annual** | `SUB_LIFECYCLE_YEARLY_CANCEL_*` / `CANCEL_YEARLY_*` |
 | Downgrade confirm preview | `DOWNGRADE_CALC_DAILY` | `fx-dng-overlay-yr` | Overlay **annual** | `SUB_FIXTURE_DOWNGRADE_*` |
 | Cancel-and-refund **submit** (destructive) | refund roster key | `fx-refund-overlay-yr` | Overlay **annual** throwaway | only when scenario explicitly submits refund |
+| Broker Integration / Manage Accounts | — | `amit.vadgama@quantuminfoway.com` | dedicated broker subscriber | `BROKER_INTEGRATION_EMAIL` / `BROKER_INTEGRATION_PASSWORD` |
+| Broker Integration Alpaca Paper OAuth | — | Alpaca Paper login (SnapTrade) | practice broker connect/disconnect | `BROKER_ALPACA_EMAIL` / `BROKER_ALPACA_PASSWORD` |
 
 ## Rules
 

@@ -1475,6 +1475,15 @@ function getModuleName(title) {
     return 'Onboarding';
   }
 
+  if (
+    normalizedTitle.includes('broker integration')
+    || normalizedTitle.includes('connect broker')
+    || normalizedTitle.includes('manage accounts')
+    || normalizedTitle.includes('broker accounts card')
+  ) {
+    return 'Broker Integration';
+  }
+
   if (normalizedTitle.includes('billing') || normalizedTitle.includes('subscriber')) {
     return 'Billing';
   }
@@ -2853,6 +2862,7 @@ function getModuleBusinessScenarios(moduleName) {
   const scenarioMap = {
     Accessibility: ['Keyboard navigation', 'Focus order', 'Accessible validation states'],
     Authentication: ['Login', 'Logout', 'Forgot Password', 'JWT', 'Session Timeout'],
+    'Broker Integration': ['Manage Accounts', 'Connect Alpaca Paper', 'Validate connected broker', 'Disconnect broker', 'Dashboard Broker Accounts card'],
     Beta: ['Beta menu inventory', 'Broker Transactions', 'Position P&L', 'Profit & Loss', 'Roll Configuration entry'],
     Billing: ['Billing overview', 'Plans tab', 'Transaction history', 'Invoice page', 'PDF invoice'],
     Onboarding: ['Registration', 'Email verification', 'Mobile verification', 'Risk profile', 'Compliance', 'Stripe payment'],
@@ -2897,6 +2907,7 @@ function getModuleFocus(moduleName) {
   const focusByModule = {
     Accessibility: 'Keyboard navigation, focus order, and accessible validation behavior.',
     Authentication: 'Login, logout, forgot password, JWT/session behavior, and locked-account recovery.',
+    'Broker Integration': 'Connect Alpaca Paper via SnapTrade, validate the connected account, disconnect, and re-check Accounts / Dashboard.',
     Beta: 'Beta menu destinations including Broker Transactions, Position P&L, Profit & Loss, and Roll Configuration entry.',
     Billing: 'Billing overview, plans, transaction history, invoice access, and PDF availability.',
     Password: 'Password reset, mismatch handling, current-password validation, and policy enforcement.',

@@ -98,6 +98,7 @@ function inferModule(test = {}) {
   if (value.includes('compliance')) return 'Compliance';
   if (value.includes('onboarding') || value.includes('signup') || value.includes('registration')) return 'Signup';
   if (value.includes('profile')) return 'Profile';
+  if (value.includes('broker integration') || value.includes('connect broker') || value.includes('manage accounts')) return 'Broker Integration';
   if (value.includes('dashboard')) return 'Dashboard';
 
   return 'General';

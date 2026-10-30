@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-10-30T05:37:41.455Z",
+  "generatedAt": "2026-10-30T09:13:26.475Z",
   "provenance": {
     "mode": "CURRENT_EXECUTION",
     "sourceArtifact": "test-results/results.json",
     "sourceFramework": "Playwright",
-    "generatedAt": "2026-10-30T05:37:40.899Z",
+    "generatedAt": "2026-10-30T09:13:26.193Z",
     "restoredFromHistory": false,
     "warning": ""
   },
@@ -12,27 +12,27 @@
     "source": "json-reporter",
     "total": 780,
     "rawTestCount": 780,
-    "attempts": 780,
-    "passed": 623,
-    "failed": 4,
-    "skipped": 153,
-    "flaky": 0,
+    "attempts": 781,
+    "passed": 615,
+    "failed": 0,
+    "skipped": 164,
+    "flaky": 1,
     "interrupted": 0,
     "statuses": {
-      "expected": 623,
-      "unexpected": 4,
-      "skipped": 153
+      "expected": 615,
+      "skipped": 164,
+      "flaky": 1
     }
   },
   "airExecution": {
     "total": 780,
-    "attempts": 780,
-    "passed": 623,
-    "failed": 4,
-    "skipped": 153,
-    "flaky": 0,
+    "attempts": 781,
+    "passed": 616,
+    "failed": 0,
+    "skipped": 164,
+    "flaky": 1,
     "interrupted": 0,
-    "retryCount": 0
+    "retryCount": 1
   },
   "reconciliation": {
     "status": "PASS",
@@ -49,146 +49,121 @@
   },
   "orphanEvidence": [],
   "evidenceClassification": {
-    "perTestEvidence": 6,
+    "perTestEvidence": 1,
     "executionArtifacts": 2,
     "rawReports": 2,
-    "totalWithRawReports": 8,
+    "totalWithRawReports": 3,
     "rawReportsCountAsFailureEvidence": false
   },
   "invalidModuleReferences": [],
   "invalidJourneyReferences": [],
   "historicalContaminationDetected": false,
   "evidenceTraceability": {
-    "failedTests": [
-      {
-        "testId": "chromium > BetaSurfaces.spec.ts > Beta surfaces > Beta menu lists broker Position Overlay and Roll destinations",
-        "testName": "Beta surfaces > Beta menu lists broker Position Overlay and Roll destinations",
-        "evidenceCount": 2,
-        "status": "Evidence Available"
-      },
-      {
-        "testId": "chromium > BetaSurfaces.spec.ts > Beta surfaces > Option Overlay P&L switches periods and capital toggles",
-        "testName": "Beta surfaces > Option Overlay P&L switches periods and capital toggles",
-        "evidenceCount": 2,
-        "status": "Evidence Available"
-      },
-      {
-        "testId": "chromium > SubscriptionCancellationMatrix.spec.ts > Subscription Cancellation Use Case 7 Matrix > SC-298 - Cancellation state is searchable in AIR",
-        "testName": "Subscription Cancellation Use Case 7 Matrix > SC-298 - Cancellation state is searchable in AIR",
-        "evidenceCount": 1,
-        "status": "Evidence Available"
-      },
-      {
-        "testId": "chromium > FailedPaymentDunningMatrix.spec.ts > Failed Payment And Dunning Use Case 8 Matrix > SC-349 - AIR records failed payment evidence when available",
-        "testName": "Failed Payment And Dunning Use Case 8 Matrix > SC-349 - AIR records failed payment evidence when available",
-        "evidenceCount": 1,
-        "status": "Evidence Available"
-      }
-    ]
+    "failedTests": []
   },
   "releaseTraceability": {
     "status": "PASS",
     "reasons": [
-      "Release thresholds were not met",
-      "Failures or missing critical data require review",
-      "Resolve blockers before release approval"
+      "Critical journeys are not blocked",
+      "Warnings require review",
+      "Release can proceed after evidence review"
     ],
     "reasonTraceability": [
       {
-        "reason": "Release thresholds were not met",
-        "source": "blockers",
+        "reason": "Critical journeys are not blocked",
+        "source": "warnings",
         "references": [
           {
-            "type": "Failure",
-            "name": "Subscription Cancellation Use Case 7 Matrix > SC-298 - Cancellation state is searchable in AIR",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
-            "name": "Failed Payment And Dunning Use Case 8 Matrix > SC-349 - AIR records failed payment evidence when available",
-            "detail": "Critical failure severity matched release rules."
+            "type": "Business Journey",
+            "name": "Access Control",
+            "detail": "Journey status is Not Executed."
           },
           {
             "type": "Business Journey",
-            "name": "Subscription",
-            "detail": "Critical journey status is Critical."
+            "name": "Session Security",
+            "detail": "Journey status is Not Executed."
           },
           {
-            "type": "Business Journey",
-            "name": "Payment",
-            "detail": "Critical journey status is Critical."
+            "type": "Coverage",
+            "name": "Blocked scenarios",
+            "detail": "134 blocked scenario(s) still need fixtures, admin, API, or third-party support before GO."
           },
           {
-            "type": "Module",
-            "name": "Billing",
-            "detail": "Critical module risk is High."
+            "type": "Reliability",
+            "name": "Flaky checks",
+            "detail": "1 check(s) passed only after retry — treat release confidence as provisional until reliability stabilizes."
+          },
+          {
+            "type": "Execution",
+            "name": "Partial execution",
+            "detail": "Execution contains unexpected skips, blocked coverage, interrupted tests, or not-executed critical journeys."
           }
         ]
       },
       {
-        "reason": "Failures or missing critical data require review",
-        "source": "blockers",
+        "reason": "Warnings require review",
+        "source": "warnings",
         "references": [
           {
-            "type": "Failure",
-            "name": "Subscription Cancellation Use Case 7 Matrix > SC-298 - Cancellation state is searchable in AIR",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
-            "name": "Failed Payment And Dunning Use Case 8 Matrix > SC-349 - AIR records failed payment evidence when available",
-            "detail": "Critical failure severity matched release rules."
+            "type": "Business Journey",
+            "name": "Access Control",
+            "detail": "Journey status is Not Executed."
           },
           {
             "type": "Business Journey",
-            "name": "Subscription",
-            "detail": "Critical journey status is Critical."
+            "name": "Session Security",
+            "detail": "Journey status is Not Executed."
           },
           {
-            "type": "Business Journey",
-            "name": "Payment",
-            "detail": "Critical journey status is Critical."
+            "type": "Coverage",
+            "name": "Blocked scenarios",
+            "detail": "134 blocked scenario(s) still need fixtures, admin, API, or third-party support before GO."
           },
           {
-            "type": "Module",
-            "name": "Billing",
-            "detail": "Critical module risk is High."
+            "type": "Reliability",
+            "name": "Flaky checks",
+            "detail": "1 check(s) passed only after retry — treat release confidence as provisional until reliability stabilizes."
+          },
+          {
+            "type": "Execution",
+            "name": "Partial execution",
+            "detail": "Execution contains unexpected skips, blocked coverage, interrupted tests, or not-executed critical journeys."
           }
         ]
       },
       {
-        "reason": "Resolve blockers before release approval",
-        "source": "blockers",
+        "reason": "Release can proceed after evidence review",
+        "source": "warnings",
         "references": [
           {
-            "type": "Failure",
-            "name": "Subscription Cancellation Use Case 7 Matrix > SC-298 - Cancellation state is searchable in AIR",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
-            "name": "Failed Payment And Dunning Use Case 8 Matrix > SC-349 - AIR records failed payment evidence when available",
-            "detail": "Critical failure severity matched release rules."
+            "type": "Business Journey",
+            "name": "Access Control",
+            "detail": "Journey status is Not Executed."
           },
           {
             "type": "Business Journey",
-            "name": "Subscription",
-            "detail": "Critical journey status is Critical."
+            "name": "Session Security",
+            "detail": "Journey status is Not Executed."
           },
           {
-            "type": "Business Journey",
-            "name": "Payment",
-            "detail": "Critical journey status is Critical."
+            "type": "Coverage",
+            "name": "Blocked scenarios",
+            "detail": "134 blocked scenario(s) still need fixtures, admin, API, or third-party support before GO."
           },
           {
-            "type": "Module",
-            "name": "Billing",
-            "detail": "Critical module risk is High."
+            "type": "Reliability",
+            "name": "Flaky checks",
+            "detail": "1 check(s) passed only after retry — treat release confidence as provisional until reliability stabilizes."
+          },
+          {
+            "type": "Execution",
+            "name": "Partial execution",
+            "detail": "Execution contains unexpected skips, blocked coverage, interrupted tests, or not-executed critical journeys."
           }
         ]
       }
     ],
-    "warnings": 7,
-    "blockers": 5
+    "warnings": 5,
+    "blockers": 0
   }
 }

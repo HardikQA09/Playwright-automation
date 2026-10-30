@@ -649,6 +649,15 @@ const userJourneyScenarios: UserJourneyScenario[] = [
     priority: 'Critical',
     status: 'automated',
     automation: 'RollConfiguration.spec.ts > Clone Income First draft; Clone Tax-Aware activate then demote and remove'
+  },
+  {
+    id: 'UJ-068',
+    title: 'Broker Integration Connect handoff, Disconnect confirmation, and Accounts / Dashboard checks',
+    module: 'Broker Integration',
+    journey: 'Broker Integration',
+    priority: 'High',
+    status: 'automated',
+    automation: 'BrokerIntegration.spec.ts'
   }
 ];
 

@@ -92,6 +92,20 @@
       "critical": true
     },
     {
+      "name": "Broker Integration",
+      "patterns": [
+        "broker integration",
+        "connect broker",
+        "disconnect broker",
+        "alpaca paper",
+        "manage accounts",
+        "connected broker",
+        "broker accounts card"
+      ],
+      "modules": ["Broker Integration"],
+      "critical": true
+    },
+    {
       "name": "Beta",
       "patterns": [
         "beta surfaces",
