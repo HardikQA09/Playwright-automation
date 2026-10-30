@@ -36,11 +36,13 @@ export type PreparedMutateRisk =
 export type PreparedSubscriptionUserDefinition = {
   key: string;
   tag: string;
+  label?: string;
   canonicalEmail: string;
   legacyEmail?: string;
   plan: PreparedPlan;
   interval: PreparedInterval;
   purpose: string;
+  tests?: string[];
   validates: string[];
   safeDaily: boolean;
   mutateRisk: PreparedMutateRisk;
@@ -51,13 +53,16 @@ export type PreparedSubscriptionUserDefinition = {
 type RawRoster = {
   emailLocalBase: string;
   emailDomain: string;
+  naming?: Record<string, unknown>;
   users: Array<{
     key: string;
     tag: string;
+    label?: string;
     legacyEmail?: string;
     plan: PreparedPlan;
     interval: PreparedInterval;
     purpose: string;
+    tests?: string[];
     validates: string[];
     safeDaily: boolean;
     mutateRisk: PreparedMutateRisk;
@@ -198,23 +203,33 @@ function buildDefinitions() {
   > = {};
 
   for (const row of roster.users) {
+    const legacy =
+      row.legacyEmail &&
+      row.legacyEmail.trim()
+        ? row.legacyEmail.trim()
+        : undefined;
+
     map[row.key] = {
       key:
         row.key,
       tag:
         row.tag,
+      label:
+        row.label,
       canonicalEmail:
         plusAddress(
           row.tag
         ),
       legacyEmail:
-        row.legacyEmail,
+        legacy,
       plan:
         row.plan,
       interval:
         row.interval,
       purpose:
         row.purpose,
+      tests:
+        row.tests,
       validates:
         row.validates,
       safeDaily:

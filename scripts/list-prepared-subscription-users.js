@@ -5,6 +5,7 @@
  *   npm run fixtures:list
  *   npm run fixtures:list -- --canonical
  *   npm run fixtures:list -- --json
+ *   npm run fixtures:list -- --cheat
  */
 
 const fs = require('fs');
@@ -45,10 +46,14 @@ const password =
 
 function resolve(row) {
   const canonicalEmail = `${base}+${row.tag}@${domain}`;
+  const legacy =
+    row.legacyEmail && String(row.legacyEmail).trim()
+      ? String(row.legacyEmail).trim()
+      : '';
   const fromEnv = process.env[row.envEmail];
   const email =
     (fromEnv && fromEnv.trim()) ||
-    (preferCanonical ? canonicalEmail : row.legacyEmail || canonicalEmail);
+    (preferCanonical ? canonicalEmail : legacy || canonicalEmail);
 
   return {
     ...row,
@@ -58,8 +63,8 @@ function resolve(row) {
     usingLegacyEmail:
       !fromEnv &&
       !preferCanonical &&
-      !!row.legacyEmail &&
-      email === row.legacyEmail
+      !!legacy &&
+      email === legacy
   };
 }
 
@@ -70,51 +75,73 @@ if (process.argv.includes('--json')) {
   process.exit(0);
 }
 
+const cheat = process.argv.includes('--cheat') || !process.argv.includes('--full');
+
 console.log('');
-console.log('Prepared subscription users (scenario-named, reusable)');
-console.log('======================================================');
-console.log(`Mode: ${preferCanonical ? 'CANONICAL (+sub-*)' : 'LEGACY (current runners) until you flip --canonical'}`);
-console.log('All +tags share one Gmail inbox → email delivery checks work.');
+console.log('AIR fixture accounts — readable emails');
+console.log('======================================');
+console.log(`Pattern:  ${base}+fx-<purpose>-<plan>-<interval>@${domain}`);
+console.log(`Mode:     ${preferCanonical ? 'CANONICAL (fx-* tags)' : 'LEGACY when set, else canonical'}`);
+console.log('Inbox:    all +tags land in the same Gmail (plus-addressing)');
 console.log('');
 
-function printGroup(title, list) {
-  console.log(title);
-  console.log('-'.repeat(title.length));
-  for (const u of list) {
-    const mark = u.usingLegacyEmail
-      ? '  << still on legacy email — prepare canonical when ready'
-      : '';
-    console.log(`  ${u.key}`);
-    console.log(`    active:    ${u.email}${mark}`);
-    console.log(`    canonical: ${u.canonicalEmail}`);
-    console.log(`    state:     ${u.plan} / ${u.interval}`);
-    console.log(`    purpose:   ${u.purpose}`);
-    console.log(`    validates: ${u.validates.join(', ')}`);
-    console.log(`    env:       ${u.envEmail}`);
-    console.log('');
+if (roster.naming?.purposeCodes) {
+  console.log('Purpose codes');
+  console.log('-------------');
+  for (const [code, meaning] of Object.entries(roster.naming.purposeCodes)) {
+    console.log(`  ${code.padEnd(10)} ${meaning}`);
+  }
+  console.log('');
+}
+
+console.log(
+  `${'Label'.padEnd(42)} ${'Canonical email'.padEnd(52)} Plan`
+);
+console.log(`${'-'.repeat(42)} ${'-'.repeat(52)} ${'-'.repeat(28)}`);
+
+for (const u of users) {
+  const label = String(u.label || u.key).slice(0, 41).padEnd(42);
+  const email = u.canonicalEmail.padEnd(52);
+  const state = `${u.plan} / ${u.interval}`;
+  const flag = u.safeDaily ? '' : ' [MUTATES]';
+  console.log(`${label} ${email} ${state}${flag}`);
+}
+
+console.log('');
+console.log('Which tests use which account');
+console.log('-----------------------------');
+for (const u of users) {
+  const tests = Array.isArray(u.tests) ? u.tests : [];
+  console.log(`\n${u.label || u.key}`);
+  console.log(`  email:  ${u.canonicalEmail}`);
+  console.log(`  active: ${u.email}${u.usingLegacyEmail ? '  (legacy until --canonical)' : ''}`);
+  console.log(`  env:    ${u.envEmail}`);
+  if (tests.length) {
+    for (const t of tests) {
+      console.log(`  test:   ${t}`);
+    }
+  } else {
+    console.log(`  purpose:${u.purpose}`);
   }
 }
 
-printGroup(
-  'DAILY SAFE — same accounts every day (preview / inspect only)',
-  users.filter((u) => u.safeDaily)
-);
+if (!cheat) {
+  console.log('\nFull purpose text');
+  console.log('-----------------');
+  for (const u of users) {
+    console.log(`\n${u.key}: ${u.purpose}`);
+  }
+}
 
-printGroup(
-  'DESTRUCTIVE — dedicated throwaways only (not daily)',
-  users.filter((u) => !u.safeDaily)
-);
-
-console.log('Prepare each canonical account once');
-console.log('-----------------------------------');
-console.log('  1. Register with canonical email (tag above)');
-console.log('  2. Verify email + mobile; finish Risk/Compliance');
-console.log('  3. Buy the listed plan/interval; save Stripe test card');
-console.log('  4. Password = SUBSCRIPTION_FIXTURE_PASSWORD (shared)');
-console.log('  5. When ready: $env:SUB_FIXTURE_USE_CANONICAL_EMAILS="true"');
-console.log('  6. npm run fixtures:apply-env');
 console.log('');
-console.log('Daily upgrade calculation (same account):');
-console.log('  npm run fixtures:apply-env');
-console.log('  npm run test:controlled:subscription-lifecycle-execution -- -g "upgrade"');
+console.log('Prepare once (per canonical email)');
+console.log('----------------------------------');
+console.log('  1. Register that exact +fx-…@gmail.com on UAT');
+console.log('  2. Verify email/mobile; finish Risk/Compliance');
+console.log('  3. Buy the listed plan + interval; save a Stripe test card');
+console.log('  4. Password = SUBSCRIPTION_FIXTURE_PASSWORD (shared for new fx-* accounts)');
+console.log('  5. Enable:  $env:SUB_FIXTURE_USE_CANONICAL_EMAILS="true"');
+console.log('  6. Wire:    npm run fixtures:apply-env -- --canonical');
+console.log('');
+console.log('Until an fx-* account is prepared, complete-run may buy a disposable Stripe user for that slot.');
 console.log('');

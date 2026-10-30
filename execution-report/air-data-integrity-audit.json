@@ -1,34 +1,34 @@
 {
-  "generatedAt": "2026-10-28T09:39:01.888Z",
+  "generatedAt": "2026-10-30T05:37:41.455Z",
   "provenance": {
     "mode": "CURRENT_EXECUTION",
     "sourceArtifact": "test-results/results.json",
     "sourceFramework": "Playwright",
-    "generatedAt": "2026-10-28T09:39:01.590Z",
+    "generatedAt": "2026-10-30T05:37:40.899Z",
     "restoredFromHistory": false,
     "warning": ""
   },
   "sourceExecution": {
     "source": "json-reporter",
-    "total": 778,
-    "rawTestCount": 778,
-    "attempts": 778,
-    "passed": 618,
-    "failed": 7,
+    "total": 780,
+    "rawTestCount": 780,
+    "attempts": 780,
+    "passed": 623,
+    "failed": 4,
     "skipped": 153,
     "flaky": 0,
     "interrupted": 0,
     "statuses": {
-      "expected": 618,
-      "unexpected": 7,
+      "expected": 623,
+      "unexpected": 4,
       "skipped": 153
     }
   },
   "airExecution": {
-    "total": 778,
-    "attempts": 778,
-    "passed": 618,
-    "failed": 7,
+    "total": 780,
+    "attempts": 780,
+    "passed": 623,
+    "failed": 4,
     "skipped": 153,
     "flaky": 0,
     "interrupted": 0,
@@ -36,9 +36,9 @@
   },
   "reconciliation": {
     "status": "PASS",
-    "sourceTotal": 778,
-    "expectedAirTotal": 778,
-    "airTotal": 778,
+    "sourceTotal": 780,
+    "expectedAirTotal": 780,
+    "airTotal": 780,
     "difference": 0
   },
   "duplicates": {
@@ -49,10 +49,10 @@
   },
   "orphanEvidence": [],
   "evidenceClassification": {
-    "perTestEvidence": 11,
+    "perTestEvidence": 6,
     "executionArtifacts": 2,
     "rawReports": 2,
-    "totalWithRawReports": 13,
+    "totalWithRawReports": 8,
     "rawReportsCountAsFailureEvidence": false
   },
   "invalidModuleReferences": [],
@@ -61,44 +61,26 @@
   "evidenceTraceability": {
     "failedTests": [
       {
-        "testId": "chromium > SubscriptionLifecycleExecution.spec.ts > Subscription Lifecycle Execution > Prepared paid user exposes upgrade downgrade and interval controls",
-        "testName": "Subscription Lifecycle Execution > Prepared paid user exposes upgrade downgrade and interval controls",
+        "testId": "chromium > BetaSurfaces.spec.ts > Beta surfaces > Beta menu lists broker Position Overlay and Roll destinations",
+        "testName": "Beta surfaces > Beta menu lists broker Position Overlay and Roll destinations",
         "evidenceCount": 2,
         "status": "Evidence Available"
       },
       {
-        "testId": "chromium > SubscriptionLifecycleExecution.spec.ts > Subscription Lifecycle Execution > Prepared paid user can preview monthly and annual upgrade calculations",
-        "testName": "Subscription Lifecycle Execution > Prepared paid user can preview monthly and annual upgrade calculations",
+        "testId": "chromium > BetaSurfaces.spec.ts > Beta surfaces > Option Overlay P&L switches periods and capital toggles",
+        "testName": "Beta surfaces > Option Overlay P&L switches periods and capital toggles",
         "evidenceCount": 2,
         "status": "Evidence Available"
       },
       {
-        "testId": "chromium > SubscriptionLifecycleExecution.spec.ts > Subscription Lifecycle Execution > Prepared paid user exposes non-destructive cancellation form",
-        "testName": "Subscription Lifecycle Execution > Prepared paid user exposes non-destructive cancellation form",
-        "evidenceCount": 2,
-        "status": "Evidence Available"
-      },
-      {
-        "testId": "chromium > SubscriptionLifecycleExecution.spec.ts > Subscription Lifecycle Execution > Prepared monthly fixture shows monthly cancel options",
-        "testName": "Subscription Lifecycle Execution > Prepared monthly fixture shows monthly cancel options",
-        "evidenceCount": 2,
-        "status": "Evidence Available"
-      },
-      {
-        "testId": "chromium > SubscriptionCancellationMatrix.spec.ts > Subscription Cancellation Use Case 7 Matrix > SC-299 - Cancellation matrix coverage appears in AIR blocked and skipped coverage",
-        "testName": "Subscription Cancellation Use Case 7 Matrix > SC-299 - Cancellation matrix coverage appears in AIR blocked and skipped coverage",
+        "testId": "chromium > SubscriptionCancellationMatrix.spec.ts > Subscription Cancellation Use Case 7 Matrix > SC-298 - Cancellation state is searchable in AIR",
+        "testName": "Subscription Cancellation Use Case 7 Matrix > SC-298 - Cancellation state is searchable in AIR",
         "evidenceCount": 1,
         "status": "Evidence Available"
       },
       {
         "testId": "chromium > FailedPaymentDunningMatrix.spec.ts > Failed Payment And Dunning Use Case 8 Matrix > SC-349 - AIR records failed payment evidence when available",
         "testName": "Failed Payment And Dunning Use Case 8 Matrix > SC-349 - AIR records failed payment evidence when available",
-        "evidenceCount": 1,
-        "status": "Evidence Available"
-      },
-      {
-        "testId": "chromium > SubscriptionLifecycleE2EMatrix.spec.ts > Subscription Lifecycle E2E Matrix > LC-045 - AIR shows subscription lifecycle coverage, blocked gaps, known bugs, and executable coverage status",
-        "testName": "Subscription Lifecycle E2E Matrix > LC-045 - AIR shows subscription lifecycle coverage, blocked gaps, known bugs, and executable coverage status",
         "evidenceCount": 1,
         "status": "Evidence Available"
       }
@@ -118,37 +100,12 @@
         "references": [
           {
             "type": "Failure",
-            "name": "Subscription Lifecycle Execution > Prepared paid user exposes upgrade downgrade and interval controls",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
-            "name": "Subscription Lifecycle Execution > Prepared paid user can preview monthly and annual upgrade calculations",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
-            "name": "Subscription Lifecycle Execution > Prepared paid user exposes non-destructive cancellation form",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
-            "name": "Subscription Lifecycle Execution > Prepared monthly fixture shows monthly cancel options",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
-            "name": "Subscription Cancellation Use Case 7 Matrix > SC-299 - Cancellation matrix coverage appears in AIR blocked and skipped coverage",
+            "name": "Subscription Cancellation Use Case 7 Matrix > SC-298 - Cancellation state is searchable in AIR",
             "detail": "Critical failure severity matched release rules."
           },
           {
             "type": "Failure",
             "name": "Failed Payment And Dunning Use Case 8 Matrix > SC-349 - AIR records failed payment evidence when available",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
-            "name": "Subscription Lifecycle E2E Matrix > LC-045 - AIR shows subscription lifecycle coverage, blocked gaps, known bugs, and executable coverage status",
             "detail": "Critical failure severity matched release rules."
           },
           {
@@ -174,37 +131,12 @@
         "references": [
           {
             "type": "Failure",
-            "name": "Subscription Lifecycle Execution > Prepared paid user exposes upgrade downgrade and interval controls",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
-            "name": "Subscription Lifecycle Execution > Prepared paid user can preview monthly and annual upgrade calculations",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
-            "name": "Subscription Lifecycle Execution > Prepared paid user exposes non-destructive cancellation form",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
-            "name": "Subscription Lifecycle Execution > Prepared monthly fixture shows monthly cancel options",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
-            "name": "Subscription Cancellation Use Case 7 Matrix > SC-299 - Cancellation matrix coverage appears in AIR blocked and skipped coverage",
+            "name": "Subscription Cancellation Use Case 7 Matrix > SC-298 - Cancellation state is searchable in AIR",
             "detail": "Critical failure severity matched release rules."
           },
           {
             "type": "Failure",
             "name": "Failed Payment And Dunning Use Case 8 Matrix > SC-349 - AIR records failed payment evidence when available",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
-            "name": "Subscription Lifecycle E2E Matrix > LC-045 - AIR shows subscription lifecycle coverage, blocked gaps, known bugs, and executable coverage status",
             "detail": "Critical failure severity matched release rules."
           },
           {
@@ -230,37 +162,12 @@
         "references": [
           {
             "type": "Failure",
-            "name": "Subscription Lifecycle Execution > Prepared paid user exposes upgrade downgrade and interval controls",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
-            "name": "Subscription Lifecycle Execution > Prepared paid user can preview monthly and annual upgrade calculations",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
-            "name": "Subscription Lifecycle Execution > Prepared paid user exposes non-destructive cancellation form",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
-            "name": "Subscription Lifecycle Execution > Prepared monthly fixture shows monthly cancel options",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
-            "name": "Subscription Cancellation Use Case 7 Matrix > SC-299 - Cancellation matrix coverage appears in AIR blocked and skipped coverage",
+            "name": "Subscription Cancellation Use Case 7 Matrix > SC-298 - Cancellation state is searchable in AIR",
             "detail": "Critical failure severity matched release rules."
           },
           {
             "type": "Failure",
             "name": "Failed Payment And Dunning Use Case 8 Matrix > SC-349 - AIR records failed payment evidence when available",
-            "detail": "Critical failure severity matched release rules."
-          },
-          {
-            "type": "Failure",
-            "name": "Subscription Lifecycle E2E Matrix > LC-045 - AIR shows subscription lifecycle coverage, blocked gaps, known bugs, and executable coverage status",
             "detail": "Critical failure severity matched release rules."
           },
           {
@@ -281,7 +188,7 @@
         ]
       }
     ],
-    "warnings": 5,
-    "blockers": 10
+    "warnings": 7,
+    "blockers": 5
   }
 }

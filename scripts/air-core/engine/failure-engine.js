@@ -379,6 +379,49 @@ function getPlainFailureExplanation(test = {}) {
   }
 
   if (
+    title.includes('air search') ||
+    title.includes('searchable in air') ||
+    rawText.includes('air search index')
+  ) {
+    return {
+      whatFailed: 'AIR search found no cancel results for this run.',
+      whyFailed: 'This is a report search issue, not a Billing screen failure.',
+    };
+  }
+
+  if (
+    title.includes('air records failed payment evidence') ||
+    rawText.includes('has no attempt or attachment evidence')
+  ) {
+    return {
+      whatFailed: 'No screenshot or attachment was saved for the declined-card trial check.',
+      whyFailed: 'The report expected proof from that declined-card attempt, but the file was missing.',
+    };
+  }
+
+  if (
+    title.includes('beta menu') ||
+    (title.includes('beta') && title.includes('roll destinations')) ||
+    (title.includes('profit') && title.includes('loss') && title.includes('roll'))
+  ) {
+    return {
+      whatFailed: 'Beta menu is missing a required destination.',
+      whyFailed: 'The menu did not list every expected Beta item (Broker transactions, Position P&L, Profit & Loss, Roll Configuration).',
+    };
+  }
+
+  if (
+    title.includes('portfolio profit') ||
+    title.includes('option overlay p&l') ||
+    title.includes('option overlay pnl')
+  ) {
+    return {
+      whatFailed: 'Portfolio Profit & Loss page did not open as expected.',
+      whyFailed: 'The Portfolio Profit & Loss heading or period controls were not available after opening Beta → Profit & Loss.',
+    };
+  }
+
+  if (
     title.includes('billing') ||
     title.includes('subscription') ||
     title.includes('stripe') ||

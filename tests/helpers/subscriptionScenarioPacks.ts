@@ -2746,6 +2746,18 @@ const PACKS: Record<
       'user-data-preserved':
         stepUserDataPreserved,
 
+      // SC-148 — open Overlay→Income downgrade confirmation, refresh, plan unchanged.
+      'refresh-leaves-account-unchanged':
+        async (ctx) => {
+          await stepRefreshLeavesAccountUnchanged(ctx, {
+            targetPlan: 'Income Builder',
+            action: 'downgrade',
+            interval: 'monthly',
+            targetPattern: /income/i,
+            label: 'downgrade'
+          });
+        },
+
       'cancel-scheduled-downgrade':
         async (ctx) => {
           const control =

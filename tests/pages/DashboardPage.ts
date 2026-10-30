@@ -981,6 +981,34 @@ export class DashboardPage
     );
   }
 
+  async openHowToUseOolToolFromProfileMenu() {
+    Logger.info(
+      'Opening How to use OolTool from profile menu'
+    );
+
+    await this.openProfileMenu();
+
+    await safeClick(
+      this.profileMenuItem(
+        'How to use OolTool'
+      ),
+      'Open How to use OolTool From Profile Menu'
+    );
+
+    await expect(
+      this.page
+    ).toHaveURL(
+      /\/dashboard\/how-to-use-ooltool/i,
+      {
+        timeout: 20000
+      }
+    );
+
+    Logger.success(
+      'How to use OolTool opened from profile menu'
+    );
+  }
+
   async validateProfileMenuNavigationActions() {
 
     Logger.info(

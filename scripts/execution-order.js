@@ -60,6 +60,7 @@ const coreExecutableJourneyOrder = [
   'RollConfiguration.spec.ts',
   'BetaSurfaces.spec.ts',
   'DashboardOptions.spec.ts',
+  'HowToUseOolTool.spec.ts',
   'DashboardRemainingScreens.spec.ts',
   'DashboardPositionActions.spec.ts',
   'DashboardScreenDepth.spec.ts',
@@ -206,6 +207,7 @@ const scheduleGroups = [
         name: 'Profile',
         files: pick([
           'AddManualPosition.spec.ts',
+          'HowToUseOolTool.spec.ts',
           'ProfileNegative.spec.ts',
           'ProfileSecurityDisplay.spec.ts',
           'ProfileMobileValidation.spec.ts',
@@ -547,6 +549,7 @@ const executableBatches = [
       'RollConfiguration.spec.ts',
       'BetaSurfaces.spec.ts',
       'DashboardOptions.spec.ts',
+      'HowToUseOolTool.spec.ts',
       'DashboardRemainingScreens.spec.ts',
       'DashboardPositionActions.spec.ts',
       'DashboardScreenDepth.spec.ts',

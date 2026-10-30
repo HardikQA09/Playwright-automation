@@ -89,7 +89,7 @@ function slimRun(entry) {
     risk: release.risk || summary.estimatedReleaseRisk || '',
     qualityScore: summary.qualityScore ?? release.confidence ?? null,
     failedTitles: failedTests.slice(0, 40).map((t) => {
-      const raw = String(t.error || t.message || '')
+      const raw = String(t.error || t.message || t.whyFailed || '')
         .replace(/\u001b\[[0-9;]*m/g, '')
         .replace(/\s+/g, ' ')
         .trim();
@@ -103,11 +103,42 @@ function slimRun(entry) {
             ''
           ) + '…';
       }
+      const evidence =
+        t.evidenceLinks?.screenshot ||
+        t.evidence?.screenshot ||
+        t.screenshot ||
+        (Array.isArray(t.attachments)
+          ? t.attachments.find((a) => /screenshot|image/i.test(String(a.name || a.contentType || '')))?.path
+          : '') ||
+        '';
+      const title = t.title || t.name || t.fullTitle || 'Untitled';
+      const scenario =
+        String(title).split(/\s*>\s*/).at(-1)?.trim() || title;
+      const looksLikeRawAssert =
+        /expect\(|Locator:|Received string:|toBeVisible|toMatch|toBeGreaterThan/i.test(
+          String(t.whyFailed || t.happened || error || '')
+        );
+      const actual = looksLikeRawAssert
+        ? error || 'The check did not reach the expected screen or result.'
+        : t.whyFailed || t.happened || error || 'The check failed.';
       return {
-        title: t.title || t.name || t.fullTitle || 'Untitled',
+        title,
         file: t.file || t.spec || t.location || '',
         status: t.status || t.outcome || 'failed',
-        error
+        error,
+        scenario,
+        expected:
+          t.expected ||
+          t.wanted ||
+          'The screen or state named in the check title should be reached.',
+        actual,
+        repro:
+          t.repro ||
+          t.stepsToReproduce ||
+          t.nextAction ||
+          '1. Sign in. 2. Open the screen named in the check title. 3. Confirm the expected result.',
+        evidenceHref: evidence,
+        badge: t.productBug ? 'Product bug' : (t.flaky ? 'Flaky' : 'Failed'),
       };
     }),
     modules: modules.slice(0, 40).map((m) => ({

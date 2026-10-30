@@ -205,6 +205,15 @@ function buildWarnings({ warningFailures, warningJourneys, warningModules, parti
     });
   }
 
+  const flaky = summary.flaky ?? 0;
+  if (flaky > 0) {
+    warnings.push({
+      type: 'Reliability',
+      name: 'Flaky checks',
+      reason: `${flaky} check(s) passed only after retry — treat release confidence as provisional until reliability stabilizes.`,
+    });
+  }
+
   if (partialExecution) {
     warnings.push({
       type: 'Execution',

@@ -1666,20 +1666,21 @@ async function executeDowngradePreview(
 
   const tryDowngradeMatrix = async (
     activeBilling: BillingPage,
+    planTarget: PaidPlanName,
     intervals: BillingInterval[],
     label: string
   ) => {
     for (const interval of intervals) {
       try {
         console.log(
-          `[downgrade-preview] Using target ${targetPlan} ${interval} (${label})`
+          `[downgrade-preview] Using target ${planTarget} ${interval} (${label})`
         );
 
         await runPlanChangePreviewAssertions(
           page,
           activeBilling,
           'downgrade',
-          targetPlan,
+          planTarget,
           interval
         );
 
@@ -1697,7 +1698,7 @@ async function executeDowngradePreview(
         }
 
         console.log(
-          `[downgrade-preview] ${label} downgrade to ${targetPlan} ${interval} failed (${(error instanceof Error ? error.message : String(error)).split('\n')[0]}); trying next`
+          `[downgrade-preview] ${label} downgrade to ${planTarget} ${interval} failed (${(error instanceof Error ? error.message : String(error)).split('\n')[0]}); trying next`
         );
       }
     }
@@ -1708,6 +1709,7 @@ async function executeDowngradePreview(
   if (
     await tryDowngradeMatrix(
       billing,
+      targetPlan,
       intervalsToTry,
       'Shared fixture'
     )
@@ -1716,14 +1718,14 @@ async function executeDowngradePreview(
   }
 
   // Income Builder (lowest paid tier) has no Downgrade CTA. Buy Overlay so
-  // SC-120 can open the Income Builder downgrade confirmation.
+  // SC-120 / SC-123 / SC-124 / SC-148 can open the Income Builder confirmation.
   if (
     !envEnabled(
       'SUB_LIFECYCLE_CREATE_DISPOSABLE_USER'
     )
   ) {
     throw new CoverageSkip(
-      `Paid subscriber fixture has no downgrade control for ${targetPlan}. Set SUB_LIFECYCLE_CREATE_DISPOSABLE_USER=true (or --minimize-skips) so a disposable Overlay subscriber can open the preview.`
+      `Paid subscriber fixture has no downgrade control for ${targetPlan}. Set SUB_LIFECYCLE_CREATE_DISPOSABLE_USER=true (or --minimize-skips) so a disposable Overlay/Portfolio subscriber can open the preview.`
     );
   }
 
@@ -1731,7 +1733,7 @@ async function executeDowngradePreview(
     '[downgrade-preview] Purchasing disposable Overlay Strategists for a reliable Downgrade CTA'
   );
 
-  const disposableBilling =
+  const disposableOverlayBilling =
     await purchaseDisposablePlan(
       page,
       'stripe-matrix-downgrade-preview',
@@ -1740,19 +1742,48 @@ async function executeDowngradePreview(
     );
 
   if (
+    await tryDowngradeMatrix(
+      disposableOverlayBilling,
+      targetPlan,
+      [
+        'monthly',
+        'annual'
+      ],
+      'Disposable Overlay'
+    )
+  ) {
+    return;
+  }
+
+  // Fallback matching live UAT: higher plan → Overlay Strategists confirmation
+  // (same dialog shape: Keep my plan / Schedule downgrade).
+  console.log(
+    '[downgrade-preview] Overlay→Income unavailable; purchasing disposable Portfolio Hedger to open Downgrade to Overlay'
+  );
+
+  const disposablePortfolioBilling =
+    await purchaseDisposablePlan(
+      page,
+      'stripe-matrix-downgrade-preview-portfolio',
+      'Portfolio Hedger',
+      'monthly'
+    );
+
+  if (
     !(
       await tryDowngradeMatrix(
-        disposableBilling,
+        disposablePortfolioBilling,
+        'Overlay Strategists',
         [
           'monthly',
           'annual'
         ],
-        'Disposable Overlay'
+        'Disposable Portfolio→Overlay'
       )
     )
   ) {
     throw new CoverageSkip(
-      'No usable Downgrade calculation preview on the shared fixture or disposable Overlay Strategists.'
+      'No usable Downgrade confirmation on shared fixture, disposable Overlay→Income, or disposable Portfolio→Overlay.'
     );
   }
 }

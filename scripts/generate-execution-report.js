@@ -506,12 +506,227 @@ function sparseErrorLine(decoded) {
   return below < 40 ? line : null;
 }
 
+function inkClusterBox(decoded, {
+  minX = 0,
+  maxX = decoded.width,
+  minY = 0,
+  maxY = decoded.height,
+  thresh = 150,
+  minCount = 40,
+} = {}) {
+  const { width, height, pixels } = decoded;
+  const xStart = Math.max(0, Math.floor(minX));
+  const xEnd = Math.min(width, Math.ceil(maxX));
+  const yStart = Math.max(0, Math.floor(minY));
+  const yEnd = Math.min(height, Math.ceil(maxY));
+  let left = width;
+  let top = height;
+  let right = 0;
+  let bottom = 0;
+  let count = 0;
+
+  for (let y = yStart; y < yEnd; y += 1) {
+    for (let x = xStart; x < xEnd; x += 1) {
+      const index = (y * width + x) * 4;
+      const red = pixels[index];
+      const green = pixels[index + 1];
+      const blue = pixels[index + 2];
+      if (red < thresh && green < thresh && blue < thresh) {
+        count += 1;
+        if (x < left) left = x;
+        if (y < top) top = y;
+        if (x > right) right = x;
+        if (y > bottom) bottom = y;
+      }
+    }
+  }
+
+  if (count < minCount) {
+    return null;
+  }
+
+  return {
+    x: left,
+    y: top,
+    width: Math.max(24, right - left + 1),
+    height: Math.max(18, bottom - top + 1),
+    count,
+  };
+}
+
+function headerStatusPillBox(decoded) {
+  const { width, height, pixels } = decoded;
+  const top = Math.min(72, height);
+  const mask = new Uint8Array(width * top);
+  const found = [];
+
+  for (let y = 0; y < top; y += 1) {
+    for (let x = Math.floor(width * 0.45); x < width; x += 1) {
+      const index = (y * width + x) * 4;
+      const red = pixels[index];
+      const green = pixels[index + 1];
+      const blue = pixels[index + 2];
+      if (green > 120 && green > red + 20 && green > blue + 10 && red < 210) {
+        mask[y * width + x] = 1;
+      }
+    }
+  }
+
+  const seen = new Uint8Array(width * top);
+  for (let y = 0; y < top; y += 2) {
+    for (let x = Math.floor(width * 0.45); x < width; x += 2) {
+      const start = y * width + x;
+      if (!mask[start] || seen[start]) continue;
+      let minX = x;
+      let maxX = x;
+      let minY = y;
+      let maxY = y;
+      let count = 0;
+      const stack = [start];
+      seen[start] = 1;
+
+      while (stack.length) {
+        const index = stack.pop();
+        count += 1;
+        const currentX = index % width;
+        const currentY = (index / width) | 0;
+        if (currentX < minX) minX = currentX;
+        if (currentX > maxX) maxX = currentX;
+        if (currentY < minY) minY = currentY;
+        if (currentY > maxY) maxY = currentY;
+        [index - 1, index + 1, index - width, index + width].forEach(next => {
+          if (next < 0 || next >= mask.length || seen[next] || !mask[next]) return;
+          seen[next] = 1;
+          stack.push(next);
+        });
+      }
+
+      const boxWidth = maxX - minX;
+      const boxHeight = maxY - minY;
+      if (boxWidth > 28 && boxHeight > 10 && boxWidth < 160 && boxHeight < 40 && count > 40) {
+        found.push({ x: minX, y: minY, width: boxWidth, height: boxHeight, count });
+      }
+    }
+  }
+
+  return found.sort((left, right) => left.x - right.x)[0] || null;
+}
+
+function padHighlightRegion(region, decoded, {
+  padX = 12,
+  padY = 10,
+  minWidth = 140,
+  minHeight = 44,
+  label = '',
+  expectedElementNotFound = false,
+} = {}) {
+  if (!region || !decoded) return null;
+
+  const width = Number(region.width) || 0;
+  const height = Number(region.height) || 0;
+  const centerX = Number(region.x) + width / 2;
+  const centerY = Number(region.y) + height / 2;
+  const targetWidth = Math.max(width + padX * 2, minWidth);
+  const targetHeight = Math.max(height + padY * 2, minHeight);
+  let x = Math.round(centerX - targetWidth / 2);
+  let y = Math.round(centerY - targetHeight / 2);
+  let finalWidth = Math.round(targetWidth);
+  let finalHeight = Math.round(targetHeight);
+
+  if (x < 8) x = 8;
+  if (y < 8) y = 8;
+  if (x + finalWidth > decoded.width - 8) {
+    finalWidth = Math.max(40, decoded.width - 8 - x);
+  }
+  if (y + finalHeight > decoded.height - 8) {
+    finalHeight = Math.max(32, decoded.height - 8 - y);
+  }
+
+  return {
+    x,
+    y,
+    width: finalWidth,
+    height: finalHeight,
+    label: label || region.label || '',
+    expectedElementNotFound: Boolean(expectedElementNotFound || region.expectedElementNotFound),
+  };
+}
+
+function betaMenuFocusBox(decoded) {
+  const delayed = headerStatusPillBox(decoded);
+  const x = delayed
+    ? Math.max(8, delayed.x - 210)
+    : Math.round(decoded.width * 0.55);
+  const width = delayed
+    ? Math.min(240, delayed.x + delayed.width - x + 8)
+    : Math.round(decoded.width * 0.22);
+
+  return padHighlightRegion(
+    {
+      x,
+      y: 6,
+      width,
+      height: 230,
+      label: 'Missing: Profit & Loss',
+      expectedElementNotFound: true,
+    },
+    decoded,
+    {
+      padX: 0,
+      padY: 0,
+      minWidth: 180,
+      minHeight: 180,
+      label: 'Missing: Profit & Loss',
+      expectedElementNotFound: true,
+    },
+  );
+}
+
+function pageTitleFocusBox(decoded) {
+  const title = inkClusterBox(decoded, {
+    minX: 12,
+    maxX: Math.min(decoded.width * 0.62, 720),
+    minY: 64,
+    maxY: Math.min(160, Math.floor(decoded.height * 0.28)),
+    thresh: 160,
+    minCount: 80,
+  });
+
+  if (title) {
+    return padHighlightRegion(title, decoded, {
+      padX: 16,
+      padY: 14,
+      minWidth: 280,
+      minHeight: 52,
+      label: 'Wrong title (not Portfolio Profit & Loss)',
+      expectedElementNotFound: true,
+    });
+  }
+
+  return padHighlightRegion(
+    {
+      x: 16,
+      y: 78,
+      width: 420,
+      height: 52,
+      label: 'Wrong title (not Portfolio Profit & Loss)',
+      expectedElementNotFound: true,
+    },
+    decoded,
+    {
+      padX: 0,
+      padY: 0,
+      minWidth: 280,
+      minHeight: 52,
+      label: 'Wrong title (not Portfolio Profit & Loss)',
+      expectedElementNotFound: true,
+    },
+  );
+}
+
 function findFailureFieldRegion(filePath, test) {
   const decoded = decodePng(filePath);
   if (!decoded) return null;
-
-  const errorLine = sparseErrorLine(decoded);
-  if (errorLine) return errorLine;
 
   const hint = [
     test?.title,
@@ -523,12 +738,32 @@ function findFailureFieldRegion(filePath, test) {
     test?.productBug?.name,
   ].filter(Boolean).join(' ').toLowerCase();
 
+  if (
+    /beta menu|position overlay|roll destinations|lists broker|profit & loss and roll/.test(hint)
+    || (/beta/.test(hint) && /broker transactions|position p&l|profit & loss|roll configuration/.test(hint))
+  ) {
+    return betaMenuFocusBox(decoded);
+  }
+
+  if (
+    /portfolio profit|option overlay p&l|option overlay pnl/.test(hint)
+    || (/option overlay/.test(hint) && (/heading|tobevisible|periods|capital/.test(hint)))
+    || (/profit/.test(hint) && /loss/.test(hint) && (/heading|tobevisible|periods|capital|switches/.test(hint)))
+  ) {
+    return pageTitleFocusBox(decoded);
+  }
+
+  const errorLine = sparseErrorLine(decoded);
+  if (errorLine) {
+    return padHighlightRegion(errorLine, decoded, { label: 'Error line' });
+  }
+
   if (/internal server error/.test(hint)) {
-    return darkTextBox(decoded, 90);
+    return padHighlightRegion(darkTextBox(decoded, 90), decoded, { label: 'Error' });
   }
 
   if (/logout|sign out|avatar|initials/.test(hint)) {
-    return headerAvatarBox(decoded);
+    return padHighlightRegion(headerAvatarBox(decoded), decoded, { label: 'Account menu' });
   }
 
   const dialog = whiteDialogBox(decoded);
@@ -537,33 +772,34 @@ function findFailureFieldRegion(filePath, test) {
   const outlined = boxes.filter(box => box.density <= 0.45 && box.width > 180 && box.height < 80);
 
   if (/verify button|verify turns on|enabled only for six|tobedisabled/.test(hint)) {
-    return closestControl(filled, decoded.width, decoded.height)
-      || closestControl(outlined, decoded.width, decoded.height)
-      || null;
+    return padHighlightRegion(
+      closestControl(filled, decoded.width, decoded.height)
+        || closestControl(outlined, decoded.width, decoded.height),
+      decoded,
+      { label: 'Verify control' },
+    );
   }
 
   if (/otp|six digit|pasted|verification field|enter otp/.test(hint)) {
-    return closestControl(outlined, decoded.width, decoded.height)
-      || boxes.find(box => box.width > 200 && box.height < 80)
-      || null;
+    return padHighlightRegion(
+      closestControl(outlined, decoded.width, decoded.height)
+        || boxes.find(box => box.width > 200 && box.height < 80),
+      decoded,
+      { label: 'Code field' },
+    );
   }
 
   if (dialog && /outside of the viewport|confirm\s*&?\s*pay|confirm and pay/.test(hint)) {
-    return dialogSlice(dialog, 0.78, 1);
+    return padHighlightRegion(dialogSlice(dialog, 0.78, 1), decoded, { label: 'Confirm & pay' });
   }
 
   if (dialog && /charge|prorat|amount due|recurring|renewal|next billing|1490|list price/.test(hint)) {
-    return dialogSlice(dialog, 0.4, 0.78);
+    return padHighlightRegion(dialogSlice(dialog, 0.4, 0.78), decoded, { label: 'Charge summary' });
   }
 
   if (/cancel at expiry|yearly cancel|keep my plan|keep access|cancel subscription/.test(hint)) {
     if (dialog) {
-      return {
-        x: dialog.x,
-        y: dialog.y,
-        width: dialog.width,
-        height: dialog.height,
-      };
+      return padHighlightRegion(dialog, decoded, { label: 'Cancel options' });
     }
 
     const cancelButton = closestControl(
@@ -572,17 +808,30 @@ function findFailureFieldRegion(filePath, test) {
       decoded.height,
     );
     if (cancelButton) {
-      return dialogAroundButton(decoded, cancelButton);
+      return padHighlightRegion(dialogAroundButton(decoded, cancelButton), decoded, { label: 'Cancel options' });
     }
   }
 
   if (/textbox|gmail|trial with card/.test(hint)) {
-    return closestControl(filled, decoded.width, decoded.height) || null;
+    return padHighlightRegion(
+      closestControl(filled, decoded.width, decoded.height),
+      decoded,
+      { label: 'Form field' },
+    );
   }
 
-  return closestControl(filled, decoded.width, decoded.height)
-    || closestControl(outlined, decoded.width, decoded.height)
-    || null;
+  const fallback = closestControl(filled, decoded.width, decoded.height)
+    || closestControl(outlined, decoded.width, decoded.height);
+  if (!fallback) {
+    return null;
+  }
+
+  // Tiny/random mid-page green chrome is worse than no mark.
+  if (fallback.width < 90 || fallback.height < 28 || fallback.width * fallback.height < 3500) {
+    return null;
+  }
+
+  return padHighlightRegion(fallback, decoded, { label: 'Related control' });
 }
 
 function normalizeEvidenceRegion(candidate) {
@@ -1274,8 +1523,11 @@ const moduleMap =
 
       module.total += 1;
 
-      if (test.status === 'passed') {
+      if (test.status === 'passed' || test.status === 'flaky' || test.flaky) {
         module.passed += 1;
+        if (test.status === 'flaky' || test.flaky) {
+          module.flaky = (module.flaky || 0) + 1;
+        }
       } else if (test.status === 'skipped') {
         module.skipped += 1;
       } else {
@@ -1295,6 +1547,7 @@ const moduleHealth =
       total: module.total,
       passed: module.passed,
       failed: module.failed,
+      flaky: module.flaky ?? 0,
       skipped: module.skipped,
       interrupted: module.interrupted ?? 0,
       executed: module.executed ?? ((module.passed ?? 0) + (module.failed ?? 0) + (module.interrupted ?? 0)),
@@ -2521,6 +2774,20 @@ function moduleSlug(name) {
     .replace(/^-|-$/g, '');
 }
 
+function formatModuleOutcomeLine(module) {
+  const failedCount = Number(module.failed ?? 0) || 0;
+  const flakyCount = Number(module.flaky ?? 0) || 0;
+  const executed = Number(module.executed ?? ((module.passed ?? 0) + failedCount + (module.interrupted ?? 0)));
+  const notRun = Math.max(0, Number(module.total || 0) - executed);
+  if (executed === 0) {
+    return `None ran. ${module.total} ${Number(module.total) === 1 ? 'check is' : 'checks are'} planned.`;
+  }
+  const flakyBit = flakyCount > 0
+    ? ` ${flakyCount} flaky (passed after retry).`
+    : '';
+  return `${module.passed} passed.${flakyBit} ${failedCount} failed. ${notRun} did not run.`;
+}
+
 function getModuleRecommendedAction(module) {
   const executed = Number(module.executed ?? ((module.passed ?? 0) + (module.failed ?? 0) + (module.interrupted ?? 0)));
   const status = String(module.status || '').toLowerCase();
@@ -2531,6 +2798,10 @@ function getModuleRecommendedAction(module) {
 
   if (executed === 0 || status.includes('not executed') || status.includes('no data')) {
     return 'None of these checks ran. They are listed under Not run.';
+  }
+
+  if ((module.flaky ?? 0) > 0) {
+    return 'Checks passed after retry. Watch reliability before treating this area as fully stable.';
   }
 
   if ((module.unexpectedSkipped ?? 0) > 0) {
@@ -2582,7 +2853,7 @@ function getModuleBusinessScenarios(moduleName) {
   const scenarioMap = {
     Accessibility: ['Keyboard navigation', 'Focus order', 'Accessible validation states'],
     Authentication: ['Login', 'Logout', 'Forgot Password', 'JWT', 'Session Timeout'],
-    Beta: ['Beta menu inventory', 'Broker Transactions', 'Position P&L', 'Option Overlay P&L', 'Roll Configuration entry'],
+    Beta: ['Beta menu inventory', 'Broker Transactions', 'Position P&L', 'Profit & Loss', 'Roll Configuration entry'],
     Billing: ['Billing overview', 'Plans tab', 'Transaction history', 'Invoice page', 'PDF invoice'],
     Onboarding: ['Registration', 'Email verification', 'Mobile verification', 'Risk profile', 'Compliance', 'Stripe payment'],
     Password: ['Reset password', 'Password mismatch', 'Wrong current password', 'Weak password validation'],
@@ -2626,7 +2897,7 @@ function getModuleFocus(moduleName) {
   const focusByModule = {
     Accessibility: 'Keyboard navigation, focus order, and accessible validation behavior.',
     Authentication: 'Login, logout, forgot password, JWT/session behavior, and locked-account recovery.',
-    Beta: 'Beta menu destinations including Broker Transactions, Position P&L, Option Overlay P&L, and Roll Configuration entry.',
+    Beta: 'Beta menu destinations including Broker Transactions, Position P&L, Profit & Loss, and Roll Configuration entry.',
     Billing: 'Billing overview, plans, transaction history, invoice access, and PDF availability.',
     Password: 'Password reset, mismatch handling, current-password validation, and policy enforcement.',
     Profile: 'Profile page access, profile data loading, and read-only email protection.',
@@ -2756,6 +3027,7 @@ function getModuleStatusGroup(module) {
 function getModuleStatusTooltip(module) {
   const group = getModuleStatusGroup(module);
   const failedCount = Number(module.failed ?? 0) || 0;
+  const flakyCount = Number(module.flaky ?? 0) || 0;
   const unexpectedSkipped = Number(module.unexpectedSkipped ?? 0) || 0;
   const executed = Number(module.executed ?? ((module.passed ?? 0) + failedCount + (module.interrupted ?? 0)));
 
@@ -2772,11 +3044,19 @@ function getModuleStatusTooltip(module) {
       return `${module.name} has ${unexpectedSkipped} unexpected skipped check${unexpectedSkipped === 1 ? '' : 's'} that still need triage.`;
     }
 
+    if (flakyCount > 0) {
+      return `${module.name} passed after retry on ${flakyCount} flaky check${flakyCount === 1 ? '' : 's'}.`;
+    }
+
     return `${module.name} needs review before it can be treated as healthy.`;
   }
 
   if (group === 'not-executed') {
     return `${module.name} has no executed tests in the current AIR model.`;
+  }
+
+  if (flakyCount > 0) {
+    return `${module.name} passed: ${module.passed}/${executed || module.passed} ran (${flakyCount} after retry).`;
   }
 
   return `${module.name} executed coverage passed: ${module.passed}/${executed || module.passed} ran in this execution.`;
@@ -2813,13 +3093,12 @@ function renderModuleHealthCard(module) {
   const tone = getModuleTone(module);
   const filterTone = getModuleFilterTone(module);
   const failedCount = Number(module.failed ?? 0) || 0;
+  const flakyCount = Number(module.flaky ?? 0) || 0;
   const executed = Number(module.executed ?? ((module.passed ?? 0) + failedCount + (module.interrupted ?? 0)));
   const health = Number(module.score ?? 0);
   const notRun = Math.max(0, Number(module.total || 0) - executed);
   const documentedSkipped = Number(module.documentedSkipped ?? Math.max(0, (module.skipped ?? 0) - (module.unexpectedSkipped ?? 0)));
-  const healthLine = executed === 0
-    ? `None ran. ${module.total} ${Number(module.total) === 1 ? 'check is' : 'checks are'} planned.`
-    : `${module.passed} passed. ${failedCount} failed. ${notRun} did not run.`;
+  const healthLine = formatModuleOutcomeLine(module);
 
   return `
     <a class="module-health-card module-status-card ${tone} interactive-card" href="#module-dashboard-${moduleSlug(module.name)}" id="card-${moduleSlug(module.name)}" data-inner-item data-step-item data-step-label="${escapeHtml(module.name)}" data-module="${escapeHtml(module.name)}" data-module-status="${filterTone}" data-module-status-group="${getModuleStatusGroup(module)}" data-module-search="${escapeHtml(`${module.name} ${module.status} ${module.risk}`.toLowerCase())}" data-module-risk="${escapeHtml(module.risk)}"${tooltipAttr(getModuleStatusTooltip(module))}>
@@ -2836,11 +3115,14 @@ function renderModuleHealthCard(module) {
       <div class="module-card-stats">
         <span><b>${module.passed}</b><small>Passed</small></span>
         <span><b>${failedCount}</b><small>Failed</small></span>
+        <span><b>${flakyCount}</b><small>Flaky</small></span>
         <span><b>${notRun}</b><small>Not run</small></span>
       </div>
       <div class="module-progress" aria-hidden="true"><span style="width:${health}%"></span></div>
       <p>${failedCount > 0
         ? `${failedCount} failure${failedCount === 1 ? '' : 's'} need review`
+        : flakyCount > 0
+          ? `${flakyCount} flaky check${flakyCount === 1 ? '' : 's'} passed after retry`
         : documentedSkipped > 0 && getModuleStatusGroup(module) === 'healthy'
           ? `${documentedSkipped} planned check${documentedSkipped === 1 ? '' : 's'} did not run.`
           : escapeHtml(getModuleRecommendedAction(module))}</p>
@@ -2884,13 +3166,12 @@ const moduleDashboardCards =
             <span class="badge ${tone}">${escapeHtml(module.status)}</span>
           </div>
           <div class="module-dashboard-score-row">
-            <span>${executed === 0
-              ? `None ran. ${module.total} ${Number(module.total) === 1 ? 'check is' : 'checks are'} planned.`
-              : `${module.passed} passed. ${failedCount} failed. ${notRun} did not run.`}</span>
+            <span>${formatModuleOutcomeLine(module)}</span>
           </div>
           <div class="module-selector-summary">
             <span>Passed <b>${module.passed}</b></span>
             <span>Failed <b>${failedCount}</b></span>
+            <span>Flaky <b>${Number(module.flaky ?? 0) || 0}</b></span>
             <span>Not run <b>${notRun}</b></span>
             <span>Risk <b>${escapeHtml(module.risk)}</b></span>
             <span>Scenarios <b>${scenarioCount}</b></span>
@@ -3356,11 +3637,11 @@ function plainFailureStory(test, index = 0) {
   const locatorHint = extractLocatorHint(raw);
   const receivedHint = extractReceivedHint(raw);
 
-  let happened = `“${scenario}” stopped before the expected result was confirmed${locatorHint ? ` (waiting for ${locatorHint})` : ''}.`;
-  let wanted = `Finish “${scenario}” with the screen/state named in the check title.`;
-  let next = `Open the screen for “${scenario}”, confirm the expected control or message, then rerun this check alone.`;
-  let repro = `1. Open the app as the same kind of user this check uses. 2. Reproduce: ${scenario}. 3. Confirm the expected result below.`;
-  let evidence = 'Open the Picture column for this row only, then Trace / Video / Logs — do not use screenshots from other failed checks.';
+  let happened = `This check stopped before the expected result was confirmed${locatorHint ? ` (waiting for ${locatorHint})` : ''}.`;
+  let wanted = 'The screen or state named in the check title should be reached.';
+  let next = 'Open the related screen, confirm the expected control or message, then rerun this check alone.';
+  let repro = '1. Sign in as the same kind of user this check uses. 2. Open the screen named in the check title. 3. Confirm the expected result.';
+  let evidence = '';
 
   const coveringMatch = raw.match(/Covering test "([^"]+)" did not complete this checkpoint \("([^"]+)"\)/i);
   if (coveringMatch) {
@@ -3393,12 +3674,64 @@ function plainFailureStory(test, index = 0) {
     repro = '1. Sign in on a monthly paid plan. 2. Open Billing → Cancel subscription. 3. Expect keep-access-until / period-end wording. 4. Confirm Cancel and refund is absent.';
     evidence = 'Use this check’s own Picture / Trace only — monthly cancel evidence must not be mixed with yearly refund options.';
   } else if (
-    lower.includes('roll configuration')
-    || lower.includes('field-level validation')
-    || lower.includes('same-strike min days')
-    || lower.includes('my balanced roll')
-    || lower.includes('my tax-aware')
-    || lower.includes('my income first')
+    lower.includes('beta menu')
+    || (lower.includes('beta surfaces') && (lower.includes('broker') || lower.includes('position overlay') || lower.includes('roll destinations')))
+    || (lower.includes('option overlay') && lower.includes('received string') && lower.includes('broker transactions'))
+  ) {
+    const listed = receivedHint
+      ? receivedHint.replace(/\s*\|\s*/g, ', ')
+      : '';
+    happened = listed
+      ? `Beta menu is open, but a required item is missing. On screen now: ${listed}.`
+      : 'Beta menu opened, but it did not list every required destination.';
+    wanted = 'Beta menu must list: Broker transactions, Position P&L, Profit & Loss, and Roll Configuration.';
+    next = 'Open Beta and compare each menu label to the required list. If a name changed again, update the check.';
+    repro = '1. Sign in. 2. Click Beta. 3. Read every menu label. 4. Confirm Broker transactions, Position P&L, Profit & Loss, and Roll Configuration.';
+    evidence = '';
+  } else if (
+    lower.includes('portfolio profit')
+    || lower.includes('option overlay p&l')
+    || lower.includes('option overlay pnl')
+    || (lower.includes('option overlay') && (lower.includes('periods') || lower.includes('capital') || lower.includes('heading')))
+    || (lower.includes('profit') && lower.includes('loss') && (lower.includes('periods') || lower.includes('capital') || lower.includes('heading')))
+  ) {
+    happened = 'Portfolio Profit & Loss did not open with the expected heading or period/capital controls.';
+    wanted = 'From Beta → Profit & Loss, the page heading should be Portfolio Profit & Loss, then period and capital controls work.';
+    next = 'Open Beta → Profit & Loss and confirm the Portfolio Profit & Loss heading plus MTD/QTD/YTD/1Y and CSP Cash / CC Shares.';
+    repro = '1. Sign in. 2. Open Beta. 3. Choose Profit & Loss. 4. Confirm heading Portfolio Profit & Loss. 5. Change period and capital once.';
+    evidence = '';
+  } else if (
+    lower.includes('air search index')
+    || lower.includes('cancellation state is searchable')
+    || lower.includes('sc-298')
+    || (lower.includes('searchable in air') && lower.includes('cancel'))
+  ) {
+    happened = 'AIR could not find cancel-related rows in the search index or stored history for this parse.';
+    wanted = 'AIR search (or stored cancel test titles) should include at least one cancel-related result.';
+    next = 'Rebuild AIR after a run that includes cancellation coverage. This is a report/index check, not a Billing UI bug.';
+    repro = '1. Open AIR search. 2. Type cancel. 3. Expect at least one result from the latest or previous run.';
+    evidence = '';
+  } else if (
+    lower.includes('air records failed payment evidence')
+    || lower.includes('sc-349')
+    || (lower.includes('has no attempt or attachment evidence') && lower.includes('air row'))
+  ) {
+    happened = 'AIR had no executed declined/invalid-card payment rows to record (evidence is only required when available).';
+    wanted = 'AIR should list executed failed-payment rows; screenshots/attachments are attached when the product/test saved them.';
+    next = 'Confirm declined-card or negative payment checks ran, rebuild AIR, then re-check SC-349.';
+    repro = '1. Run a declined-card or negative payment check. 2. Rebuild AIR. 3. Confirm SC-349 sees those rows.';
+    evidence = '';
+  } else if (
+    (
+      lower.includes('roll configuration')
+      || lower.includes('field-level validation')
+      || lower.includes('same-strike min days')
+      || lower.includes('my balanced roll')
+      || lower.includes('my tax-aware')
+      || lower.includes('my income first')
+    )
+    && !lower.includes('beta menu')
+    && !lower.includes('option overlay p&l')
   ) {
     const receivedName = receivedHint
       && receivedHint.length < 80
@@ -4530,11 +4863,51 @@ function renderFailureGuide(test, story) {
 
 function renderMarkedFailureImage(imageHref, region, size, alt) {
   const canMark = region && size?.width && size?.height;
+  const label = String(region?.label || '').trim() || (region?.expectedElementNotFound ? 'Missing here' : 'Look here');
   const box = canMark
-    ? `<span class="field-box" style="left:${(100 * region.x / size.width).toFixed(2)}%;top:${(100 * region.y / size.height).toFixed(2)}%;width:${(100 * region.width / size.width).toFixed(2)}%;height:${(100 * region.height / size.height).toFixed(2)}%"></span>`
+    ? `<span class="field-box" data-label="${escapeHtml(label)}" style="left:${(100 * region.x / size.width).toFixed(2)}%;top:${(100 * region.y / size.height).toFixed(2)}%;width:${(100 * region.width / size.width).toFixed(2)}%;height:${(100 * region.height / size.height).toFixed(2)}%"></span>`
     : '';
 
-  return `<div class="marked-shot${box ? ' field-marked' : ''}"><img src="${escapeHtml(imageHref)}" alt="${escapeHtml(alt)}">${box}</div>`;
+  if (!box) {
+    return `<div class="marked-shot"><img src="${escapeHtml(imageHref)}" alt="${escapeHtml(alt)}"></div>`;
+  }
+
+  // Frame keeps % coords tied to the image; outer shell leaves room for the callout label.
+  return `<div class="marked-shot field-marked"><div class="marked-frame"><img src="${escapeHtml(imageHref)}" alt="${escapeHtml(alt)}">${box}</div></div>`;
+}
+
+function renderReproListHtml(repro = '') {
+  const steps = String(repro || '')
+    .split(/\s*(?=\d+\.\s)/)
+    .map(part => part.trim())
+    .filter(Boolean)
+    .map(step => step.replace(/^\d+\.\s*/, '').trim())
+    .filter(Boolean);
+
+  if (!steps.length) {
+    return '';
+  }
+
+  return `<ol class="air-repro-list">${steps.map(step => `<li>${escapeHtml(step)}</li>`).join('')}</ol>`;
+}
+
+/** One copy of Expected / Actual / Reproduce — Scenario is the card title, Evidence is the screenshot. */
+function renderFailureStoryFields(story = {}, options = {}) {
+  const showScenario = options.showScenario === true;
+  const reproHtml = renderReproListHtml(story.repro || story.next || '');
+
+  return `
+    <div class="air-fail-fields">
+      ${showScenario ? `<div class="air-fail-scenario"><span>Scenario</span><p>${escapeHtml(story.scenario || '')}</p></div>` : ''}
+      <div class="air-fail-pair">
+        <div><span>Expected</span><p>${escapeHtml(story.wanted || '')}</p></div>
+        <div><span>Actual</span><p>${escapeHtml(story.happened || '')}</p></div>
+      </div>
+      <div>
+        <span>Reproduce</span>
+        ${reproHtml || `<p>${escapeHtml(story.next || 'Open the app and repeat this check.')}</p>`}
+      </div>
+    </div>`;
 }
 
 function renderFailureScreen(test, title, index = 0, options = {}) {
@@ -4548,9 +4921,12 @@ function renderFailureScreen(test, title, index = 0, options = {}) {
   const guide = options.guide === false ? '' : renderFailureGuide(test, story);
 
   if (!primary.available || primary.blank) {
+    const fallbackLine = options.silentCaption
+      ? (primary.blank ? 'The saved picture is a blank white screen.' : 'No picture was saved for this check.')
+      : (clue || notes.errorLine || primary.reason || 'No picture was saved for this check.');
     return `<div class="failure-screen-fallback">
-      <span>${primary.blank ? 'The saved picture is a blank white screen' : 'No picture was saved'}</span>
-      <p>${escapeHtml(clue || notes.errorLine || primary.reason || story.happened)}</p>
+      <span>${primary.blank ? 'Blank screenshot' : 'No screenshot'}</span>
+      <p>${escapeHtml(fallbackLine)}</p>
       ${pageList ? `<strong>What was on the page</strong><ul>${pageList}</ul>` : ''}
     </div>${guide}`;
   }
@@ -4558,13 +4934,14 @@ function renderFailureScreen(test, title, index = 0, options = {}) {
   const region = primary.item ? getReliableFailureRegion(primary.item) : null;
   const absolutePath = primary.item ? getEvidenceAbsolutePath(primary.item) : '';
   const size = absolutePath ? readPngSize(absolutePath) : null;
-  const caption = clue || story.happened;
   const markNote = region
-    ? 'The red box marks the control this check was looking at.'
-    : 'This screen was saved. The failing control is not one box on the picture.';
+    ? (region.label
+      ? `Highlight: ${region.label}${region.expectedElementNotFound ? ' (expected control missing)' : ''}.`
+      : 'Red box marks the control this check was looking at.')
+    : 'Screenshot at failure. No reliable control mark was found.';
 
   return `${renderMarkedFailureImage(primary.href, region, size, `Screen when ${title} failed. ${markNote}`)}
-    <span class="failure-mark-note">${escapeHtml(caption)} ${escapeHtml(markNote)}</span>
+    <span class="failure-mark-note">${escapeHtml(markNote)}</span>
     ${guide}`;
 }
 
@@ -4636,10 +5013,16 @@ function createAnnotatedFailurePreview(test, screenshot, index = 0) {
     `<text x="28" y="${bannerY + 42 + lineIndex * 24}" fill="#ffffff" font-family="Arial, sans-serif" font-size="16" font-weight="700">${escapeHtml(item)}</text>`
   ).join('');
 
+  const callout = escapeHtml(String(region.label || '').trim() || (region.expectedElementNotFound ? 'Missing here' : 'Look here'));
+  const calloutY = Math.max(8, frame.y - 36);
+  const calloutX = Math.min(size.width - 180, Math.max(8, frame.x));
   const svg = `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="${size.width}" height="${size.height}" viewBox="0 0 ${size.width} ${size.height}">
   <image href="${escapeHtml(originalHrefForSvg)}" x="0" y="0" width="${size.width}" height="${size.height}" preserveAspectRatio="xMidYMid meet"/>
-  <rect x="${frame.x}" y="${frame.y}" width="${frame.width}" height="${frame.height}" rx="8" fill="rgba(220,38,38,0.16)" stroke="#dc2626" stroke-width="8"/>
+  <rect x="${frame.x - 4}" y="${frame.y - 4}" width="${frame.width + 8}" height="${frame.height + 8}" rx="12" fill="none" stroke="rgba(220,38,38,0.35)" stroke-width="6"/>
+  <rect x="${frame.x}" y="${frame.y}" width="${frame.width}" height="${frame.height}" rx="10" fill="rgba(220,38,38,0.14)" stroke="#ef4444" stroke-width="4"/>
+  <rect x="${calloutX}" y="${calloutY}" width="${Math.min(180, 28 + callout.length * 8)}" height="28" rx="8" fill="#dc2626"/>
+  <text x="${calloutX + 12}" y="${calloutY + 19}" fill="#ffffff" font-family="Arial, sans-serif" font-size="13" font-weight="800">${callout}</text>
   <rect x="12" y="${bannerY}" width="${labelWidth}" height="${bannerHeight}" rx="10" fill="#dc2626"/>
   <text x="28" y="${bannerY + 22}" fill="#ffffff" font-family="Arial, sans-serif" font-size="13" font-weight="800" letter-spacing="0.08em">FAILED</text>
   ${captionSvg}
@@ -4696,24 +5079,30 @@ function attachFailureFieldRegion(test) {
 
 function renderFailureScreenshotEvidence(test, index = 0) {
   const primary = attachFailureFieldRegion(test);
-  const story = plainFailureStory(test, index);
+  const title = getFailureShortTitle(test, index);
 
   if (!primary.available || primary.blank) {
     return `
       <div class="failure-screenshot-context">
-        ${renderFailureScreen(test, getFailureShortTitle(test, index), index)}
+        ${renderFailureScreen(test, title, index, { guide: false, silentCaption: true })}
       </div>`;
   }
 
   const region = primary.item ? getReliableFailureRegion(primary.item) : null;
   const absolutePath = primary.item ? getEvidenceAbsolutePath(primary.item) : '';
   const size = absolutePath ? readPngSize(absolutePath) : null;
+  const markNote = region
+    ? (region.label
+      ? `Highlight: ${region.label}${region.expectedElementNotFound ? ' (expected control missing)' : ''}.`
+      : 'Red box marks the control this check was looking at.')
+    : 'Screenshot at failure.';
 
   return `
     <div class="failure-screenshot-context">
       <div class="failure-shot-panel">
-        <span>Screen when this failed</span>
-        ${renderMarkedFailureImage(primary.href, region, size, `${story.happened} The red box marks the control this check was looking at.`)}
+        <span>Evidence</span>
+        ${renderMarkedFailureImage(primary.href, region, size, `Screen when ${title} failed. ${markNote}`)}
+        <span class="failure-mark-note">${escapeHtml(markNote)}</span>
       </div>
       <div class="failure-shot-panel original">
         <span>Full screenshot</span>
@@ -4721,13 +5110,6 @@ function renderFailureScreenshotEvidence(test, index = 0) {
           <img src="${escapeHtml(primary.href)}" alt="${escapeHtml(primary.label)}">
           <small>${escapeHtml(primary.label)}</small>
         </a>
-      </div>
-      <div class="failure-shot-notes">
-        <p><b>Scenario:</b> ${escapeHtml(story.scenario)}</p>
-        <p><b>Actual:</b> ${escapeHtml(story.happened)}</p>
-        <p><b>Expected:</b> ${escapeHtml(story.wanted)}</p>
-        <p><b>Reproduce:</b> ${escapeHtml(story.repro || story.next)}</p>
-        <p><b>Evidence:</b> ${escapeHtml(story.evidence || 'Picture / Trace / Video on this card.')}</p>
       </div>
     </div>`;
 }
@@ -4937,25 +5319,19 @@ const failedRows = (failedSourceItems.length > 0
     const fullTitle = getFailureFullTitle(test, index);
     const title = getFailureShortTitle(test, index);
     const moduleName = test.module ?? getModuleName(title);
-    const priority = test.severity ?? 'High';
     const story = plainFailureStory(test, index);
-    const reason = story.happened;
-    const nextAction = story.next;
-    const shot = selectPrimaryFailureScreenshot(test);
     const hiddenClass = index >= FAILED_TESTS_INITIAL_VISIBLE ? ' class="is-hidden"' : '';
+    const groupHref = failedSourceItems.length
+      ? `#failure-group-${failureGroupKey(test, index).key}`
+      : '#failures';
 
     return `
     <tr${hiddenClass} data-failure-row data-failure-index="${index}">
-      <td title="${escapeHtml(fullTitle)}"><a class="table-evidence-link" href="${failedSourceItems.length ? `#failure-group-${failureGroupKey(test, index).key}` : '#failures'}"><strong>${escapeHtml(title)}</strong></a></td>
+      <td title="${escapeHtml(fullTitle)}"><a class="table-evidence-link" href="${groupHref}"><strong>${escapeHtml(title)}</strong></a></td>
       <td>${escapeHtml(moduleName)}</td>
-      <td>
-        <strong><b>Scenario:</b> ${escapeHtml(story.scenario)}</strong>
-        <small><b>Actual:</b> ${escapeHtml(reason)}</small>
-        <small><b>Expected:</b> ${escapeHtml(story.wanted)}</small>
-        <small><b>Reproduce:</b> ${escapeHtml(story.repro || nextAction)}</small>
-        <small><b>Evidence:</b> ${escapeHtml(story.evidence || 'Open Picture / Trace for this row.')}</small>
-      </td>
-      <td><a class="table-evidence-link" href="${failedSourceItems.length ? `#failure-group-${failureGroupKey(test, index).key}` : '#failures'}">Open evidence</a></td>
+      <td>${escapeHtml(story.wanted)}</td>
+      <td>${escapeHtml(story.happened)}</td>
+      <td><a class="table-evidence-link" href="${groupHref}">Open</a></td>
     </tr>`;
   })
   .join('');
@@ -4982,66 +5358,41 @@ const failureInvestigationCards = failedSourceItems
     const fullTitle = getFailureFullTitle(test, index);
     const title = getFailureShortTitle(test, index);
     const moduleName = test.module ?? getModuleName(title);
-    const severity = test.severity ?? 'High';
-    const category = test.category ?? 'Execution';
-    const whatFailed = test.whatFailed ?? title;
-    const reason = test.whyFailed ?? getFailureClientDescription(test, index);
-    const expected = getFailureExpected(test, index);
-    const observed = getFailureObserved(test, index);
-    const impact = getFailureImpact(test, index);
-    const cause = getFailureCauseLabel(test);
-    const nextAction = getFailureNextAction(test, index);
-    const evidenceInfo = getFailureEvidenceInfo(test);
-    const sourceLabel = getFailureSourceLabel(test);
     const tone = 'red';
     const hiddenClass = index >= FAILED_TESTS_INITIAL_VISIBLE ? ' is-hidden' : '';
+    const story = plainFailureStory(test, index);
+    const badge = test.productBug
+      ? 'Product bug'
+      : (test.historyClassification || test.failureClassification || '').toLowerCase().includes('recurring')
+        ? 'Still failing'
+        : (test.flaky || test.status === 'flaky')
+          ? 'Flaky'
+          : (test.isNewFailure ? 'New' : 'Failed');
 
     return `
-      <article class="failure-investigation-card ${tone}${hiddenClass}" data-failure-card data-failure-index="${index}">
+      <article class="failure-investigation-card air-fail-card ${tone}${hiddenClass}" data-failure-card data-failure-index="${index}">
         <div class="failure-card-head">
           <span class="failure-index">F${index + 1}</span>
           <div>
             <strong>${escapeHtml(title)}</strong>
-            <small title="${escapeHtml(fullTitle)}">${escapeHtml(moduleName)} &bull; ${escapeHtml(category)}</small>
+            <small title="${escapeHtml(fullTitle)}">${escapeHtml(moduleName)}</small>
           </div>
-          <span class="failure-flag">${test.productBug ? 'Product bug' : 'Failed'}</span>
+          <span class="failure-flag">${escapeHtml(badge)}</span>
         </div>
         <div class="failure-reason-block">
-          <span>Scenario we tested</span>
-          <p>${escapeHtml(plainFailureStory(test, index).scenario || title)}</p>
-          <span>What we expected</span>
-          <p>${escapeHtml(plainFailureStory(test, index).wanted)}</p>
-          <span>What actually happened</span>
-          <p>${escapeHtml(plainFailureStory(test, index).happened)}</p>
-          <span>Steps to reproduce</span>
-          <p>${escapeHtml(plainFailureStory(test, index).repro || '')}</p>
-          <span>Evidence</span>
-          <p>${escapeHtml(plainFailureStory(test, index).evidence || 'Open the Picture column and Trace / Video chips for this failure.')}</p>
-          <span>Why it matters</span>
-          <p>${escapeHtml(impact)}</p>
+          ${renderFailureStoryFields(story, { showScenario: false })}
+          <div class="air-fail-evidence">
+            <span>Evidence</span>
+            ${renderFailureScreenshotEvidence(test, index)}
+            <div class="failure-artifact-group">
+              ${renderFailureEvidenceChips(test, { includeScreenshots: false })}
+            </div>
+          </div>
         </div>
-        ${renderFailureScreenshotEvidence(test, index)}
-        <p class="failure-next-action"><b>What to do next:</b> ${escapeHtml(plainFailureStory(test, index).next)}</p>
         <details class="failure-more-detail">
           <summary>Error detail</summary>
           <p class="technical-error">${escapeHtml(getFailureTechnicalError(test))}</p>
         </details>
-        <div class="failure-artifact-group">
-          <span>Trace / Video / Logs</span>
-          ${renderFailureEvidenceChips(test, { includeScreenshots: false })}
-        </div>
-        <div class="failure-card-meta">
-          <span><b>${escapeHtml(test.status ?? 'failed')}</b><small>Result</small></span>
-          <span><b>${escapeHtml(sourceLabel)}</b><small>From</small></span>
-          <span><b>${escapeHtml(evidenceInfo.status)}</b><small>Picture</small></span>
-          <span><b>${escapeHtml(moduleName)}</b><small>Area</small></span>
-        </div>
-        <div class="failure-card-action">
-          <span>${escapeHtml(evidenceInfo.label)}</span>
-          ${evidenceInfo.available
-            ? `<a href="${escapeHtml(evidenceInfo.href)}">${escapeHtml(evidenceInfo.action)}</a>`
-            : `<span>${escapeHtml(evidenceInfo.action)}</span>`}
-        </div>
       </article>`;
   })
   .join('');
@@ -5129,35 +5480,64 @@ function renderInnerBoard(label, cardsHtml, itemCount, gridClass = 'failure-card
 const failureEvidenceBoard = failureGroups.length === 0
   ? ''
   : renderInnerBoard('Stories', failureGroups.map(group => {
-    const preview = group.items.slice(0, 3).map(entry => `<li>${escapeHtml(entry.title)}</li>`).join('');
-    const extra = group.items.length - 3;
-    const more = extra > 0 ? `<li class="failure-more">and ${extra} more</li>` : '';
     const productBug = group.items.every(entry => entry.test.productBug);
+    const single = group.items.length === 1;
+    const cardTitle = single ? group.items[0].title : group.happened;
+    const cardActual = single ? group.happened : '';
+    const preview = single
+      ? ''
+      : group.items.slice(0, 3).map(entry => `<li>${escapeHtml(entry.title)}</li>`).join('');
+    const extra = group.items.length - 3;
+    const more = !single && extra > 0 ? `<li class="failure-more">and ${extra} more</li>` : '';
 
     return `<a class="failure-shot-card" data-inner-item href="#failure-group-${group.key}">
-        <header><div><strong>${escapeHtml(group.happened)}</strong><small>${group.items.length} check${group.items.length === 1 ? '' : 's'}</small></div><span class="failure-flag">${productBug ? 'Product bug' : 'Failed'}</span></header>
-        <ul class="failure-check-list">${preview}${more}</ul>
-        <span class="module-button">Open this group</span>
+        <header><div><strong>${escapeHtml(cardTitle)}</strong><small>${group.items.length} check${group.items.length === 1 ? '' : 's'} · ${escapeHtml(group.items[0].moduleName || 'General')}</small></div><span class="failure-flag">${productBug ? 'Product bug' : 'Failed'}</span></header>
+        ${cardActual ? `<p class="failure-card-actual"><span>Actual</span>${escapeHtml(cardActual)}</p>` : ''}
+        ${preview ? `<ul class="failure-check-list">${preview}${more}</ul>` : ''}
+        <span class="module-button">Open</span>
       </a>`;
   }).join(''), failureGroups.length);
 
 const failureDetailArticles = failureGroups.map(group => {
   const productBug = group.items.every(entry => entry.test.productBug);
-  const sharedNext = group.items.every(entry => entry.story.next === group.items[0].story.next)
-    ? group.items[0].story.next
-    : 'Each check below has its own next step.';
-  const checks = group.items.map(entry => `<section class="failure-group-check" data-inner-item>
-      <h3>${escapeHtml(entry.title)}</h3>
-      <p class="failure-plain">${escapeHtml(entry.story.happened)}</p>
-      <p class="failure-next-line">What to do: ${escapeHtml(entry.story.next)}</p>
-      ${renderFailureScreen(entry.test, entry.title, entry.index, { guide: false })}
-    </section>`).join('');
+  const first = group.items[0];
+  const sharedFields = group.items.every(entry =>
+    entry.story.happened === first.story.happened
+    && entry.story.wanted === first.story.wanted
+    && (entry.story.repro || entry.story.next) === (first.story.repro || first.story.next)
+  );
+  const headerTitle = group.items.length === 1 ? first.title : group.happened;
+  const storyBlock = sharedFields
+    ? renderFailureStoryFields(first.story, { showScenario: false })
+    : '';
+  const checks = group.items.map(entry => {
+    const perCheckStory = sharedFields
+      ? ''
+      : renderFailureStoryFields(entry.story, { showScenario: false });
+    const showTitle = group.items.length > 1;
 
-  return `<article class="failure-detail" id="failure-group-${group.key}" data-step-item data-step-label="${escapeHtml(group.happened)}">
+    return `<section class="failure-group-check" data-inner-item>
+      ${showTitle ? `<h3>${escapeHtml(entry.title)}</h3>` : ''}
+      ${perCheckStory}
+      <div class="air-fail-evidence">
+        <span>Evidence</span>
+        ${renderFailureScreen(entry.test, entry.title, entry.index, { guide: false, silentCaption: true })}
+        <div class="failure-artifact-group">
+          ${renderFailureEvidenceChips(entry.test, { includeScreenshots: false })}
+        </div>
+      </div>
+    </section>`;
+  }).join('');
+
+  return `<article class="failure-detail air-fail-card" id="failure-group-${group.key}" data-step-item data-step-label="${escapeHtml(headerTitle)}">
     <a class="back-checks" href="#failures">All failed groups</a>
-    <header class="failure-detail-head"><div><strong>${escapeHtml(group.happened)}</strong><small>${group.items.length} check${group.items.length === 1 ? '' : 's'}</small></div><span class="failure-flag">${productBug ? 'Product bug' : 'Failed'}</span></header>
-    <p class="failure-next-line">What to do: ${escapeHtml(sharedNext)}</p>
+    <header class="failure-detail-head"><div><strong>${escapeHtml(headerTitle)}</strong><small>${escapeHtml(first.moduleName || 'General')} · ${group.items.length} check${group.items.length === 1 ? '' : 's'}</small></div><span class="failure-flag">${productBug ? 'Product bug' : 'Failed'}</span></header>
+    ${storyBlock}
     ${renderInnerBoard('Checks', checks, group.items.length, 'failure-group-stack', 2)}
+    <details class="failure-more-detail">
+      <summary>Error detail</summary>
+      <p class="technical-error">${escapeHtml(getFailureTechnicalError(first.test))}</p>
+    </details>
   </article>`;
 }).join('');
 
@@ -5229,13 +5609,13 @@ const failedTestsContent =
       <div id="failure-story-board" data-failure-panel hidden>
         <a class="back-checks" href="#failures">All failure cards</a>
         <h2>What failed</h2>
-        <p>Checks that failed for the same reason share one card. Open it to see each screen. The red box marks the control that failed.</p>
+        <p>Open a card for Expected, Actual, Reproduce steps, and Evidence. Same Actual shares one card.</p>
         ${failureEvidenceBoard}
       </div>
       <div id="failure-full-list" data-failure-panel hidden>
         <a class="back-checks" href="#failures">All failure cards</a>
         <h2>Every failed check</h2>
-        <div class="table-wrap"><table class="data failure-detail-table"><thead><tr><th>Check</th><th>Area</th><th>What happened</th><th>Picture</th></tr></thead><tbody data-long-list="${FAILED_TESTS_INITIAL_VISIBLE}" data-long-item="tr" data-long-label="failed checks">${failedRows}</tbody></table></div>
+        <div class="table-wrap"><table class="data failure-detail-table"><thead><tr><th>Scenario</th><th>Area</th><th>Expected</th><th>Actual</th><th>Evidence</th></tr></thead><tbody data-long-list="${FAILED_TESTS_INITIAL_VISIBLE}" data-long-item="tr" data-long-label="failed checks">${failedRows}</tbody></table></div>
       </div>
       <div id="failure-areas" data-failure-panel hidden>
         <a class="back-checks" href="#failures">All failure cards</a>
@@ -6625,6 +7005,85 @@ const executiveWhatChangedSummary = hasPreviousComparison
   ? (airResults?.history?.whatChanged?.summary ?? `AIR compared this execution with the previous stored build. Release is ${getCurrentReleaseValue()}, quality is ${getComparisonDirection('quality').toLowerCase()}, failures are ${getComparisonDirection('failures').toLowerCase()}, and execution duration is ${getComparisonDirection('durationMs').toLowerCase()}.`)
   : 'AIR has recorded the first execution. Historical comparison will become available after the next run.';
 
+const historyFailDelta = comparisonMetrics.failures?.delta ?? 0;
+const historyPassDelta = comparisonMetrics.passRate?.delta ?? 0;
+const historyVsLastLabel = !hasPreviousComparison
+  ? 'First saved run'
+  : historyFailDelta < 0 || (historyFailDelta === 0 && historyPassDelta > 0)
+    ? 'Better than last run'
+    : historyFailDelta > 0 || (historyFailDelta === 0 && historyPassDelta < 0)
+      ? 'Worse than last run'
+      : 'Same as last run';
+const historyVsLastTone = historyVsLastLabel.startsWith('Better')
+  ? 'good'
+  : historyVsLastLabel.startsWith('Worse')
+    ? 'bad'
+    : 'warn';
+const historyAnswerLine = !hasPreviousComparison
+  ? 'This is the first recorded run. Comparison appears after the next suite.'
+  : `${historyVsLastLabel} — ${executiveData.failed} failed now · ${formatReleaseDecision(getCurrentReleaseValue())} (was ${formatReleaseDecision(getSnapshotRelease(historyComparison.previous))}).`;
+
+const historyPageBodyHtml = hasPreviousComparison
+  ? `
+        <div class="history-simple-hero ${historyVsLastTone}">
+          <span class="mission-label">Vs last run</span>
+          <h2 class="${historyVsLastTone}">${escapeHtml(historyVsLastLabel)}</h2>
+          <p>${escapeHtml(historyAnswerLine)}</p>
+          <div class="history-delta-grid">
+            <div class="compare-card"><span>Failures</span><strong>${executiveData.failed}</strong><small>${escapeHtml(getComparisonDeltaLabel('failures'))}</small></div>
+            <div class="compare-card"><span>Pass rate</span><strong>${executiveData.passRate}%</strong><small>${escapeHtml(getComparisonDeltaLabel('passRate', '%'))}</small></div>
+            <div class="compare-card"><span>Decision</span>${renderReleaseBadge(getCurrentReleaseValue(), { compact: true })}<small>Was ${escapeHtml(formatReleaseDecision(getSnapshotRelease(historyComparison.previous)))}</small></div>
+            <div class="compare-card"><span>Duration</span><strong>${escapeHtml(executiveData.duration)}</strong><small>${escapeHtml(getComparisonDirection('durationMs'))}</small></div>
+          </div>
+        </div>
+        <div class="panel history-one-chart">
+          <div class="history-panel-head">
+            <span>Trend</span>
+            <h2>Failures over recent runs</h2>
+            <p>Lower is healthier. One chart — the only chart on this page.</p>
+          </div>
+          ${renderHistoryTrendCard('Failures', 'failures', value => `${value} failed`, { max: Math.max(5, ...(airResults?.history?.trends?.failures?.points ?? []).map(point => Number(point.value) || 0)) })}
+          <div class="release-badge-strip" aria-label="Release decisions over recent runs">
+            ${(historySnapshots.slice(-8)).map((snapshot, index) => `
+              <div>
+                ${renderReleaseBadge(getSnapshotRelease(snapshot), { compact: true })}
+                <small>${escapeHtml(index === historySnapshots.slice(-8).length - 1 ? 'Current' : getHistoryBuildLabel(snapshot, index, { compact: true }))}</small>
+              </div>`).join('')}
+          </div>
+        </div>
+        <div class="history-focus-grid">
+          ${renderHistorySignalCard('New failures', newFailures, 'No new failures', 'bad')}
+          ${renderHistorySignalCard('Still failing', activeRecurringFailurePatterns.length ? activeRecurringFailurePatterns : recurringFailures, 'Nothing still failing', 'warn')}
+          ${renderHistorySignalCard('Regressed areas', [...(moduleComparison.regressed ?? []), ...(journeyRegressions ?? [])], 'No regressed areas', 'bad')}
+          ${renderHistorySignalCard('Flaky watch', flakyHistoryPatterns, 'No flaky patterns', 'info')}
+        </div>
+        <details class="fold">
+          <summary><b>What got better</b><span>Resolved failures and improved areas</span></summary>
+          <div class="history-focus-grid">
+            ${renderHistorySignalCard('Resolved', resolvedFailures, 'No resolved failures', 'good')}
+            ${renderHistorySignalCard('Improved modules', moduleComparison.improved, 'No improved modules', 'good')}
+            ${renderHistorySignalCard('Improved journeys', journeyComparison.improved, 'No journey improvements', 'good')}
+          </div>
+        </details>
+        <details class="fold">
+          <summary><b>Suite inventory</b><span>${addedTests.length} added · ${(removedTests ?? []).length} removed · ${(modifiedTests ?? []).length} modified</span></summary>
+          <div class="grid three">
+            <div><h2>Added</h2>${renderTestChangeSummary('added test(s)', addedTests, 'No added tests')}</div>
+            <div><h2>Removed</h2>${renderTestChangeSummary('removed test(s)', removedTests, 'No removed tests')}</div>
+            <div><h2>Modified</h2>${renderTestChangeSummary('modified test(s)', modifiedTests, 'No modified tests')}</div>
+          </div>
+        </details>
+        <details class="fold">
+          <summary><b>Earlier runs</b><span>Quality, decision, and duration</span></summary>
+          <div class="history-timeline-track">${timelineCards}</div>
+        </details>
+      `
+  : renderEmptyState({
+      title: 'No historical executions available.',
+      reason: 'This is the first recorded AIR execution.',
+      action: 'Build comparison will appear after multiple executions.',
+    });
+
 const aiWhyItems =
   (Array.isArray(airResults?.releaseDecision?.reasons) && airResults.releaseDecision.reasons.length > 0
     ? airResults.releaseDecision.reasons
@@ -6986,7 +7445,14 @@ const healthSummaryLead = (() => {
   const notRun = displayModules.filter(module => getModuleStatusGroup(module) === 'not-executed');
   const critical = displayModules.filter(module => getModuleStatusGroup(module) === 'critical');
   const parts = [`${healthyModuleCount} of ${displayModules.length} areas are healthy.`];
-  if (critical.length) parts.push(`${joinNames(critical)} failed.`);
+  if (critical.length) {
+    const hardFails = critical.filter(module => Number(module.failed ?? 0) > 0);
+    parts.push(
+      hardFails.length
+        ? `${joinNames(hardFails)} failed.`
+        : `${joinNames(critical)} need attention.`
+    );
+  }
   if (warning.length) parts.push(`${joinNames(warning)} ${warning.length === 1 ? 'needs' : 'need'} a look.`);
   if (notRun.length) parts.push(`${joinNames(notRun)} did not run.`);
   return parts.join(' ');
@@ -6999,7 +7465,7 @@ const nextFocusText =
       : 'Ready for review';
 const executiveDecisionBullets = [
   `${executiveData.executed ?? executiveData.passed} tests executed; ${executiveData.total} in the inventory.`,
-  `${executiveData.passed} passed and ${executiveData.failed} failed (executed pass rate ${executiveData.executedPassRate ?? executiveData.passRate}%).`,
+  `${executiveData.passed} passed and ${executiveData.failed} failed${(executiveData.flaky ?? 0) > 0 ? ` (${executiveData.flaky} flaky after retry)` : ''} (executed pass rate ${executiveData.executedPassRate ?? executiveData.passRate}%).`,
   `${executiveData.documentedSkipped ?? 0} documented coverage gaps and ${executiveData.unexpectedSkipped ?? 0} unexpected skip(s).`,
   `${businessJourneyStatus} business journey status.`,
   evidenceReadiness === 'Ready'
@@ -7649,13 +8115,50 @@ const briefPrimaryCta =
         ? `<div class="scan-now known"><a href="#executive"><b>Why conditional?</b><span>Open decision detail →</span></a></div>`
         : `<div class="scan-now good"><a href="#validation-summary"><b>See what passed</b><span>${executiveData.passed} checks →</span></a></div>`;
 const passRateTone =
-  executiveData.qualityScore >= 90 ? 'good' : executiveData.qualityScore >= 70 ? 'warn' : 'bad';
+  executiveData.passRate >= 90 ? 'good' : executiveData.passRate >= 70 ? 'warn' : 'bad';
+const briefGapBlocked = coverageGapSummary.blocked ?? 0;
+const briefGapControlled = coverageGapSummary.controlled ?? 0;
+const briefGapUnexpected = coverageGapSummary.skipped ?? unexpectedSkipped ?? 0;
+const briefWhyParts = [];
+if (executiveData.failed > 0) briefWhyParts.push(`${executiveData.failed} failed`);
+if (briefGapBlocked > 0) briefWhyParts.push(`${briefGapBlocked} blocked`);
+if (briefGapControlled > 0) briefWhyParts.push(`${briefGapControlled} need setup`);
+if (briefGapUnexpected > 0) briefWhyParts.push(`${briefGapUnexpected} unexpected skips`);
+if ((executiveData.skipped ?? 0) > 0 && briefWhyParts.length === 0) {
+  briefWhyParts.push(`${executiveData.skipped} not run`);
+}
+const briefWhyLine =
+  executiveData.failed > 0
+    ? `${formatReleaseDecision(executiveData.releaseDecision)}: ${briefWhyParts.join(' · ')}. Open Failed next.`
+    : executiveData.releaseDecision === 'CONDITIONAL GO'
+      ? `${formatReleaseDecision(executiveData.releaseDecision)}: ${briefWhyParts.length ? briefWhyParts.join(' · ') : 'executed checks passed with remaining coverage risk'}.`
+      : executiveData.releaseDecision === 'GO'
+        ? (briefWhyParts.length
+          ? `${formatReleaseDecision(executiveData.releaseDecision)} for what ran · ${briefWhyParts.join(' · ')} — review before final sign-off.`
+          : `${formatReleaseDecision(executiveData.releaseDecision)}. Executed checks passed.`)
+        : `${formatReleaseDecision(executiveData.releaseDecision)}: ${briefWhyParts.join(' · ') || 'resolve blockers before release'}.`;
+const vsLastRunChip = hasPreviousComparison
+  ? (() => {
+      const failDelta = comparisonMetrics.failures?.delta ?? 0;
+      const passDelta = comparisonMetrics.passRate?.delta ?? 0;
+      const better =
+        (failDelta < 0) || (failDelta === 0 && passDelta > 0);
+      const worse =
+        (failDelta > 0) || (failDelta === 0 && passDelta < 0);
+      const label = better ? 'Better than last run' : worse ? 'Worse than last run' : 'Same as last run';
+      const tone = better ? 'good' : worse ? 'bad' : 'warn';
+      const detail = failDelta !== 0
+        ? `${failDelta > 0 ? '+' : ''}${failDelta} failures`
+        : `${passDelta > 0 ? '+' : ''}${passDelta}% pass rate`;
+      return `<a class="vs-last-chip ${tone}" href="#comparison">${escapeHtml(label)} · ${escapeHtml(detail)} →</a>`;
+    })()
+  : '';
 const statusBoardHtml = `
   <div class="status-board" aria-label="This run at a glance">
     <a class="status-card good" href="#validation-summary"><b>${executiveData.passed}</b><span>Passed</span><small>What passed →</small></a>
     <a class="status-card ${executiveData.failed > 0 ? 'bad' : 'good'}" href="#failures"><b>${executiveData.failed}</b><span>Failed</span><small>${executiveData.failed > 0 ? 'Fix these first →' : 'None'}</small></a>
-    <a class="status-card ${(executiveData.skipped ?? 0) > 0 ? 'warn' : 'good'}" href="#coverage-gaps"><b>${Math.max(0, executiveData.skipped ?? 0)}</b><span>Not run</span><small>${(executiveData.skipped ?? 0) > 0 ? 'Why skipped →' : 'None'}</small></a>
-    <a class="status-card ${passRateTone}" href="#health"><b>${executiveData.qualityScore}%</b><span>Pass rate</span><small>Module health →</small></a>
+    <a class="status-card ${(executiveData.skipped ?? 0) > 0 ? 'warn' : 'good'}" href="#coverage-gaps"><b>${Math.max(0, executiveData.skipped ?? 0)}</b><span>Not run</span><small>${briefGapBlocked} blocked · ${briefGapControlled} setup · ${briefGapUnexpected} unexpected</small></a>
+    <a class="status-card ${passRateTone}" href="#health"><b>${executiveData.passRate}%</b><span>Pass rate</span><small>Of checks that ran →</small></a>
   </div>`;
 const executiveModeShellHtml = `
   <div class="brief">
@@ -7663,40 +8166,21 @@ const executiveModeShellHtml = `
       <div class="eyebrow">${escapeHtml(projectName)} · ${escapeHtml(environment)}</div>
       <h1>Can we <em>ship</em>?</h1>
       ${releaseStatusBadge}
-      <p class="brief-line">${
-        executiveData.failed > 0
-          ? `Not yet — ${executiveData.failed} failed. Open Failed next.`
-          : executiveData.releaseDecision === 'CONDITIONAL GO'
-            ? ((executiveData.skipped ?? 0) > 0
-              ? `Almost — ${executiveData.skipped} not run. Review those before final sign-off.`
-              : `Almost — executed checks passed. Open Why this decision for the remaining risk.`)
-            : (executiveData.skipped ?? 0) > 0
-              ? `Yes for what ran. ${executiveData.skipped} not run — review before final sign-off.`
-              : `Yes. Executed checks passed.`
-      }</p>
+      ${vsLastRunChip}
+      <p class="brief-line">${escapeHtml(briefWhyLine)}</p>
       <p class="brief-when">${escapeHtml(generatedAtFriendly)} · ${executiveData.executed ?? executiveData.passed} of ${executiveData.total} checks ran</p>
       ${briefPrimaryCta}
     </div>
     ${statusBoardHtml}
   </div>
   ${(executiveData.skipped ?? 0) > 0
-    ? `<details class="fold brief-more">
-    <summary><b>Why some checks did not run</b><span>Blocked, setup, later, or already covered</span></summary>
-    <div class="brief-more-body">
-  <section class="coverage-board" aria-label="Plan coverage">
-    <h2>Plan coverage</h2>
-    <div class="coverage-meter-track" aria-hidden="true"><span class="coverage-meter-ran" style="width:${executiveData.total ? Math.round(((executiveData.executed ?? executiveData.passed) / executiveData.total) * 100) : 0}%"></span></div>
-    <div class="coverage-meter-note"><span>${executiveData.executed ?? executiveData.passed} ran</span><span>${executiveData.total ? Math.round(((executiveData.executed ?? executiveData.passed) / executiveData.total) * 100) : 0}% of ${executiveData.total} planned</span></div>
-    <div class="passed-card-grid">
-      <a class="passed-card" href="#plan-cat-blocked"><div class="passed-card-top"><span class="module-icon">BL</span><strong>Blocked</strong></div><div class="passed-card-count"><b>${coverageGapSummary.blocked ?? 0}</b><span>checks</span></div><p>Need a product or admin change first.</p><span class="module-button">Open</span></a>
-      <a class="passed-card" href="#plan-cat-controlled"><div class="passed-card-top"><span class="module-icon">SU</span><strong>Need a setup</strong></div><div class="passed-card-count"><b>${coverageGapSummary.controlled ?? 0}</b><span>checks</span></div><p>Need an email, code, or prepared user.</p><span class="module-button">Open</span></a>
-      <a class="passed-card" href="#plan-cat-traceability"><div class="passed-card-top"><span class="module-icon">AC</span><strong>Already covered</strong></div><div class="passed-card-count"><b>${coverageGapSummary.traceability ?? 0}</b><span>checks</span></div><p>Checked by another test that did run.</p><span class="module-button">Open</span></a>
-      <a class="passed-card" href="#plan-cat-future"><div class="passed-card-top"><span class="module-icon">LT</span><strong>Later</strong></div><div class="passed-card-count"><b>${coverageGapSummary.future ?? 0}</b><span>checks</span></div><p>Not part of this release.</p><span class="module-button">Open</span></a>
-      <a class="passed-card" href="#plan-cat-skipped"><div class="passed-card-top"><span class="module-icon">LK</span><strong>Need a look</strong></div><div class="passed-card-count"><b>${coverageGapSummary.skipped ?? 0}</b><span>checks</span></div><p>Skipped without a clear reason.</p><span class="module-button">Open</span></a>
+    ? `<div class="brief-not-run-cta">
+    <div>
+      <strong>Not run</strong>
+      <span>${briefGapBlocked} blocked · ${briefGapControlled} need setup · ${briefGapUnexpected} unexpected · ${(coverageGapSummary.future ?? 0)} later</span>
     </div>
-  </section>
-    </div>
-  </details>`
+    <a class="btn primary" href="#coverage-gaps">Review not-run →</a>
+  </div>`
     : ''}`;
 
 const aiDecisionSummary =
@@ -8095,8 +8579,6 @@ const morePages = [
   ['module-dashboard', 'Each area'],
   ['executive', 'Why'],
   ['comparison', 'History'],
-  ['air-core', 'About AIR'],
-  ['roadmap', 'Roadmap'],
 ];
 
 const reportPages = [...primaryPages, ...morePages];
@@ -8236,9 +8718,9 @@ const airGoldenDashboardHtml = `<!doctype html>
 <title>AIR Execution Report - ${escapeHtml(projectName)}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#05080e;--nav:#0a1220;--panel:#111827;--panel2:#0e1a2d;--card:#111827;--line:#1f2937;--line2:rgba(57,231,95,.22);--text:#f7fafc;--muted:#a8b8cb;--green:#39e75f;--green2:#9af7ad;--green3:#14532d;--red:#ff7b72;--amber:#f5c542;--info:#8ec5ff;--accent:#39e75f;--champagne:#9af7ad;--display:"Fraunces",Georgia,serif;--font:Manrope,Segoe UI,sans-serif;--ease:cubic-bezier(.22,1,.36,1)}
+:root{--bg:#05080e;--nav:#0a1220;--panel:#111827;--panel2:#0e1a2d;--card:#111827;--line:#1f2937;--line2:rgba(57,231,95,.22);--text:#f7fafc;--muted:#a8b8cb;--green:#39e75f;--green2:#9af7ad;--green3:#14532d;--red:#ff7b72;--amber:#f5c542;--info:#8ec5ff;--accent:#39e75f;--champagne:#9af7ad;--display:"Syne",Georgia,sans-serif;--font:"Outfit",Segoe UI,sans-serif;--ease:cubic-bezier(.22,1,.36,1)}
 *{box-sizing:border-box}html{scroll-behavior:auto}body{margin:0;background:radial-gradient(900px 480px at 8% -8%,rgba(57,231,95,.16),transparent 58%),radial-gradient(800px 420px at 92% 0%,rgba(57,231,95,.06),transparent 52%),linear-gradient(168deg,#05080e,#0b121c 42%,#07101f);color:var(--text);font-family:var(--font)}.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}.sidebar{position:sticky;top:0;height:100vh;min-height:0;background:linear-gradient(180deg,#061227,#07101f);border-right:1px solid var(--line2);padding:24px 18px;display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:rgba(57,231,95,.45) rgba(8,16,30,.6)}.sidebar::-webkit-scrollbar{width:8px}.sidebar::-webkit-scrollbar-track{background:rgba(8,16,30,.6);border-radius:999px}.sidebar::-webkit-scrollbar-thumb{background:rgba(57,231,95,.45);border-radius:999px}.brand{font-size:54px;font-weight:900;letter-spacing:-4px;background:linear-gradient(90deg,#39e75f,#9af7ad);-webkit-background-clip:text;color:transparent;line-height:.9}.brand-sub{font-size:12px;line-height:1.4;margin:8px 0 24px;color:white;text-align:center}.nav a{display:flex;gap:10px;align-items:center;color:white;text-decoration:none;padding:12px 13px;border-radius:8px;margin-bottom:8px;font-size:14px}.nav-icon{width:22px;height:22px;min-width:22px;border:1px solid rgba(57,231,95,.26);border-radius:7px;background:rgba(57,231,95,.08);display:grid;place-items:center;color:var(--green)}.nav-icon svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}.nav a.active .nav-icon,.nav a:hover .nav-icon{background:rgba(57,231,95,.18);border-color:rgba(57,231,95,.55);color:white}.nav a.active,.nav a:hover{background:linear-gradient(90deg,#14532d,#166534);box-shadow:inset 3px 0 0 var(--green)}.report-meta{margin-top:auto;border:1px solid var(--line2);border-radius:10px;padding:14px;background:rgba(17,24,39,.55);font-size:12px;color:var(--muted)}.release-mini{margin-top:12px;border:1px solid rgba(57,231,95,.35);background:rgba(57,231,95,.08);border-radius:10px;padding:14px}.release-mini strong{display:block;font-size:34px;color:var(--green)}main{padding:26px 32px 52px}.page{border:1px solid var(--line2);border-radius:16px;background:linear-gradient(180deg,rgba(17,24,39,.94),rgba(8,16,30,.94));padding:26px;margin-bottom:26px;box-shadow:0 18px 50px rgba(0,0,0,.22)}.hero{min-height:560px}.cover-page{min-height:720px;display:grid;gap:24px}.cover-hero{min-height:430px;border:1px solid rgba(57,231,95,.28);border-radius:18px;background:radial-gradient(circle at 70% 30%,rgba(57,231,95,.16),transparent 35%),linear-gradient(135deg,#07101f,#0b1728);padding:42px;display:grid;grid-template-columns:1fr 1.2fr;gap:28px;align-items:center}.cover-logo{font-size:92px;font-weight:900;letter-spacing:-7px;background:linear-gradient(90deg,#39e75f,#9af7ad);-webkit-background-clip:text;color:transparent}.cover-title{font-size:44px;line-height:1.02;margin:10px 0}.cover-sub{color:var(--muted);font-size:18px}.cover-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.cover-stat{border:1px solid var(--line2);border-radius:12px;background:rgba(8,16,30,.76);padding:18px}.cover-stat span{display:block;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.08em}.cover-stat strong{display:block;font-size:23px;margin-top:8px}.wow{border:1px solid rgba(57,231,95,.3);border-radius:16px;background:linear-gradient(135deg,rgba(57,231,95,.12),rgba(8,16,30,.82));padding:22px;margin-bottom:22px}.wow h2{font-size:28px;margin:0 0 14px}.wow-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.wow-card{border:1px solid var(--line2);border-radius:12px;background:rgba(8,16,30,.72);padding:16px}.wow-card span{display:block;color:var(--muted)}.wow-card strong{display:block;color:var(--green);font-size:34px;margin-top:5px}.wow-card small{display:block;color:#d7fbe0;line-height:1.7}.topbar{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:22px}.eyebrow{font-size:11px;letter-spacing:.18em;color:var(--green);font-weight:900}.topbar h1{font-size:32px;margin:4px 0 3px;letter-spacing:-.03em}.topbar p{margin:0;color:var(--muted)}.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}.pill,.btn{border:1px solid var(--line2);border-radius:9px;padding:9px 12px;background:#07101f;color:white;font-weight:800;font-size:12px}.pill.demo{background:rgba(57,231,95,.11);border-color:rgba(57,231,95,.4);color:var(--green)}.btn{text-decoration:none}.btn:hover{border-color:rgba(57,231,95,.6);color:var(--green)}.kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:16px}.kpi{background:linear-gradient(145deg,#111827,#0b1728);border:1px solid var(--line2);border-radius:10px;padding:16px;min-height:116px;position:relative;overflow:hidden}.kpi:after{content:attr(data-icon);position:absolute;right:14px;top:20px;font-size:34px;color:var(--green);opacity:.82}.kpi span{display:block;color:var(--muted);font-size:13px}.kpi strong{display:block;font-size:30px;margin:10px 0 4px}.kpi.good strong,.good{color:var(--green)}.kpi.bad strong,.bad{color:var(--red)}.kpi.warn strong,.warn{color:var(--amber)}.grid{display:grid;gap:18px}.grid.two{grid-template-columns:1.1fr .9fr}.grid.three{grid-template-columns:repeat(3,1fr)}.panel{border:1px solid var(--line2);border-radius:12px;background:rgba(8,16,30,.74);padding:20px}.panel h2{font-size:18px;margin:0 0 14px}.icon-title{display:flex;align-items:center;gap:10px}.section-icon{width:34px;height:34px;border:1px solid rgba(57,231,95,.35);border-radius:10px;display:inline-grid;place-items:center;background:rgba(57,231,95,.12);color:var(--green);font-size:12px;font-weight:900}.release-card{display:grid;place-items:center;text-align:center;min-height:290px;background:radial-gradient(circle at center,rgba(57,231,95,.15),transparent 58%),#08101e}.release-card .decision{font-size:70px;font-weight:900;margin:8px 0}.release-card .score{width:160px;height:160px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--green) ${executiveData.qualityScore}%,#26354e 0);position:relative}.release-card .score:before{content:"";position:absolute;width:112px;height:112px;border-radius:50%;background:#0b1628}.release-card .score b{z-index:1;font-size:36px}table{width:100%;border-collapse:collapse}th,td{padding:11px 10px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em}.progress{height:9px;background:#1d2b44;border-radius:999px;overflow:hidden}.progress span{display:block;height:100%;background:linear-gradient(90deg,var(--green),#16a34a);border-radius:999px}.health-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.health-card{display:flex;gap:13px;align-items:center;border:1px solid var(--line2);border-radius:12px;padding:16px;background:#0b1728}.health-card strong,.health-card span,.health-card small{display:block}.health-card span{font-size:28px;color:var(--green);font-weight:900;margin:4px 0}.health-card small{color:var(--muted)}.health-icon{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:rgba(57,231,95,.14);border:1px solid rgba(57,231,95,.35);color:var(--green);font-size:11px;font-weight:900}.health-card.amber .health-icon,.health-card.amber span{color:var(--amber)}.health-card.red .health-icon,.health-card.red span{color:var(--red)}.badge{display:inline-block;border-radius:999px;padding:5px 9px;font-size:11px;font-weight:900}.badge.good{background:rgba(57,231,95,.14);border:1px solid rgba(57,231,95,.35)}.badge.warn{background:rgba(245,197,66,.14);border:1px solid rgba(245,197,66,.35)}.badge.bad{background:rgba(255,59,59,.14);border:1px solid rgba(255,59,59,.35)}.journey{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.journey-node{min-width:145px;background:#0b1728;border:1px solid var(--line2);border-radius:13px;padding:15px;text-align:center}.journey-node .node-icon{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;margin:0 auto 9px;background:rgba(57,231,95,.16);border:1px solid rgba(57,231,95,.35);font-size:20px}.journey-node strong{display:block}.journey-node span{display:block;color:var(--muted);margin-top:5px}.journey-arrow{color:var(--green);font-size:22px}.chart{height:250px;border:1px solid var(--line2);background:linear-gradient(180deg,#091426,#07101f);border-radius:12px;padding:22px 18px 42px;display:flex;gap:16px;align-items:flex-end}.bar{flex:1;border-radius:8px 8px 3px 3px;background:linear-gradient(180deg,#63ef7e,#178f38);min-height:18px;position:relative;box-shadow:0 10px 22px rgba(57,231,95,.12)}.bar:hover{filter:brightness(1.16)}.bar.red{background:linear-gradient(180deg,#ff3b3b,#991b1b)}.bar.blue{background:linear-gradient(180deg,#39e75f,#14532d)}.bar label{position:absolute;bottom:-28px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--muted);white-space:nowrap}.risk-matrix{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}.risk-cell{min-height:72px;border:1px solid var(--line2);border-radius:8px;display:grid;place-items:center;text-align:center}.risk-cell.low{background:rgba(57,231,95,.14)}.risk-cell.med{background:rgba(245,197,66,.17)}.risk-cell.high{background:rgba(255,59,59,.20)}.evidence-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.evidence-card{display:flex;gap:13px;align-items:center;border:1px solid var(--line2);border-radius:12px;padding:18px;background:#0b1728}.evidence-icon{width:48px;height:48px;border-radius:12px;background:rgba(57,231,95,.12);border:1px solid rgba(57,231,95,.28);display:grid;place-items:center;color:var(--green);font-weight:900}.evidence-card strong,.evidence-card span{display:block}.evidence-card span{color:var(--muted);margin-top:4px}.thumb-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.thumb{border:1px solid var(--line2);border-radius:12px;background:#07101f;padding:10px;text-decoration:none;color:white;min-height:132px}.thumb img{width:100%;height:92px;object-fit:cover;border-radius:8px;border:1px solid var(--line)}.thumb span{display:block;color:var(--muted);font-size:12px;margin-top:8px}.thumb.placeholder{display:grid;place-items:center;text-align:center}.thumb.placeholder div{width:100%;height:92px;border-radius:8px;border:1px dashed rgba(57,231,95,.35);display:grid;place-items:center;color:var(--green);background:rgba(57,231,95,.08)}.insight{border-color:rgba(57,231,95,.35);background:linear-gradient(135deg,rgba(57,231,95,.12),rgba(20,83,45,.12))}.ai-reasons{margin:12px 0 0;padding-left:20px;color:#d7fbe0;line-height:1.8}.empty-note{border:1px dashed var(--line2);border-radius:12px;padding:18px;color:var(--muted);background:rgba(8,16,30,.5)}.footer{display:flex;justify-content:space-between;gap:18px;align-items:center;color:var(--muted);font-size:12px;border-top:1px solid var(--line2);padding-top:18px}.footer strong{color:white}@media(max-width:1100px){.app{grid-template-columns:1fr}.sidebar{position:relative;height:auto}.kpis,.grid.two,.grid.three,.evidence-grid,.cover-hero,.cover-stats,.wow-grid,.health-grid,.thumb-grid{grid-template-columns:1fr}.hero{min-height:auto}}@page{size:A3 landscape;margin:8mm}@media print{*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}html,body{background:#0b0f17!important;color:var(--text)!important}.app{display:block}.sidebar{display:none!important}main{padding:0!important}.page{break-inside:avoid;page-break-inside:avoid;margin:0 0 10mm!important;box-shadow:none!important}.btn,.actions{display:none!important}.footer{break-inside:avoid}}
 </style>
 <style data-air-guide-offset>
@@ -8278,8 +8760,8 @@ body.has-air-guide .sidebar{z-index:5!important}
     .sidebar-overview-link{display:flex;align-items:center;gap:8px;margin:12px 0 0;padding:11px 13px;border:1px solid rgba(57,231,95,.3);border-radius:14px;background:linear-gradient(135deg,rgba(57,231,95,.12),rgba(57,231,95,.08));color:#39e75f!important;text-decoration:none!important;font-size:13px;font-weight:800;transition:transform .16s ease,border-color .16s ease,background .16s ease}
     .sidebar-overview-link:hover{border-color:rgba(57,231,95,.6);background:rgba(57,231,95,.16);color:#9af7ad!important;transform:translateY(-1px)}
     .sidebar{background:linear-gradient(180deg,#070e18,#0a1422)!important;border-right:1px solid rgba(255,255,255,.06)!important;box-shadow:inset -1px 0 0 rgba(57,231,95,.08)}
-    .sidebar .brand{background:linear-gradient(90deg,#39e75f,#9af7ad)!important;-webkit-background-clip:text!important;color:transparent!important;font-weight:600!important}
-    .sidebar .brand-sub{color:#a8b8cb!important;text-align:left!important;margin:2px 0 0!important;letter-spacing:.04em}
+    .sidebar .brand{font-family:var(--display)!important;font-size:58px!important;font-weight:800!important;letter-spacing:-.06em!important;background:linear-gradient(115deg,#fff 10%,#9af7ad 45%,#39e75f)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;filter:drop-shadow(0 8px 24px rgba(57,231,95,.25))}
+    .sidebar .brand-sub{color:#9eb0c6!important;text-align:left!important;margin:6px 0 0!important;letter-spacing:.14em!important;text-transform:uppercase!important;font-size:10px!important;font-weight:700!important}
     .sidebar .nav a{border-radius:14px!important;transition:background .22s var(--ease),transform .22s var(--ease)}
     .sidebar .nav a:hover{transform:translateX(3px)}
     .sidebar .nav a.active,.sidebar .nav a:hover{background:linear-gradient(90deg,rgba(57,231,95,.14),rgba(57,231,95,.05))!important;box-shadow:inset 3px 0 0 #39e75f!important}
@@ -8289,6 +8771,45 @@ body.has-air-guide .sidebar{z-index:5!important}
     .topbar h1,.page-title-row h1{font-family:var(--display)!important;font-weight:500!important;letter-spacing:-.035em!important}
     .sidebar-overview-link{border-radius:16px!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
     .air-overview-nav{backdrop-filter:blur(16px) saturate(1.15)!important;border-bottom-color:rgba(255,255,255,.08)!important}
+
+    /* —— Clarity + atelier polish —— */
+    .vs-last-chip{display:inline-flex;align-items:center;gap:8px;margin:10px 0 0;padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.12);text-decoration:none;font-size:12.5px;font-weight:750;color:#e8eef5;background:rgba(8,14,24,.55)}
+    .vs-last-chip.good{border-color:rgba(57,231,95,.4);color:#39e75f;background:rgba(57,231,95,.1)}
+    .vs-last-chip.bad{border-color:rgba(255,123,114,.4);color:#ff7b72;background:rgba(255,123,114,.1)}
+    .vs-last-chip.warn{border-color:rgba(245,197,66,.4);color:#f5c542;background:rgba(245,197,66,.1)}
+    .brief-not-run-cta{display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap;margin:18px 0 8px;padding:18px 20px;border-radius:22px;border:1px solid rgba(245,197,66,.28);background:linear-gradient(165deg,rgba(245,197,66,.1),rgba(8,14,24,.88))}
+    .brief-not-run-cta strong{display:block;font-family:var(--display);font-size:20px;font-weight:600;margin-bottom:4px}
+    .brief-not-run-cta span{color:#a8b8cb;font-size:13.5px}
+    .history-simple-hero{border:1px solid rgba(255,255,255,.1);border-radius:28px;padding:28px;margin:0 0 18px;background:linear-gradient(145deg,rgba(255,255,255,.05),transparent 40%),linear-gradient(160deg,rgba(18,26,40,.94),rgba(8,14,24,.96));box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 24px 60px rgba(0,0,0,.25)}
+    .history-simple-hero h2{font-family:var(--display);font-weight:600;font-size:clamp(28px,3vw,40px);letter-spacing:-.03em;margin:8px 0 10px}
+    .history-simple-hero h2.good,.history-simple-hero.good h2{color:#39e75f}
+    .history-simple-hero h2.bad,.history-simple-hero.bad h2{color:#ff7b72}
+    .history-simple-hero h2.warn,.history-simple-hero.warn h2{color:#f5c542}
+    .history-simple-hero p{color:#c5d4e6;font-size:15.5px;line-height:1.6;max-width:62ch;margin:0 0 18px}
+    .history-delta-grid,.history-focus-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:8px}
+    .history-focus-grid{grid-template-columns:repeat(2,minmax(0,1fr));margin:18px 0}
+    .history-one-chart{margin-bottom:18px}
+    .release-badge-strip{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+    .release-badge-strip > div{display:grid;gap:6px;justify-items:center;min-width:72px}
+    .release-badge-strip small{color:var(--muted);font-size:11px}
+    .air-fail-card .air-fail-fields{display:grid;gap:12px;margin:16px 0}
+    .air-fail-card .air-fail-fields > div,
+    .air-fail-card .air-fail-pair > div{border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:12px 14px;background:rgba(8,14,24,.45)}
+    .air-fail-card .air-fail-fields > div > span,
+    .air-fail-card .air-fail-pair > div > span,
+    .air-fail-evidence > span{display:block;color:#9af7ad;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:800;margin-bottom:6px}
+    .air-fail-card .air-fail-fields p{margin:0;color:#dbe7f3;line-height:1.55}
+    .air-fail-pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .air-repro-list{margin:0;padding-left:18px;color:#dbe7f3;line-height:1.55}
+    .air-repro-list li{margin:5px 0}
+    .air-fail-evidence{padding:12px 0 6px}
+    .failure-card-actual{margin:10px 0 0;color:#dbe7f3;font-size:14px;line-height:1.45}
+    .failure-card-actual span{display:block;color:#9af7ad;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;margin-bottom:4px}
+    .failure-detail-table .fail-label{display:block;color:#9af7ad;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:800;margin-bottom:4px}
+    .failure-detail-table td span{display:block;color:#dbe7f3;line-height:1.45}
+    @media(max-width:760px){.air-fail-pair{grid-template-columns:1fr}}
+    @media(max-width:1100px){.history-delta-grid,.history-focus-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:760px){.history-delta-grid,.history-focus-grid{grid-template-columns:1fr}}
 
     /* —— Ultra-premium global skin (every details screen) —— */
     .panel,.card,.fold,.report-more-card,.passed-card,.failure-summary-card,.failure-shot-card,.failure-group,
@@ -10610,8 +11131,13 @@ body.has-air-guide .sidebar{z-index:5!important}
     .failure-shot-card header > div{min-width:0;flex:1}
     .failure-flag{flex:0 0 auto;white-space:nowrap;display:inline-flex;align-items:center;height:auto;width:auto;min-width:max-content;border-radius:999px;background:#dc2626;color:#fff;font-size:12px;font-weight:800;letter-spacing:.04em;line-height:1;padding:8px 12px;text-transform:uppercase}
     .marked-shot{position:relative;width:100%;border-radius:12px;overflow:hidden;background:#fff;line-height:0}
-    .marked-shot .field-box{position:absolute;box-sizing:border-box;border:4px solid #dc2626;background:rgba(220,38,38,.18);border-radius:8px;pointer-events:none}
-    .marked-shot.field-marked{border:0}
+    .marked-shot .marked-frame{position:relative;width:100%;line-height:0}
+    .marked-shot .field-box{position:absolute;box-sizing:border-box;border:3px solid #ef4444;background:rgba(239,68,68,.14);border-radius:10px;pointer-events:none;box-shadow:0 0 0 4px rgba(239,68,68,.28),0 10px 28px rgba(220,38,38,.22);z-index:2}
+    .marked-shot .field-box::before{content:attr(data-label);position:absolute;left:0;top:-30px;display:inline-flex;align-items:center;max-width:min(240px,70vw);padding:5px 10px;border-radius:8px;background:#dc2626;color:#fff;font-size:12px;font-weight:800;letter-spacing:.02em;line-height:1.2;white-space:nowrap;box-shadow:0 6px 16px rgba(220,38,38,.28)}
+    .marked-shot.field-marked{border:0;overflow:visible;padding-top:34px;background:transparent}
+    .marked-shot.field-marked .marked-frame{overflow:hidden;border-radius:12px;background:#fff}
+    .marked-shot.field-marked img{border-radius:12px;display:block;width:100%;height:auto}
+    .air-fail-evidence .marked-shot.field-marked{margin-top:4px}
     a.failure-shot-card{text-decoration:none;color:inherit;cursor:pointer}
     .failure-card-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:18px}@media(max-width:760px){.failure-card-grid{grid-template-columns:1fr}}
     .failure-check-list{margin:0;padding-left:18px;color:#d7fbe0}
@@ -12996,10 +13522,10 @@ body.has-air-guide .sidebar{z-index:5!important}
       ${renderPageFooter('module-dashboard')}
     </section>
 
-    <section class="page${executiveData.failed > 0 ? '' : ' report-extra'}" id="failures">
+    <section class="page" id="failures">
       ${renderPageNav('failures')}
-      <div class="topbar"><div><div class="eyebrow">${escapeHtml(projectName)}</div>${pageHeading('failures', 'What failed')}<p>Read each issue as What happened → Why it matters → What to do next. Same-reason failures share one card.</p></div><span class="pill">${executiveData.failed} failed</span></div>
-      ${executiveData.failed > 0 ? `<div class="fail-read-path" aria-label="How to read failures"><span>How to read</span><a href="#failure-home">1. Pick a view</a><a href="#failure-story-board">2. Open a story</a><a href="#evidence">3. Check proof</a><a href="#insight">4. Next steps</a></div>` : ''}
+      <div class="topbar"><div><div class="eyebrow">${escapeHtml(projectName)}</div>${pageHeading('failures', 'What failed')}<p>Each failure: Scenario (title) → Expected → Actual → Reproduce → Evidence. Same Actual shares one card.</p></div><span class="pill">${executiveData.failed} failed</span></div>
+      ${executiveData.failed > 0 ? `<div class="fail-read-path" aria-label="How to read failures"><span>How to read</span><a href="#failure-home">1. Pick a view</a><a href="#failure-story-board">2. Open a failure</a><a href="#evidence">3. Evidence</a><a href="#insight">4. Next steps</a></div>` : ''}
       ${renderFailureCardNav()}
       ${renderInnerNav('story', { requireSelection: true })}
       <div data-passed-index>
@@ -13009,7 +13535,7 @@ body.has-air-guide .sidebar{z-index:5!important}
       ${renderPageFooter('failures')}
     </section>
 
-    <section class="page report-extra" id="coverage-gaps">
+    <section class="page" id="coverage-gaps">
       <div id="plan-cat-blocked" hidden></div>
       <div id="plan-cat-controlled" hidden></div>
       <div id="plan-cat-traceability" hidden></div>
@@ -13020,7 +13546,7 @@ body.has-air-guide .sidebar{z-index:5!important}
         <div>
           <div class="eyebrow">${escapeHtml(projectName)}</div>
           ${pageHeading('analytics', 'Checks we did not run')}
-          <p>These checks did not run. Pick a reason, then open a group. Back goes up one step.</p>
+          <p>${coverageGapSummary.blocked ?? 0} blocked · ${coverageGapSummary.controlled ?? 0} need setup · ${coverageGapSummary.skipped ?? 0} unexpected · ${coverageGapSummary.future ?? 0} later · ${coverageGapSummary.traceability ?? 0} already covered</p>
         </div>
         <span class="pill">${coverageGapSummary.total ?? coverageGapItems.length} Items</span>
       </div>
@@ -13028,7 +13554,7 @@ body.has-air-guide .sidebar{z-index:5!important}
       ${renderPageFooter('coverage-gaps')}
     </section>
 
-    <section class="page report-extra" id="validation-summary">
+    <section class="page" id="validation-summary">
       ${renderPageNav('validation-summary')}
       <div class="topbar">
         <div>
@@ -13149,207 +13675,17 @@ body.has-air-guide .sidebar{z-index:5!important}
       ${renderPageFooter('insight')}
     </section>
 
-    <section class="page report-extra" id="comparison">
+    <section class="page" id="comparison">
       ${renderPageNav('comparison')}
       <div class="topbar">
         <div>
           <div class="eyebrow">${escapeHtml(projectName)}</div>
           ${pageHeading('analytics', 'Past runs')}
-          <p>How this run compares with earlier ones.</p>
+          <p>Are we better than last time?</p>
         </div>
         <span class="pill demo">${hasPreviousComparison ? 'Compared with the last run' : 'First saved run'}</span>
       </div>
-      ${hasPreviousComparison ? `
-        <div class="history-command-hero">
-          <div class="history-hero-grid">
-            <div class="history-narrative">
-              <span class="mission-label">What changed</span>
-              <h2>What changed since the previous build?</h2>
-              <p>${escapeHtml(executiveWhatChangedSummary)}</p>
-              <ul class="history-change-list">
-                ${executiveWhatChangedItems.map(item => `<li>${escapeHtml(item)}</li>`).join('')}
-              </ul>
-            </div>
-            <div class="history-metric-grid">
-              <div class="compare-card"><span>Current Build</span><strong>${escapeHtml(buildVersion)}</strong><small>Current execution baseline</small></div>
-              <div class="compare-card"><span>Previous Build</span><strong>${escapeHtml(historyComparison.previous?.project?.build ?? historyComparison.previous?.execution?.build ?? 'Previous')}</strong><small>Last recorded execution</small></div>
-              <div class="compare-card"><span>Release Change</span>${renderReleaseBadge(getCurrentReleaseValue(), { compact: true })}<small>Previous: ${escapeHtml(getSnapshotRelease(historyComparison.previous))}</small></div>
-              <div class="compare-card"><span>Quality Change</span><strong>${escapeHtml(getComparisonDeltaLabel('quality', '%'))}</strong><small>Current: ${executiveData.qualityScore}%</small></div>
-              <div class="compare-card"><span>Failure Change</span><strong>${escapeHtml(getComparisonDeltaLabel('failures'))}</strong><small>Current failed tests: ${executiveData.failed}</small></div>
-              <div class="compare-card"><span>Flaky Change</span><strong>${escapeHtml(getComparisonDeltaLabel('flaky'))}</strong><small>Current flaky tests: ${airResults?.summary?.flaky ?? 0}</small></div>
-              <div class="compare-card"><span>Duration Change</span><strong>${escapeHtml(getComparisonDirection('durationMs'))}</strong><small>Current: ${escapeHtml(executiveData.duration)}</small></div>
-            </div>
-          </div>
-        </div>
-        <details class="fold">
-          <summary><b>What improved</b><span>Resolved failures, modules, and journeys</span></summary>
-        <div class="historical-wins">
-          <h2>Improvement Highlights</h2>
-          <p>Positive movement detected from History Engine comparison data.</p>
-          ${renderComparisonList(historicalWinItems, 'No improvement highlights yet')}
-        </div>
-        </details>
-        <details class="fold">
-          <summary><b>Build comparison</b><span>Quality, pass rate, time, failures, and suite size</span></summary>
-        <div class="history-comparison-dashboard">
-          <div class="history-panel-head">
-            <span>Build Delta</span>
-            <h2>Build Comparison</h2>
-            <p>Current execution compared against the previous stored AIR execution.</p>
-          </div>
-          <div class="compare-grid">
-            ${renderComparisonMetric('Quality Score', 'quality')}
-            ${renderComparisonMetric('Pass Rate', 'passRate')}
-            ${renderComparisonMetric('Execution Time', 'durationMs')}
-            ${renderComparisonMetric('Failed Tests', 'failures')}
-            ${renderComparisonMetric('Flaky Tests', 'flaky')}
-            ${renderComparisonMetric('Module Coverage', 'moduleCoverage')}
-            ${renderComparisonMetric('Evidence', 'evidence')}
-              <div class="compare-card"><span>Modules Executed</span><strong>${currentModulesExecuted}</strong><small>Previous: ${previousModulesExecuted}</small></div>
-              <div class="compare-card"><span>Journeys Executed</span><strong>${currentJourneysExecuted}</strong><small>Previous: ${previousJourneysExecuted}</small></div>
-              <div class="compare-card"><span>Tests Added</span><strong>${historyComparison.tests?.summary?.added ?? 0}</strong><small>New tests since previous execution</small></div>
-              <div class="compare-card"><span>Tests Removed</span><strong>${historyComparison.tests?.summary?.removed ?? 0}</strong><small>Tests no longer present</small></div>
-              <div class="compare-card"><span>Tests Modified</span><strong>${historyComparison.tests?.summary?.modified ?? 0}</strong><small>Status, module, file, or title changed</small></div>
-            </div>
-        </div>
-        </details>
-        <details class="fold">
-          <summary><b>Charts</b><span>Quality, release, failures, pass rate, and coverage over time</span></summary>
-        <div class="history-section-grid">
-          ${renderHistoryTrendCard('Quality Trend', 'quality')}
-          ${renderReleaseTrendCard()}
-          ${renderHistoryTrendCard('Failure Trend', 'failures', value => `${value} failed`, { max: Math.max(5, ...(airResults?.history?.trends?.failures?.points ?? []).map(point => Number(point.value) || 0)) })}
-          ${renderHistoryTrendCard('Flaky Trend', 'flaky', value => `${value} flaky`, { max: Math.max(5, ...(airResults?.history?.trends?.flaky?.points ?? []).map(point => Number(point.value) || 0)) })}
-        </div>
-        <div class="history-section-grid">
-          ${renderHistoryTrendCard('Pass Rate Trend', 'passRate')}
-          ${renderHistoryTrendCard('Module Coverage Trend', 'moduleCoverage')}
-          ${renderHistoryTrendCard('Journey Coverage Trend', 'journeyCoverage')}
-        </div>
-        </details>
-        <details class="fold">
-          <summary><b>Tests that changed</b><span>${addedTests.length} added, ${removedTests.length} removed, ${modifiedTests.length} modified</span></summary>
-        <div class="history-test-change-panel">
-          <div class="history-panel-head">
-            <span>Suite Movement</span>
-            <h2>Test Changes</h2>
-            <p>Added, removed, and modified tests detected by the History Engine.</p>
-          </div>
-          <div class="grid three">
-            <div><h2>Added Tests</h2>${renderTestChangeSummary('added test(s)', addedTests, 'No added tests')}</div>
-            <div><h2>Removed Tests</h2>${renderTestChangeSummary('removed test(s)', removedTests, 'No removed tests')}</div>
-            <div><h2>Modified Tests</h2>${renderTestChangeSummary('modified test(s)', modifiedTests, 'No modified tests')}</div>
-          </div>
-        </div>
-        </details>
-        <details class="fold">
-          <summary><b>Areas and paths</b><span>Which modules and user paths moved</span></summary>
-        <div class="history-signal-layout">
-          <div class="panel history-signal-panel">
-            <div class="history-panel-head">
-              <span>Module Intelligence</span>
-              <h2>Module Trend</h2>
-              <p>Where module health improved, regressed, or changed execution scope.</p>
-            </div>
-            <div class="history-signal-grid">
-              ${renderHistorySignalCard('Improved', moduleComparison.improved, 'No improved modules', 'good')}
-              ${renderHistorySignalCard('Regressed', moduleComparison.regressed, 'No regressed modules', 'bad')}
-              ${renderHistorySignalCard('New', moduleComparison.added, 'No new modules', 'info')}
-              ${renderHistorySignalCard('Not Executed', moduleComparison.notExecuted, 'No not-executed modules', 'warn')}
-            </div>
-          </div>
-          <div class="panel history-signal-panel">
-            <div class="history-panel-head">
-              <span>Business Flow</span>
-              <h2>Journey Trend</h2>
-              <p>How user journeys changed between the current and previous execution.</p>
-            </div>
-            <div class="history-signal-grid">
-              ${renderHistorySignalCard('Improved', journeyComparison.improved, 'No journey improvements', 'good')}
-              ${renderHistorySignalCard('Regressed', journeyRegressions, 'No journey regressions', 'bad')}
-              ${renderHistorySignalCard('New Risk', newJourneyRisks, 'No new journey risks', 'warn')}
-              ${renderHistorySignalCard('Not Executed', journeyComparison.notExecuted, 'No not-executed journeys', 'info')}
-            </div>
-          </div>
-        </div>
-        </details>
-        <details class="fold">
-          <summary><b>Failures and release calls</b><span>New, resolved, and how often the release was blocked</span></summary>
-        <div class="history-signal-layout">
-          <div class="panel history-signal-panel failure-panel">
-            <div class="history-panel-head">
-              <span>Failure Movement</span>
-              <h2>Failure Trend</h2>
-              <p>New, resolved, recurring, and severity-shifted defects from history comparison.</p>
-            </div>
-            <div class="history-signal-grid">
-              ${renderHistorySignalCard('New', newFailures, 'No new failures', 'bad')}
-              ${renderHistorySignalCard('Resolved', resolvedFailures, 'No resolved failures', 'good')}
-              ${renderHistorySignalCard('Recurring', recurringFailures, 'No recurring failures', 'warn')}
-              ${renderHistorySignalCard('Severity', severityChanges, 'No severity changes', 'info')}
-              ${renderHistorySignalCard('Active Recurrence', activeRecurringFailurePatterns, 'No active recurring failure patterns', 'warn')}
-              ${renderHistorySignalCard('Flaky', flakyHistoryPatterns, 'No flaky history patterns', 'info')}
-            </div>
-            <div class="history-panel-subsection">
-              <div class="history-panel-head compact">
-                <span>Per-Test Memory</span>
-                <h3>Failure Timeline</h3>
-                <p>Shows whether failures are new, recurring, persistent, historical, or recently fixed.</p>
-              </div>
-              ${renderFailureTimelinePreview(failureTimelinePatterns)}
-            </div>
-          </div>
-          <div class="panel release-timeline-panel">
-            <div class="history-panel-head">
-              <span>Release Memory</span>
-              <h2>Release Trend</h2>
-            </div>
-            <p>${escapeHtml(historyComparison.summary ?? 'AIR compared the current execution with the previous execution using History Engine data.')}</p>
-            <div class="compare-grid">
-              <div class="compare-card"><span>GO</span><strong>${historySnapshots.filter(snapshot => getSnapshotRelease(snapshot) === 'GO').length}</strong><small>Recorded GO decisions</small></div>
-              <div class="compare-card"><span>Conditional GO</span><strong>${historySnapshots.filter(snapshot => getSnapshotRelease(snapshot) === 'CONDITIONAL GO').length}</strong><small>Recorded conditional decisions</small></div>
-              <div class="compare-card"><span>No GO</span><strong>${historySnapshots.filter(snapshot => getSnapshotRelease(snapshot) === 'NO GO').length}</strong><small>Recorded blocked decisions</small></div>
-              <div class="compare-card"><span>Reason Changes</span><strong>${escapeHtml(effectiveReasonChanges.length)}</strong><small>${effectiveReasonChanges.length ? escapeHtml(effectiveReasonChanges.map(item => `${item.status}: ${item.name}`).join(' | ')) : 'No release reason changes detected'}</small></div>
-            </div>
-          </div>
-        </div>
-        </details>
-        <details class="fold">
-          <summary><b>Where to look next</b><span>The focus items from this comparison</span></summary>
-        <div class="panel executive-focus-panel">
-          <div class="history-panel-head">
-            <span>Decision Guidance</span>
-            <h2>Executive Focus</h2>
-            <p>AIR uses History Engine comparison data to highlight what changed and where the team should focus next.</p>
-          </div>
-          ${renderExecutiveFocusCards(engineeringInsightItems)}
-        </div>
-        </details>
-        <details class="fold">
-          <summary><b>Earlier runs</b><span>Quality, release call, and duration for each saved run</span></summary>
-        <div class="panel history-timeline-panel">
-          <div class="history-panel-head">
-            <span>Execution Memory</span>
-            <h2>Historical Timeline</h2>
-            <p>Recent AIR executions with quality, release decision, and duration at a glance.</p>
-          </div>
-          <div class="history-timeline-track">${timelineCards}</div>
-          <details class="timeline-details">
-            <summary>View detailed timeline table</summary>
-            <table>
-              <thead><tr><th>Build</th><th>Version</th><th>Date</th><th>Quality</th><th>Release</th><th>Duration</th><th>Trend</th></tr></thead>
-              <tbody>${timelineRows}</tbody>
-            </table>
-          </details>
-        </div>
-        </details>
-      ` : `
-        ${renderEmptyState({
-          title: 'No historical executions available.',
-          reason: 'This is the first recorded AIR execution.',
-          action: 'Build comparison will appear after multiple executions.',
-        })}
-      `}
+      ${historyPageBodyHtml}
       ${renderPageFooter('comparison')}
     </section>
 

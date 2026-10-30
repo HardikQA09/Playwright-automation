@@ -15,12 +15,12 @@ function buildOverviewHtml(payload, options = {}) {
 <title>OolTool AIR · Overview</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --ink:#f7fafc;
-  --muted:#a8b8cb;
-  --dim:#73849a;
+  --ink:#f4f7fb;
+  --muted:#9eb0c6;
+  --dim:#6f8299;
   --line:rgba(186,210,235,.12);
   --line-strong:rgba(186,210,235,.26);
   --good:#39e75f;
@@ -30,13 +30,13 @@ function buildOverviewHtml(payload, options = {}) {
   --accent:#39e75f;
   --accent-2:#9af7ad;
   --champagne:#9af7ad;
-  --bg0:#05080e;
-  --bg1:#0b121c;
+  --bg0:#03060b;
+  --bg1:#0a121c;
   --panel:rgba(16,24,38,.72);
   --glass:rgba(18,26,40,.55);
   --shadow:0 40px 100px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.03);
-  --font:Manrope,Segoe UI,sans-serif;
-  --display:"Fraunces",Georgia,serif;
+  --font:"Outfit",Segoe UI,sans-serif;
+  --display:"Syne",Georgia,sans-serif;
   --radius:26px;
   --ease:cubic-bezier(.22,1,.36,1);
 }
@@ -497,31 +497,155 @@ a.kpi:hover{
   box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 28px 70px rgba(0,0,0,.28)!important;
 }
 .more-explore > summary{font-size:19px!important;padding:18px 20px!important}
+
+.history-delta-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0 0 8px}
+.history-delta{border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:14px 14px 12px;background:linear-gradient(165deg,rgba(255,255,255,.05),rgba(8,14,24,.85))}
+.history-delta span{display:block;color:var(--dim);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:800}
+.history-delta strong{display:block;font-family:var(--display);font-size:28px;margin:8px 0 4px;letter-spacing:-.03em}
+.history-delta small{color:var(--muted);font-size:12px}
+.archive-fold{margin-top:18px;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:4px 12px 12px;background:rgba(8,14,24,.4)}
+.archive-fold > summary{cursor:pointer;padding:12px 4px;font-weight:700;color:#fff}
+.find-card.air-fail-card .row span{color:var(--accent)}
+.air-repro-list{margin:6px 0 0;padding-left:18px;color:var(--muted);line-height:1.55}
+.air-repro-list li{margin:4px 0}
+@media(max-width:760px){.history-delta-row{grid-template-columns:1fr 1fr}}
 @media (prefers-reduced-motion:reduce){
-  body:after,.hero:after,.gate-panel:before,.mark{animation:none!important}
+  body:after,.hero:after,.gate-panel:before,.mark,.hero-atmosphere,.brand-air,.atelier-scan{animation:none!important}
+}
+
+/* —— Atelier skin: brand-first, one composition —— */
+.shell{max-width:1220px;padding:22px 22px 96px}
+.topnav.atelier-nav{
+  margin:0 0 14px;padding:0;
+  justify-content:flex-end;
+}
+.topnav.atelier-nav .brand{display:none}
+.hero.atelier-hero{
+  position:relative;isolation:isolate;
+  min-height:min(72vh,720px);
+  padding:48px 44px 40px!important;
+  border-radius:42px!important;
+  overflow:hidden;
+  border:1px solid rgba(57,231,95,.22)!important;
+  background:
+    linear-gradient(120deg,rgba(3,8,14,.2),rgba(3,8,14,.72) 48%,rgba(3,10,16,.55)),
+    radial-gradient(900px 480px at 78% 18%,rgba(57,231,95,.28),transparent 58%),
+    radial-gradient(700px 420px at 12% 88%,rgba(154,247,173,.12),transparent 55%),
+    linear-gradient(155deg,#071018,#0b1724 45%,#050a12)!important;
+  box-shadow:
+    0 50px 140px rgba(0,0,0,.58),
+    0 0 0 1px rgba(255,255,255,.04),
+    inset 0 1px 0 rgba(255,255,255,.08)!important;
+  animation:hero-rise .85s var(--ease) both;
+}
+@keyframes hero-rise{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
+.hero-atmosphere{
+  position:absolute;inset:-20%;z-index:0;pointer-events:none;
+  background:
+    conic-gradient(from 210deg at 70% 30%,rgba(57,231,95,.16),transparent 28%,rgba(154,247,173,.08),transparent 55%,rgba(57,231,95,.1)),
+    radial-gradient(circle at 30% 20%,rgba(255,255,255,.05),transparent 40%);
+  filter:blur(18px) saturate(1.15);
+  animation:atmosphere-drift 14s ease-in-out infinite alternate;
+}
+@keyframes atmosphere-drift{from{transform:translate3d(-2%,1%,0) rotate(-2deg)}to{transform:translate3d(3%,-2%,0) rotate(2deg)}}
+.atelier-scan{
+  position:absolute;left:-10%;right:-10%;top:0;height:42%;z-index:0;pointer-events:none;opacity:.35;
+  background:linear-gradient(180deg,rgba(255,255,255,.1),transparent 70%);
+  mix-blend-mode:soft-light;
+  animation:scan-sweep 9s var(--ease) infinite;
+}
+@keyframes scan-sweep{0%,100%{transform:translateY(-8%);opacity:.2}50%{transform:translateY(18%);opacity:.42}}
+.atelier-hero .hero-grid{position:relative;z-index:1;gap:36px;align-items:center;min-height:420px}
+.brand-lockup{
+  display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
+  margin:0 0 18px;animation:rise .7s var(--ease) .05s both;
+}
+.brand-air{
+  font-family:var(--display);font-weight:800;font-size:clamp(72px,11vw,128px);
+  line-height:.82;letter-spacing:-.07em;
+  background:linear-gradient(115deg,#ffffff 8%,#9af7ad 42%,#39e75f 78%,#22c55e);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 10px 40px rgba(57,231,95,.28));
+  animation:air-breathe 6s ease-in-out infinite;
+}
+@keyframes air-breathe{0%,100%{filter:drop-shadow(0 10px 36px rgba(57,231,95,.22))}50%{filter:drop-shadow(0 14px 52px rgba(57,231,95,.4))}}
+.brand-product{
+  font-family:var(--font);font-size:13px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
+  color:#9af7ad;opacity:.92;padding-bottom:10px;
+}
+.atelier-hero .eyebrow{display:none}
+.atelier-hero h1{
+  font-family:var(--display)!important;font-weight:600!important;
+  font-size:clamp(34px,4.6vw,52px)!important;line-height:.98!important;
+  letter-spacing:-.04em!important;margin:0 0 14px!important;
+  color:#f7fbff!important;max-width:14ch;
+  animation:rise .7s var(--ease) .12s both;
+}
+.atelier-hero h1 em{
+  font-style:normal;font-weight:700;
+  background:linear-gradient(115deg,#d7fbe0,#9af7ad 45%,#39e75f)!important;
+  -webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;
+}
+.atelier-hero .lede{
+  font-size:16.5px!important;line-height:1.7!important;color:#c2d2e4!important;
+  max-width:36ch!important;margin:0 0 8px!important;
+  animation:rise .7s var(--ease) .18s both;
+}
+.atelier-hero .cta-row{animation:rise .7s var(--ease) .24s both;margin-top:22px!important}
+.atelier-hero .gate-panel{
+  min-height:260px!important;border-radius:32px!important;
+  background:
+    linear-gradient(160deg,rgba(255,255,255,.08),transparent 42%),
+    linear-gradient(165deg,rgba(10,18,28,.78),rgba(8,16,26,.88))!important;
+  backdrop-filter:blur(22px) saturate(1.2);
+  -webkit-backdrop-filter:blur(22px) saturate(1.2);
+  border:1px solid rgba(255,255,255,.12)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.12),
+    0 30px 80px rgba(0,0,0,.4),
+    0 0 60px rgba(57,231,95,.08)!important;
+  animation:rise .8s var(--ease) .16s both;
+}
+.atelier-hero .gate-label{
+  font-size:11px;letter-spacing:.2em;color:#9af7ad;font-weight:700;
+}
+.atelier-hero .gate-value{
+  font-family:var(--display)!important;font-weight:700!important;
+  letter-spacing:-.03em!important;
+}
+.kpis .kpi,.panel .card,.more-explore,.find-card,.find-success{
+  animation:rise .65s var(--ease) both;
+}
+.section-label h2,.card-head h3,.more-explore > summary,.find-success strong,.help summary{
+  font-family:var(--display)!important;font-weight:600!important;letter-spacing:-.03em!important;
+}
+.btn{font-family:var(--font);letter-spacing:.01em}
+.btn.primary{
+  background:linear-gradient(135deg,#b6f9c4,#39e75f 48%,#1fbf55)!important;
+  box-shadow:0 16px 40px rgba(57,231,95,.34),inset 0 1px 0 rgba(255,255,255,.5)!important;
+}
+@media(max-width:900px){
+  .hero.atelier-hero{min-height:0;padding:28px 20px 24px!important;border-radius:28px!important}
+  .brand-air{font-size:clamp(64px,18vw,96px)}
+  .atelier-hero .hero-grid{min-height:0;gap:22px}
 }
 </style>
 </head>
 <body data-air-simple-overview="true">
 <div class="shell">
-  <div class="topnav">
-    <div class="brand">
-      <div class="mark">AIR</div>
-      <div class="brand-copy">
-        <strong>OolTool AIR</strong>
-        <span>Automation Intelligence Report</span>
-      </div>
-    </div>
+  <div class="topnav atelier-nav">
     <div class="top-actions">
       <button type="button" class="btn" id="btn-refresh">Refresh</button>
       <a class="btn ghost" id="btn-details" href="${detailsHref}">Full report</a>
     </div>
   </div>
 
-  <section class="hero" id="start">
+  <section class="hero atelier-hero" id="start">
+    <div class="hero-atmosphere" aria-hidden="true"></div>
+    <div class="atelier-scan" aria-hidden="true"></div>
     <div class="hero-grid">
-      <div>
-        <div class="eyebrow">OolTool · Latest suite</div>
+      <div class="hero-copy">
+        <p class="brand-lockup"><span class="brand-air">AIR</span><span class="brand-product">OolTool</span></p>
         <h1>Can we <em>ship</em>?</h1>
         <p class="lede" id="subtitle">Loading your latest results…</p>
         <div class="cta-row" id="hero-cta"></div>
@@ -548,20 +672,18 @@ a.kpi:hover{
   </section>
 
   <details class="more-explore" id="more-explore">
-    <summary>More views — areas, trends, compare, saved runs</summary>
+    <summary>More detail</summary>
     <div class="more-body">
       <div class="section-label">
         <div>
-          <h2>Explore the latest run</h2>
-          <p>Optional detail. Open only if you need more than the decision and failures.</p>
+          <h2>Areas and history</h2>
+          <p>Optional detail beyond the decision and failures.</p>
         </div>
       </div>
 
       <div class="tabs" role="tablist">
         <button type="button" data-tab="modules">By area</button>
-        <button type="button" data-tab="trends">Over time</button>
-        <button type="button" data-tab="compare">Compare runs</button>
-        <button type="button" data-tab="archive">Saved runs</button>
+        <button type="button" data-tab="history">History</button>
       </div>
 
       <section class="panel" id="panel-modules">
@@ -575,35 +697,17 @@ a.kpi:hover{
         </div>
       </section>
 
-      <section class="panel" id="panel-trends">
-        <div class="grid-2">
-          <div class="card">
-            <div class="card-head">
-              <h3>Pass rate over time</h3>
-              <span id="rate-caption">higher is better</span>
-            </div>
-            <p class="muted" style="margin:0 0 12px;font-size:13px">Are we getting healthier run after run?</p>
-            <div class="chart-wrap" id="chart-rate"></div>
-          </div>
-          <div class="card">
-            <div class="card-head">
-              <h3>Failures over time</h3>
-              <span>lower is better</span>
-            </div>
-            <p class="muted" style="margin:0 0 12px;font-size:13px">How many checks failed in each full suite.</p>
-            <div class="chart-wrap" id="chart-fails"></div>
-          </div>
-        </div>
-      </section>
-
-      <section class="panel" id="panel-compare">
-        <div class="card">
+      <section class="panel" id="panel-history">
+        <div class="card history-card">
           <div class="card-head">
-            <h3>Compare two runs</h3>
-            <span>what changed</span>
+            <h3 id="history-answer">Vs last run</h3>
+            <span id="history-caption">failures over time</span>
           </div>
-          <p class="muted" style="margin:0 0 14px;font-size:13px">Choose an older run and a newer run.</p>
-          <div class="compare-controls">
+          <p class="muted" id="history-lead" style="margin:0 0 14px;font-size:13.5px">Loading…</p>
+          <div class="history-delta-row" id="history-deltas"></div>
+          <p class="muted" style="margin:18px 0 8px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:800">Failures over recent runs</p>
+          <div class="chart-wrap" id="chart-fails"></div>
+          <div class="compare-controls" style="margin-top:22px">
             <label class="field">Older run<select id="sel-a"></select></label>
             <label class="field">Newer run<select id="sel-b"></select></label>
           </div>
@@ -611,20 +715,13 @@ a.kpi:hover{
             <thead><tr><th>Measure</th><th>Older</th><th>Newer</th><th>Change</th></tr></thead>
             <tbody id="compare-body"></tbody>
           </table>
-        </div>
-      </section>
-
-      <section class="panel" id="panel-archive">
-        <div class="card">
-          <div class="card-head">
-            <h3>Saved runs on this PC</h3>
-            <span>auto-cleaned</span>
-          </div>
-          <p class="muted" style="margin:0 0 14px;font-size:13px">Stored under <code>execution-report/dashboard/runs</code>.</p>
-          <table>
-            <thead><tr><th>Run</th><th>When</th><th>Passed / Failed / Skipped</th><th>Decision</th></tr></thead>
-            <tbody id="archive-body"></tbody>
-          </table>
+          <details class="archive-fold">
+            <summary>All saved runs</summary>
+            <table>
+              <thead><tr><th>When</th><th>Passed / Failed / Not run</th><th>Decision</th></tr></thead>
+              <tbody id="archive-body"></tbody>
+            </table>
+          </details>
         </div>
       </section>
     </div>
@@ -633,12 +730,12 @@ a.kpi:hover{
   <details class="help">
     <summary>Quick glossary — what the words mean</summary>
     <div class="help-grid">
-      <div><strong>Ready to release</strong><span>No blocking failures for the release gate.</span></div>
-      <div><strong>Ready with conditions</strong><span>You can proceed, but review notes or skips first.</span></div>
-      <div><strong>Not ready yet</strong><span>Fix failures or missing critical coverage before release.</span></div>
+      <div><strong>GO</strong><span>No blocking failures for the release gate.</span></div>
+      <div><strong>Conditional GO</strong><span>You can proceed, but review notes or not-run coverage first.</span></div>
+      <div><strong>NO GO</strong><span>Fix failures or missing critical coverage before release.</span></div>
       <div><strong>Passed</strong><span>Check ran and succeeded.</span></div>
       <div><strong>Failed</strong><span>Check ran and broke — needs a fix.</span></div>
-      <div><strong>Skipped</strong><span>Did not run (blocked, gated, or missing fixture).</span></div>
+      <div><strong>Not run</strong><span>Skipped (blocked, setup needed, later, or unexpected).</span></div>
     </div>
   </details>
 
@@ -659,20 +756,20 @@ function gateClass(d){
 }
 function decisionLabel(d){
   const s = String(d||'').toUpperCase().replace(/_/g,' ');
-  if(s.includes('CONDITIONAL')) return 'Ready with conditions';
-  if(s === 'GO') return 'Ready to release';
-  if(s.includes('NO')) return 'Not ready yet';
+  if(s.includes('CONDITIONAL')) return 'Conditional GO';
+  if(s === 'GO') return 'GO';
+  if(s.includes('NO')) return 'NO GO';
   return d || 'Unknown';
 }
 function decisionHint(d, failCount, notRun){
   const s = String(d||'').toUpperCase();
   if(s.includes('CONDITIONAL')) {
-    if(failCount > 0) return 'Failures need review before final approval.';
-    if((notRun||0) > 0) return 'Some checks did not run — confirm coverage with the team.';
-    return 'No blockers in this run. Confirm remaining risk with the team.';
+    if(failCount > 0) return 'Conditional GO: failures still need review before final approval.';
+    if((notRun||0) > 0) return 'Conditional GO: ' + notRun + ' checks did not run — review coverage before sign-off.';
+    return 'Conditional GO: executed checks passed — confirm remaining risk with the team.';
   }
-  if(s === 'GO') return 'No blocking issues for the release gate.';
-  if(s.includes('NO')) return 'Fix failing checks or missing critical coverage first.';
+  if(s === 'GO') return 'GO: no blocking issues for the release gate.';
+  if(s.includes('NO')) return 'NO GO: fix failing checks or missing critical coverage first.';
   return 'Decision could not be determined.';
 }
 function nextAction(d, failCount, notRun){
@@ -799,7 +896,7 @@ if(latest){
 
   const moreSummary = document.querySelector('#more-explore > summary');
   if(moreSummary){
-    moreSummary.textContent = 'More views — areas, trends, compare · ' + runs.length + ' saved runs';
+    moreSummary.textContent = 'More detail';
   }
 }
 
@@ -835,14 +932,45 @@ function lineChart(el, values, color, suffix){
 }
 
 if(trend.length){
-  const rates = trend.map(r=>Number(r.passRate)||0);
   const failCounts = trend.map(r=>Number(r.failed)||0);
-  const avg = Math.round(rates.reduce((a,b)=>a+b,0)/rates.length);
-  document.getElementById('rate-caption').textContent =
-    'Average ' + avg + '% across the last ' + trend.length + ' full runs';
-  lineChart(document.getElementById('chart-rate'), rates, '#39e75f', '%');
+  const histCap = document.getElementById('history-caption');
+  if(histCap) histCap.textContent = 'last ' + trend.length + ' full runs';
   lineChart(document.getElementById('chart-fails'), failCounts, '#f07178', '');
 }
+
+(function renderHistoryStory(){
+  const answer = document.getElementById('history-answer');
+  const lead = document.getElementById('history-lead');
+  const deltas = document.getElementById('history-deltas');
+  if(!answer || !lead || !deltas) return;
+  if(!latest){
+    lead.textContent = 'No run data yet.';
+    return;
+  }
+  const prev = runs.length > 1 ? runs[runs.length-2] : null;
+  if(!prev){
+    answer.textContent = 'First saved run';
+    lead.textContent = 'Comparison appears after the next full suite.';
+    deltas.innerHTML = '';
+    return;
+  }
+  const failD = (latest.failed||0) - (prev.failed||0);
+  const passD = (latest.passRate||0) - (prev.passRate||0);
+  const better = failD < 0 || (failD === 0 && passD > 0);
+  const worse = failD > 0 || (failD === 0 && passD < 0);
+  const label = better ? 'Better than last run' : worse ? 'Worse than last run' : 'Same as last run';
+  answer.textContent = label;
+  lead.textContent = label + ' — ' + (latest.failed||0) + ' failed now · ' + decisionLabel(latest.decision) + ' (was ' + decisionLabel(prev.decision) + ').';
+  const tiles = [
+    ['Failures', latest.failed, changeWords(prev.failed, latest.failed, false)],
+    ['Pass rate', (latest.passRate||0) + '%', changeWords(prev.passRate, latest.passRate, true)],
+    ['Decision', decisionLabel(latest.decision), decisionLabel(prev.decision)],
+    ['Duration', latest.duration || '—', prev.duration || '—']
+  ];
+  deltas.innerHTML = tiles.map(([n,v,d]) =>
+    '<div class="history-delta"><span>'+esc(n)+'</span><strong>'+esc(v)+'</strong><small>'+esc(d)+'</small></div>'
+  ).join('');
+})();
 
 const selA = document.getElementById('sel-a');
 const selB = document.getElementById('sel-b');
@@ -880,13 +1008,22 @@ document.getElementById('fail-count').textContent =
   fails.length ? fails.length + ' failed' : 'None failed';
 const notRunCount = latest ? (latest.notRun != null ? latest.notRun : latest.skipped) : 0;
 document.getElementById('failures').innerHTML = fails.length
-  ? '<div class="find-list">' + fails.map(f =>
-      '<article class="find-card">' +
-        '<div class="row"><span>What</span><strong>'+esc(f.title)+'</strong></div>' +
-        '<div class="row"><span>Why</span><p>'+esc(cleanError(f.error))+(f.file?' <span class="muted">('+esc(f.file)+')</span>':'')+'</p></div>' +
-        '<a class="find-next" href="${detailsHref}#failures">Next · Open proof →</a>' +
-      '</article>'
-    ).join('') + '</div>'
+  ? '<div class="find-list">' + fails.map(f => {
+      const repro = String(f.repro||'').split(/\s*(?=\d+\.\s)/).map(s=>s.trim()).filter(Boolean);
+      const reproHtml = repro.length
+        ? '<ol class="air-repro-list">'+repro.map(s=>'<li>'+esc(s.replace(/^\d+\.\s*/,''))+'</li>').join('')+'</ol>'
+        : '<p>'+esc(f.repro||'Open the full report for numbered steps.')+'</p>';
+      return '<article class="find-card air-fail-card">' +
+        '<div class="row"><span>Scenario</span><strong>'+esc(f.scenario||f.title)+'</strong></div>' +
+        '<div class="row"><span>Expected</span><p>'+esc(f.expected||'The check should complete as expected.')+'</p></div>' +
+        '<div class="row"><span>Actual</span><p>'+esc(f.actual||cleanError(f.error)||'The check failed.')+'</p></div>' +
+        '<div class="row"><span>Steps to reproduce</span>'+reproHtml+'</div>' +
+        '<div class="row"><span>Evidence</span><p>'+(f.evidenceHref
+          ? '<a href="'+esc(f.evidenceHref)+'">Open screenshot</a> · '
+          : '')+'<a href="${detailsHref}#failures">Full proof in report →</a></p></div>' +
+        (f.badge ? '<span class="pill warn">'+esc(f.badge)+'</span>' : '') +
+      '</article>';
+    }).join('') + '</div>'
   : (notRunCount > 0
     ? '<div class="find-success"><div><strong>Nothing failed</strong><p>'+notRunCount+' checks did not run — review before sign-off.</p></div><a href="${detailsHref}#coverage-gaps">Review not-run →</a></div>'
     : '<div class="find-success"><div><strong>All clear</strong><p>Every executed check passed. Open the full report if you want the evidence trail behind this decision.</p></div></div>');
@@ -905,9 +1042,9 @@ document.getElementById('modules').innerHTML = mods.length
   : '<div class="empty">No area breakdown for this run yet.</div>';
 
 document.getElementById('archive-body').innerHTML = (DATA.archive||[]).map(a=>
-  '<tr><td><code>'+esc(a.id)+'</code></td><td>'+esc(a.at)+'</td><td>'+a.passed+' / '+a.failed+' / '+a.skipped+
+  '<tr><td>'+esc(friendlyWhen(a.at)||a.at)+'</td><td>'+a.passed+' / '+a.failed+' / '+(a.notRun != null ? a.notRun : a.skipped)+
   '</td><td><span class="pill '+gateClass(a.decision)+'">'+esc(decisionLabel(a.decision))+'</span></td></tr>'
-).join('') || '<tr><td colspan="4" class="muted">No saved runs yet.</td></tr>';
+).join('') || '<tr><td colspan="3" class="muted">No saved runs yet.</td></tr>';
 
 document.querySelectorAll('.tabs button').forEach(btn=>{
   btn.addEventListener('click',()=> activateTab(btn.dataset.tab));

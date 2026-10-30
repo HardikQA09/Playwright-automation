@@ -288,17 +288,23 @@ function matrixScenarioToGap(scenario = {}, index = 0) {
   const category =
     status === 'automated'
       ? 'Traceability'
-      : status === 'blocked'
+      : status === 'blocked' || status === 'known-bug'
         ? 'Blocked'
-        : 'Future';
+        : status === 'controlled' || status === 'manual-verified'
+          ? 'Controlled'
+          : 'Future';
   const reason =
     status === 'automated'
       ? `Documented matrix scenario. Covered by ${scenario.automation ?? 'a linked executable spec'}, but it was not included in this AIR execution.`
-      : scenario.dependency ?? 'Scenario is documented but needs fixture, admin, API, scheduler, or third-party support.';
+      : status === 'known-bug'
+        ? scenario.dependency ?? 'Known product bug — tracked separately; not an automation failure.'
+        : scenario.dependency ?? 'Scenario is documented but needs fixture, admin, API, scheduler, or third-party support.';
   const nextAction =
     status === 'automated'
       ? `Run linked executable coverage: ${scenario.automation ?? scenario.file ?? 'matrix scenario'}.`
-      : getNextAction(
+      : status === 'known-bug'
+        ? 'Track the product defect to resolution, then re-enable the matrix row as automated coverage.'
+        : getNextAction(
         {
           title: scenario.title,
           file: scenario.file,
@@ -379,9 +385,9 @@ function classifyGap(test = {}) {
   const title = String(test.title ?? '').toLowerCase();
   const reason = getSkipReasonText(test).toLowerCase();
 
-  if (automationStatus === 'blocked') return 'Blocked';
+  if (automationStatus === 'blocked' || automationStatus === 'known-bug') return 'Blocked';
   if (automationStatus === 'future') return 'Future';
-  if (automationStatus === 'controlled') return 'Controlled';
+  if (automationStatus === 'controlled' || automationStatus === 'manual-verified') return 'Controlled';
   if (automationStatus === 'automated') {
     if (
       reason.includes('air coverage-ingestion') ||
@@ -400,7 +406,15 @@ function classifyGap(test = {}) {
   ) {
     return 'Traceability';
   }
-  if (/known (?:defect|bug|issue)/.test(reason)) {
+  if (
+    /known (?:defect|bug|issue)/.test(reason) ||
+    /confirmed product bug/.test(reason) ||
+    /product bug:/.test(reason) ||
+    /cancel fixture .+ cannot log in/.test(reason) ||
+    /no .+ cancel fixture email configured/.test(reason) ||
+    /monthly cancel-option checks need a monthly paid subscriber/.test(reason) ||
+    /disposable stripe fallback is disabled/.test(reason)
+  ) {
     return 'Blocked';
   }
   if (
@@ -450,6 +464,13 @@ function getNextAction(test = {}, category) {
   }
 
   if (category === 'Blocked') {
+    const reason = getSkipReasonText(test).toLowerCase();
+    if (/known (?:defect|bug|issue)|confirmed product bug|product bug:/.test(reason)) {
+      return 'Track the product defect to resolution, then re-enable automated coverage for this scenario.';
+    }
+    if (/cancel fixture|paid subscriber|monthly cancel-option/.test(reason)) {
+      return 'Restore a working paid cancel fixture (monthly/yearly) or remap CANCEL_* credentials; disposable Stripe fallback stays disabled for clean runs.';
+    }
     return 'Request the required fixture, admin control, API support, scheduler control, or third-party test hook.';
   }
 

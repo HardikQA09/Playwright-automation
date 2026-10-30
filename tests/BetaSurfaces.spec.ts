@@ -32,12 +32,12 @@ PURPOSE
 -------
 Walk every Beta destination available to imhardikthanki+e2e@gmail.com and
 run non-destructive scenarios: menu inventory, grid headers/sort/page size,
-Option Overlay period toggles, and Roll Configuration presets.
+Portfolio Profit & Loss period toggles, and Roll Configuration presets.
 
 Beta destinations:
 - Broker transactions  → /dashboard/beta/transactions
 - Position P&L         → /dashboard/beta/position-pnl
-- Option Overlay P&L   → /dashboard/beta/option-overlay-pnl
+- Profit & Loss        → /dashboard/beta/option-overlay-pnl (page title: Portfolio Profit & Loss)
 - Roll Configuration   → /dashboard/roll-config
 
 RUN
@@ -76,7 +76,7 @@ test.describe(
     );
 
     test(
-      'Beta menu lists broker Position Overlay and Roll destinations',
+      'Beta menu lists broker Position P&L Profit & Loss and Roll destinations',
       async ({ page }) => {
         const beta =
           new BetaSurfacesPage(
@@ -104,7 +104,7 @@ test.describe(
         expect(
           joined
         ).toMatch(
-          /option overlay/i
+          /profit\s*&\s*loss|option overlay/i
         );
         expect(
           joined
@@ -133,11 +133,11 @@ test.describe(
     );
 
     test(
-      'Option Overlay P&L switches periods and capital toggles',
+      'Portfolio Profit & Loss switches periods and capital toggles',
       async ({ page }) => {
         await new BetaSurfacesPage(
           page
-        ).validateOptionOverlayPnl();
+        ).validatePortfolioProfitLoss();
       }
     );
 

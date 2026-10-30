@@ -62,20 +62,22 @@ function classifySkippedTests(tests = []) {
 
 function buildExecutionSummary(tests = []) {
   const total = tests.length;
-  const passed = countByStatus(tests, 'passed');
+  const passedFinal = countByStatus(tests, 'passed') + countByStatus(tests, 'flaky');
   const failed = countByStatus(tests, 'failed');
   const skipped = countByStatus(tests, 'skipped');
   const interrupted = countByStatus(tests, 'interrupted');
   const skipClassification = classifySkippedTests(tests);
-  const flaky = tests.filter(hasFlakySignal).length;
+  const flaky = tests.filter(test => test.status === 'flaky' || hasFlakySignal(test)).length;
   const attemptCount = tests.reduce((sum, test) => sum + Math.max(1, test.attemptCount ?? test.attempts?.length ?? 1), 0);
   const retryCount = tests.reduce((sum, test) => sum + Math.max(0, (test.attemptCount ?? test.attempts?.length ?? 1) - 1), 0);
   const durationMs = tests.reduce((sum, test) => sum + (test.durationMs ?? 0), 0);
+  // Flaky rows already passed on retry — include them in executed/pass totals.
+  const passed = passedFinal;
   const executed = passed + failed + interrupted;
   const inventoryPassRate = calculateRate(passed, total);
   const executedPassRate = calculateRate(passed, executed);
   const failureRate = calculateRate(failed, executed);
-  const executionHealth = calculateRate(passed + flaky, executed);
+  const executionHealth = calculateRate(passed, executed);
   const executionCoverage = calculateRate(executed, total);
 
   return {

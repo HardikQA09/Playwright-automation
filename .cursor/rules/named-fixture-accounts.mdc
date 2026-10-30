@@ -1,0 +1,41 @@
+---
+description: Named fx-* accounts for upgrade/cancel/refund calc, plus day-based email checks
+alwaysApply: true
+---
+
+# Named fixture accounts for billing validation
+
+Whenever upgrade calculation, cancel, or refund scenarios run (or are fixed/skipped), use the prepared **fx-*** accounts from `.env` / `tests/config/fixture-accounts.env.example` — do not invent disposable users for these daily-safe previews.
+
+## Required mapping
+
+| Purpose | Roster key | Account tag | Plan / interval | Env vars |
+|---|---|---|---|---|
+| Upgrade calculation (amount due, credit, recurring) | `UPGRADE_CALC_DAILY` | `fx-upg-income-mo` | Income Builder **monthly** | `SUB_FIXTURE_UPGRADE_CALC_EMAIL` / `_PASSWORD` |
+| Monthly cancel options (no refund) | `CANCEL_MONTHLY_INSPECT` | `fx-cxmo-income-mo` | Income Builder **monthly** | `SUB_LIFECYCLE_MONTHLY_CANCEL_*` / `CANCEL_MONTHLY_*` |
+| Yearly cancel + refund options | `CANCEL_YEARLY_INSPECT` | `fx-cxyr-overlay-yr` | Overlay Strategists **annual** | `SUB_LIFECYCLE_YEARLY_CANCEL_*` / `CANCEL_YEARLY_*` |
+| Downgrade confirm preview | `DOWNGRADE_CALC_DAILY` | `fx-dng-overlay-yr` | Overlay **annual** | `SUB_FIXTURE_DOWNGRADE_*` |
+| Cancel-and-refund **submit** (destructive) | refund roster key | `fx-refund-overlay-yr` | Overlay **annual** throwaway | only when scenario explicitly submits refund |
+
+## Rules
+
+1. **Upgrade calc** must use Income monthly (`fx-upg-income-mo`). Overlay/annual fixtures hide upgrade-to-Overlay controls and break calculation checks.
+2. **Cancel / refund** must use the matching interval fixture: monthly cancel → `fx-cxmo-income-mo`; yearly cancel + refund amount → `fx-cxyr-overlay-yr`.
+3. Keep `SUB_FIXTURE_USE_CANONICAL_EMAILS=true` so roster keys resolve to these emails every run.
+4. Daily runs are **preview-only** for upgrade/downgrade/cancel inspect — do not submit Confirm & pay or complete refund unless the scenario explicitly says so.
+5. If fixtures are missing, run `npm run fixtures:prepare` (or the prepare keys for `UPGRADE_CALC_DAILY`, `CANCEL_MONTHLY_INSPECT`, `CANCEL_YEARLY_INSPECT`, `DOWNGRADE_CALC_DAILY`) and persist emails into `.env` before the complete suite.
+6. Source of truth: `tests/config/preparedSubscriptionUsers.data.json` + `tests/config/fixture-accounts.env.example`.
+
+## Day-based email checks
+
+Keep these **same fx-*** inboxes so emails can be verified **on the calendar day they are due** — not forced every daily run, and not permanently skipped.
+
+- When a scenario is date-bound (trial day 25 / 28 / 29 reminders, cancel confirmation, refund email, dunning / past-due mail, renewal notices), **check that fixture’s Gmail on the day it reaches that day**.
+- Until that day: mark as controlled / not-run with a clear “wait until {date}” reason — do not delete coverage.
+- On that day: run the email assertion against the prepared account’s inbox (same `imhardikthanki+fx-…@gmail.com` used for the billing action).
+- After a cancel, refund, or upgrade preview that sends mail, reuse that fixture’s inbox for the follow-up email check when the message is expected to arrive.
+
+## Recent failure fixes (expect next complete run to clear)
+
+- Beta menu / Portfolio Profit & Loss rename (tests updated).
+- SC-298 AIR cancel search + SC-349 failed-payment evidence (airChecks hardened).

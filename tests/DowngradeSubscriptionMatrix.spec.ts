@@ -315,7 +315,8 @@ const downgradeScenarios: DowngradeScenario[] = [
     title: 'Browser refresh during downgrade confirmation does not charge or change the plan',
     priority: 'Medium',
     status: 'automated',
-    automation: 'scenario:UPGRADE_INCOME_MONTHLY_TO_OVERLAY_MONTHLY:refresh-leaves-account-unchanged-downgrade'
+    // Must start on Overlay (or higher), not Income — Income has no Downgrade CTA.
+    automation: 'scenario:DOWNGRADE_OVERLAY_TO_INCOME_MONTHLY:refresh-leaves-account-unchanged'
   },
   {
     id: 'SC-149',

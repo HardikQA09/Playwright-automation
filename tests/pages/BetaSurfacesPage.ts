@@ -44,9 +44,10 @@ export const BETA_DESTINATIONS: BetaDestination[] = [
     heading: /^position p&l$/i
   },
   {
-    label: /option overlay p&l|option overlay pnl/i,
+    // Product renamed Option Overlay P&L → Profit & Loss / Portfolio Profit & Loss.
+    label: /^profit\s*&\s*loss$|option overlay p&l|option overlay pnl/i,
     path: '/dashboard/beta/option-overlay-pnl',
-    heading: /^option overlay p&l$/i
+    heading: /portfolio profit\s*&\s*loss|^option overlay p&l$/i
   },
   {
     label: /roll configuration/i,
@@ -363,7 +364,7 @@ export class BetaSurfacesPage {
     );
   }
 
-  async validateOptionOverlayPnl() {
+  async validatePortfolioProfitLoss() {
     await this.openDestination(
       BETA_DESTINATIONS[2]
     );
@@ -376,7 +377,7 @@ export class BetaSurfacesPage {
     await expect(
       main
     ).toContainText(
-      /total assets|realized option p&l|open \/ unrealized|total option p&l/i
+      /total assets|realized (equity|option) p&l|portfolio profit|open p&l|collateral/i
     );
 
     const accountFilter =
@@ -413,7 +414,7 @@ export class BetaSurfacesPage {
 
       await safeClick(
         toggle,
-        `Option Overlay period ${period}`
+        `Portfolio P&L period ${period}`
       );
 
       await expect(
@@ -450,11 +451,16 @@ export class BetaSurfacesPage {
     await expect(
       main
     ).toContainText(
-      /option p&l timeline|realized|open p&l/i
+      /p&l timeline|realized|open p&l|open by expiry/i
     );
 
     Logger.success(
-      'Option Overlay P&L surface validated'
+      'Portfolio Profit & Loss surface validated'
     );
+  }
+
+  /** @deprecated Use validatePortfolioProfitLoss - product renamed Option Overlay P&L. */
+  async validateOptionOverlayPnl() {
+    await this.validatePortfolioProfitLoss();
   }
 }

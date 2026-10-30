@@ -598,93 +598,222 @@ async function openPlanSelectionForDisposableUser(
 
 async function loginCancelFixture(
   page: Page,
-  kind: 'yearly' | 'monthly'
+  kind: 'yearly' | 'monthly',
+  options: {
+    requireMatchingInterval?: boolean;
+  } = {}
 ) {
-  const user =
-    CANCEL_FIXTURE_USERS[kind];
+  // Prefer the configured cancel fixture, then fall back to other known paid
+  // inspect accounts (yearly e2e / plantest). Never buy a disposable Stripe
+  // user here — that path hangs on UAT checkout and breaks clean runs.
+  const requireMatchingInterval =
+    options.requireMatchingInterval === true;
 
-  // Cancel-inspect rows used to buy a disposable Stripe user when the prepared
-  // fixture failed login. That path hangs on UAT checkout and fails clean runs.
-  // Skip instead so complete/heal stays green until the monthly/yearly cancel
-  // fixture credentials are restored.
-  const skipCancelInspect = (
+  const skipCancelInspectBlocked = (
     reason: string
   ) => {
+    test.info().annotations.push(
+      {
+        type: 'automation-status',
+        description: 'blocked'
+      },
+      {
+        type: 'dependency',
+        description: reason
+      }
+    );
     test.skip(
       true,
       reason
     );
   };
 
-  if (
-    !user.email ||
-    !user.password
-  ) {
-    skipCancelInspect(
-      `No ${kind} cancel fixture email configured. Set SUB_LIFECYCLE_${kind.toUpperCase()}_CANCEL_EMAIL/PASSWORD to a working paid ${kind} subscriber.`
-    );
-  }
+  const candidates: Array<{
+    email: string;
+    password: string;
+    label: string;
+  }> = [];
 
-  await page.context().clearCookies();
-  await page.goto(
-    'about:blank'
-  ).catch(
-    () => undefined
+  const pushCandidate = (
+    email: string | undefined,
+    password: string | undefined,
+    label: string
+  ) => {
+    const normalizedEmail =
+      email?.trim();
+    const normalizedPassword =
+      password?.trim();
+
+    if (
+      !normalizedEmail ||
+      !normalizedPassword
+    ) {
+      return;
+    }
+
+    if (
+      candidates.some(
+        candidate =>
+          candidate.email.toLowerCase() ===
+          normalizedEmail.toLowerCase()
+      )
+    ) {
+      return;
+    }
+
+    candidates.push({
+      email: normalizedEmail,
+      password: normalizedPassword,
+      label
+    });
+  };
+
+  pushCandidate(
+    CANCEL_FIXTURE_USERS[kind].email,
+    CANCEL_FIXTURE_USERS[kind].password,
+    `${kind} cancel fixture`
   );
-
-  try {
-    await new LoginPage(
-      page
-    ).login(
-      user.email,
-      user.password
-    );
-  } catch (error) {
-    const message =
-      error instanceof Error
-        ? error.message
-        : String(error);
-
-    skipCancelInspect(
-      `Cancel fixture ${user.email} cannot log in (${message.split('\n')[0]}). Restore SUB_LIFECYCLE_${kind.toUpperCase()}_CANCEL_EMAIL/PASSWORD — disposable Stripe fallback is disabled for clean runs.`
-    );
-  }
-
-  const billing =
-    new BillingPage(
-      page
-    );
-
-  if (
-    await billing.isFreeOrNoCardPlan()
-  ) {
-    skipCancelInspect(
-      `Cancel fixture ${user.email} is Free/no-card on UAT — ${kind} cancel options need an active paid subscription.`
-    );
-  }
 
   if (
     kind === 'monthly'
   ) {
-    const overviewText =
-      await page.locator(
-        'main, body'
-      ).first().innerText({
-        timeout: 10000
-      }).catch(
-        () => ''
+    pushCandidate(
+      CANCEL_FIXTURE_USERS.yearly.email,
+      CANCEL_FIXTURE_USERS.yearly.password,
+      'yearly cancel fixture'
+    );
+  }
+
+  pushCandidate(
+    TEST_USERS.e2e?.email,
+    TEST_USERS.e2e?.password,
+    'e2e paid inspect'
+  );
+  pushCandidate(
+    TEST_USERS.subscriber?.email,
+    TEST_USERS.subscriber?.password,
+    'plantest paid inspect'
+  );
+
+  if (
+    candidates.length === 0
+  ) {
+    skipCancelInspectBlocked(
+      `No ${kind} cancel fixture email configured. Set SUB_LIFECYCLE_${kind.toUpperCase()}_CANCEL_EMAIL/PASSWORD to a working paid ${kind} subscriber.`
+    );
+  }
+
+  let lastReason =
+    `No working paid ${kind} cancel inspect account was available.`;
+  let annualFallbackAvailable =
+    false;
+
+  for (const candidate of candidates) {
+    await page.context().clearCookies();
+    await page.goto(
+      'about:blank'
+    ).catch(
+      () => undefined
+    );
+
+    try {
+      await new LoginPage(
+        page
+      ).login(
+        candidate.email,
+        candidate.password
+      );
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : String(error);
+
+      lastReason =
+        `Cancel fixture ${candidate.email} (${candidate.label}) cannot log in (${message.split('\n')[0]}). Restore SUB_LIFECYCLE_${kind.toUpperCase()}_CANCEL_EMAIL/PASSWORD — disposable Stripe fallback is disabled for clean runs.`;
+      continue;
+    }
+
+    const billing =
+      new BillingPage(
+        page
       );
 
     if (
-      /billing cycle\s*annual|\$\d+\/year|\/year/i.test(
-        overviewText
-      )
+      await billing.isFreeOrNoCardPlan()
     ) {
-      skipCancelInspect(
-        'Prepared monthly cancel fixture is on an annual plan — monthly cancel-option checks need a monthly paid subscriber.'
-      );
+      lastReason =
+        `Cancel fixture ${candidate.email} (${candidate.label}) is Free/no-card on UAT — ${kind} cancel options need an active paid subscription.`;
+      continue;
     }
+
+    if (
+      kind === 'monthly'
+    ) {
+      const overviewText =
+        await page.locator(
+          'main, body'
+        ).first().innerText({
+          timeout: 10000
+        }).catch(
+          () => ''
+        );
+
+      if (
+        /billing cycle\s*annual|\$\d+\/year|\/year/i.test(
+          overviewText
+        )
+      ) {
+        annualFallbackAvailable =
+          true;
+        lastReason =
+          'Prepared monthly cancel fixture is on an annual plan — monthly cancel-option checks need a monthly paid subscriber.';
+
+        if (
+          requireMatchingInterval
+        ) {
+          continue;
+        }
+      }
+    }
+
+    return;
   }
+
+  if (
+    kind === 'monthly' &&
+    envEnabled(
+      'SUB_LIFECYCLE_CREATE_DISPOSABLE_USER'
+    )
+  ) {
+    console.warn(
+      `[cancel-fixture] ${lastReason} Purchasing disposable Income Builder monthly for monthly cancel options.`
+    );
+
+    await purchasePaidPlanForDisposableUser(
+      page,
+      'sub-lifecycle-monthly-cancel-inspect',
+      'Income Builder',
+      'monthly',
+      'cancel-inspect'
+    );
+
+    return;
+  }
+
+  if (
+    requireMatchingInterval &&
+    kind === 'monthly' &&
+    annualFallbackAvailable
+  ) {
+    skipCancelInspectBlocked(
+      lastReason
+    );
+  }
+
+  skipCancelInspectBlocked(
+    lastReason
+  );
 }
 
 async function loginPreparedPaidUser(
@@ -727,6 +856,13 @@ async function loginPreparedPaidUser(
       preparedKey
     );
 
+  // Upgrade-to-Overlay previews need Income (or lower). plantest is already
+  // Overlay annual — never reuse it for upgrade-preview / upgrade-submit.
+  const needsLowerThanOverlay =
+    options.usedFor === 'upgrade-preview' ||
+    options.usedFor === 'upgrade-submit' ||
+    options.plan === 'Income Builder';
+
   // Scenario prepared fixtures win over shared SUB_LIFECYCLE_PAID_* env.
   const email =
     prepared.email ||
@@ -738,7 +874,23 @@ async function loginPreparedPaidUser(
     process.env.SUB_LIFECYCLE_PAID_PASSWORD ||
     process.env.BILLING_MANAGEMENT_PASSWORD;
 
+  const preparedLooksOverlayPlus =
+    /plantest|(?:^|\+)e2e@/i.test(
+      email || ''
+    ) ||
+    /overlay/i.test(
+      prepared.plan || ''
+    );
+
   if (
+    needsLowerThanOverlay &&
+    preparedLooksOverlayPlus &&
+    forceDisposableUser
+  ) {
+    console.warn(
+      `[prepared-paid] Skipping ${email || 'prepared Overlay+'} for ${options.usedFor} — purchasing disposable ${options.plan} ${options.interval ?? 'monthly'} so Upgrade CTAs exist.`
+    );
+  } else if (
     !forceDisposableUser &&
     email &&
     password &&
@@ -765,6 +917,30 @@ async function loginPreparedPaidUser(
     if (
       await billing.hasActivePaidSubscriptionManagement()
     ) {
+      if (
+        needsLowerThanOverlay
+      ) {
+        const overviewText =
+          await page.locator(
+            'main, body'
+          ).first().innerText({
+            timeout: 10000
+          }).catch(
+            () => ''
+          );
+
+        if (
+          /overlay strategists|portfolio hedger|marketplace/i.test(
+            overviewText
+          )
+        ) {
+          test.skip(
+            true,
+            `Prepared fixture ${email} is already on Overlay+ so Upgrade to Overlay cannot run. Set SUB_FIXTURE_UPGRADE_CALC_EMAIL to an Income Builder monthly user, or SUB_LIFECYCLE_CREATE_DISPOSABLE_USER=true.`
+          );
+        }
+      }
+
       return;
     }
 
@@ -1493,9 +1669,20 @@ test.describe(
         const intervals =
           upgradeIntervals();
 
-        await loginCancelFixture(
+        // Must start below Overlay (Income monthly). Cancel/plantest fixtures are
+        // often already Overlay annual and have no Upgrade-to-Overlay control.
+        await loginPreparedPaidUser(
           page,
-          'monthly'
+          {
+            scenario:
+              'sub-lifecycle-upgrade-calc',
+            plan:
+              'Income Builder',
+            interval:
+              'monthly',
+            usedFor:
+              'upgrade-preview'
+          }
         );
 
         const billing =
@@ -1829,7 +2016,11 @@ test.describe(
 
         await loginCancelFixture(
           page,
-          'monthly'
+          'monthly',
+          {
+            requireMatchingInterval:
+              true
+          }
         );
 
         const billing =
@@ -1839,7 +2030,7 @@ test.describe(
 
         await billing.validateOverview();
 
-        // Requires a working monthly cancel fixture login (no disposable fallback).
+        // Requires a working monthly paid fixture (no disposable Stripe fallback).
         await billing.validateMonthlyCancellationOptions();
       }
     );

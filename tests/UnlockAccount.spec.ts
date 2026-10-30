@@ -22,15 +22,18 @@ email-link step, then validates the user can log in again.
 
 Run:
 $env:RUN_UNLOCK_ACCOUNT_TEST="true"
-$env:UNLOCK_ACCOUNT_EMAIL="imhardikthanki+8@gmail.com"
+$env:UNLOCK_ACCOUNT_EMAIL="imhardikthanki+fx-unlock-locked-none@gmail.com"
 $env:UNLOCK_ACCOUNT_PASSWORD="your-password"
 npx playwright test tests/UnlockAccount.spec.ts --headed
+
+Fixture roster: tests/config/preparedSubscriptionUsers.data.json (UNLOCK_ACCOUNT)
+               tests/config/fixture-accounts.env.example
 
 ============================================================================= */
 
 const unlockAccountEmail =
   process.env.UNLOCK_ACCOUNT_EMAIL ??
-  TEST_USERS.subscriber.email;
+  'imhardikthanki+fx-unlock-locked-none@gmail.com';
 
 const unlockAccountPassword =
   process.env.UNLOCK_ACCOUNT_PASSWORD ??

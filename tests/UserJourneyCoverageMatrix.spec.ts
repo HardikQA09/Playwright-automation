@@ -108,7 +108,9 @@ const userJourneyScenarios: UserJourneyScenario[] = [
     priority: 'High',
     status: 'controlled',
     automation: 'UnlockAccount.spec.ts',
-    dependency: 'Requires a locked-account fixture and email-link handoff.'
+    // Not covered by complete-suite fixtures: needs an already-locked user +
+    // manual unlock-email click (RUN_UNLOCK_ACCOUNT_TEST=true + pause).
+    dependency: 'Requires UNLOCK_ACCOUNT_EMAIL already locked + RUN_UNLOCK_ACCOUNT_TEST=true and manual email-link handoff (not auto in npm run complete).'
   },
   {
     id: 'UJ-009',
@@ -614,7 +616,7 @@ const userJourneyScenarios: UserJourneyScenario[] = [
   },
   {
     id: 'UJ-064',
-    title: 'Beta menu opens Broker Transactions, Position P&L, Option Overlay P&L, and Roll Configuration',
+    title: 'Beta menu opens Broker Transactions, Position P&L, Profit & Loss, and Roll Configuration',
     module: 'Beta',
     journey: 'Beta',
     priority: 'High',

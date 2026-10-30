@@ -79,6 +79,10 @@ function getModuleRecommendation(module) {
     return `Review ${module.unexpectedSkipped} unexpected skipped ${module.name} check(s).`;
   }
 
+  if ((module.flaky ?? 0) > 0) {
+    return `${module.name} passed after retry on ${module.flaky} flaky check(s) — review reliability before treating as fully stable.`;
+  }
+
   if (module.documentedSkipped > 0) {
     return `${module.name} executed coverage passed. ${module.documentedSkipped} documented gap(s) remain in Coverage Gaps.`;
   }
@@ -129,6 +133,7 @@ function buildModules(tests, config) {
         executed: 0,
         documentedSkipped: 0,
         unexpectedSkipped: 0,
+        flaky: 0,
         durationMs: 0,
         tests: [],
       });
@@ -139,9 +144,14 @@ function buildModules(tests, config) {
     module.durationMs += test.durationMs ?? 0;
     module.tests.push(test.id);
 
-    if (test.status === 'passed') {
+    if (test.status === 'passed' || test.status === 'flaky') {
+      // Flaky = failed then passed on retry. Count the final green outcome for
+      // health/risk, and keep a separate flaky signal for reliability review.
       module.passed += 1;
       module.executed += 1;
+      if (test.status === 'flaky' || test.flaky) {
+        module.flaky += 1;
+      }
     } else if (test.status === 'skipped') {
       module.skipped += 1;
       const category = getSkipCategory(test);

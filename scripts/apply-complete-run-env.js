@@ -146,12 +146,19 @@ function applyCompleteRunEnv(projectRoot = path.resolve(__dirname, '..')) {
   process.env.BILLING_MANAGEMENT_PASSWORD = workingPaidPassword;
 
   // Per-scenario keys — distinct accounts so renew/downgrade/cancel do not collide.
-  setFixtureDefault(
-    'SUB_FIXTURE_UPGRADE_CALC_EMAIL',
-    'SUB_FIXTURE_UPGRADE_CALC_PASSWORD',
-    workingPaidEmail,
-    workingPaidPassword
-  );
+  // Upgrade calc needs Income (or lower), NOT plantest Overlay — otherwise
+  // "Upgrade to Overlay" is missing and the preview row skips.
+  if (
+    /plantest/i.test(
+      String(process.env.SUB_FIXTURE_UPGRADE_CALC_EMAIL || '')
+    )
+  ) {
+    console.warn(
+      '[complete-run-env] Clearing SUB_FIXTURE_UPGRADE_CALC_* (was plantest Overlay) — disposable Income monthly will be used for upgrade previews'
+    );
+    delete process.env.SUB_FIXTURE_UPGRADE_CALC_EMAIL;
+    delete process.env.SUB_FIXTURE_UPGRADE_CALC_PASSWORD;
+  }
   setFixtureDefault(
     'SUB_FIXTURE_INTERVAL_EMAIL',
     'SUB_FIXTURE_INTERVAL_PASSWORD',
@@ -164,14 +171,12 @@ function applyCompleteRunEnv(projectRoot = path.resolve(__dirname, '..')) {
     workingPaidEmail,
     workingPaidPassword
   );
-  // Downgrade preview: plantest Overlay annual can open schedule-at-renewal copy;
-  // disposable Overlay monthly still fills gaps when CREATE_DISPOSABLE_USER=true.
-  setFixtureDefault(
-    'SUB_FIXTURE_DOWNGRADE_EMAIL',
-    'SUB_FIXTURE_DOWNGRADE_PASSWORD',
-    workingPaidEmail,
-    workingPaidPassword
-  );
+  // Downgrade confirmation (SC-120/123/124/148): needs Overlay+ (not Income).
+  // plantest = Overlay annual. If Income CTA is missing, matrix/lifecycle buys
+  // disposable Overlay→Income or Portfolio→Overlay when CREATE_DISPOSABLE_USER=true.
+  process.env.SUB_FIXTURE_DOWNGRADE_EMAIL = workingPaidEmail;
+  process.env.SUB_FIXTURE_DOWNGRADE_PASSWORD = workingPaidPassword;
+  setDefaultEnv('SUB_LIFECYCLE_DOWNGRADE_TARGET_PLAN', 'Income Builder');
 
   // Yearly cancel / refund-option copy — e2e (annual), not the shared plantest session.
   remapIfBroken(
@@ -199,31 +204,39 @@ function applyCompleteRunEnv(projectRoot = path.resolve(__dirname, '..')) {
     yearlyCancelPassword
   );
 
-  // Monthly cancel / period-end copy — dedicated monthly paid fixture.
-  remapIfBroken(
-    'SUB_LIFECYCLE_MONTHLY_CANCEL_EMAIL',
-    'SUB_LIFECYCLE_MONTHLY_CANCEL_PASSWORD',
-    monthlyCancelEmail,
-    monthlyCancelPassword
-  );
-  remapIfBroken(
-    'CANCEL_MONTHLY_EMAIL',
-    'CANCEL_MONTHLY_PASSWORD',
-    monthlyCancelEmail,
-    monthlyCancelPassword
-  );
-  setFixtureDefault(
-    'SUB_LIFECYCLE_MONTHLY_CANCEL_EMAIL',
-    'SUB_LIFECYCLE_MONTHLY_CANCEL_PASSWORD',
-    monthlyCancelEmail,
-    monthlyCancelPassword
-  );
-  setFixtureDefault(
-    'CANCEL_MONTHLY_EMAIL',
-    'CANCEL_MONTHLY_PASSWORD',
-    monthlyCancelEmail,
-    monthlyCancelPassword
-  );
+  // Monthly cancel options need a true monthly paid subscriber.
+  // +monthly-to-a is often annual/broken on UAT — do not force it. With
+  // CREATE_DISPOSABLE_USER, loginCancelFixture buys Income Builder monthly.
+  if (
+    /monthly-to-a/i.test(
+      String(
+        process.env.SUB_LIFECYCLE_MONTHLY_CANCEL_EMAIL ||
+          process.env.CANCEL_MONTHLY_EMAIL ||
+          ''
+      )
+    )
+  ) {
+    console.warn(
+      `[complete-run-env] Clearing monthly cancel fixture ${process.env.SUB_LIFECYCLE_MONTHLY_CANCEL_EMAIL || process.env.CANCEL_MONTHLY_EMAIL} (known annual/login gaps) — disposable monthly will be used`
+    );
+    delete process.env.SUB_LIFECYCLE_MONTHLY_CANCEL_EMAIL;
+    delete process.env.SUB_LIFECYCLE_MONTHLY_CANCEL_PASSWORD;
+    delete process.env.CANCEL_MONTHLY_EMAIL;
+    delete process.env.CANCEL_MONTHLY_PASSWORD;
+  } else {
+    remapIfBroken(
+      'SUB_LIFECYCLE_MONTHLY_CANCEL_EMAIL',
+      'SUB_LIFECYCLE_MONTHLY_CANCEL_PASSWORD',
+      monthlyCancelEmail,
+      monthlyCancelPassword
+    );
+    remapIfBroken(
+      'CANCEL_MONTHLY_EMAIL',
+      'CANCEL_MONTHLY_PASSWORD',
+      monthlyCancelEmail,
+      monthlyCancelPassword
+    );
+  }
 
   // Prefer prepared multi-account roster; disposable fills missing time-state slots.
   process.env.SUB_LIFECYCLE_USE_PREPARED_USER = 'true';

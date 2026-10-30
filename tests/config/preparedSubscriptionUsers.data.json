@@ -1,14 +1,52 @@
 {
   "emailLocalBase": "imhardikthanki",
   "emailDomain": "gmail.com",
+  "naming": {
+    "pattern": "{base}+fx-{purpose}-{plan}-{interval}@{domain}",
+    "purposeCodes": {
+      "planready": "Choose Your Plan / catalog",
+      "upg": "Upgrade preview (no Confirm & pay)",
+      "upgsubmit": "Upgrade Confirm & pay (mutates)",
+      "dng": "Downgrade confirmation preview",
+      "int": "Monthly ↔ annual interval preview",
+      "cxmo": "Monthly cancel options inspect",
+      "cxyr": "Yearly cancel options inspect",
+      "cxsched": "Already scheduled to cancel",
+      "retain": "Retention / stay offer inspect",
+      "portal": "Billing portal / cards / invoices",
+      "renew": "Near-renewal / scheduler",
+      "pastdue": "Failed payment / dunning",
+      "extrial": "Expired no-card trial → Free",
+      "refund": "Cancel-and-refund submit",
+      "unlock": "Temporarily locked account unlock",
+      "mfa": "Authenticator / MFA flows"
+    },
+    "planCodes": {
+      "free": "Curious Explorer / Free",
+      "income": "Income Builder",
+      "overlay": "Overlay Strategists",
+      "portfolio": "Portfolio Hedger"
+    },
+    "intervalCodes": {
+      "none": "no paid interval",
+      "mo": "monthly",
+      "yr": "annual"
+    }
+  },
   "users": [
     {
       "key": "PLAN_SELECTION",
-      "tag": "sub-plan-ready",
+      "tag": "fx-planready-free-none",
+      "label": "Plan catalog (Free)",
       "legacyEmail": "imhardikthanki+plan-selection-prepared@gmail.com",
       "plan": "Curious Explorer",
       "interval": "none",
-      "purpose": "Verified user on Choose Your Plan — catalog, pricing, trial CTA.",
+      "purpose": "Verified user parked on Choose Your Plan — catalog, pricing, trial CTA.",
+      "tests": [
+        "Plan selection catalog",
+        "Trial CTA",
+        "Complete-setup guardrails"
+      ],
       "validates": [
         "plan-catalog",
         "trial-cta",
@@ -21,19 +59,21 @@
     },
     {
       "key": "UPGRADE_CALC_DAILY",
-      "tag": "sub-upg-calc-daily",
-      "legacyEmail": "imhardikthanki+plantest@gmail.com",
-      "plan": "Overlay Strategists",
-      "interval": "annual",
-      "purpose": "Daily upgrade / amount-due / renewal-date preview (same account). Never Confirm & pay.",
+      "tag": "fx-upg-income-mo",
+      "label": "Upgrade preview ← Income monthly",
+      "legacyEmail": "",
+      "plan": "Income Builder",
+      "interval": "monthly",
+      "purpose": "Income Builder monthly so Plans shows Upgrade to Overlay (monthly + annual) without Confirm & pay.",
+      "tests": [
+        "Prepared paid user can preview monthly and annual upgrade calculations",
+        "SC upgrade-calculation matrix rows covered by lifecycle"
+      ],
       "validates": [
         "upgrade-calculation",
         "unused-time-credit",
         "amount-due",
-        "recurring-price",
-        "billing-overview",
-        "invoice-history",
-        "renewal-date-copy"
+        "recurring-price"
       ],
       "safeDaily": true,
       "mutateRisk": "preview-only",
@@ -42,15 +82,24 @@
     },
     {
       "key": "DOWNGRADE_CALC_DAILY",
-      "tag": "sub-dng-calc-daily",
+      "tag": "fx-dng-overlay-yr",
+      "label": "Downgrade confirm ← Overlay annual",
       "legacyEmail": "imhardikthanki+plantest@gmail.com",
       "plan": "Overlay Strategists",
       "interval": "annual",
-      "purpose": "Daily downgrade preview + retention offer inspect (decline/close).",
+      "purpose": "Overlay (or higher) so Downgrade confirmation opens (current/target, Keep my plan, Schedule). Never submit on daily runs.",
+      "tests": [
+        "SC-120 current + target plan",
+        "SC-123 acknowledgement / Schedule",
+        "SC-124 Keep my plan / cancel",
+        "SC-148 refresh during confirmation",
+        "Prepared paid user can preview downgrade calculations"
+      ],
       "validates": [
         "downgrade-calculation",
-        "retention-offer-inspect",
-        "feature-impact-copy",
+        "downgrade-confirm-current-target",
+        "downgrade-confirm-cancel",
+        "downgrade-confirm-refresh",
         "schedule-at-renewal-copy"
       ],
       "safeDaily": true,
@@ -60,11 +109,16 @@
     },
     {
       "key": "INTERVAL_CALC_DAILY",
-      "tag": "sub-int-calc-daily",
+      "tag": "fx-int-overlay-yr",
+      "label": "Interval switch preview ← Overlay annual",
       "legacyEmail": "imhardikthanki+plantest@gmail.com",
       "plan": "Overlay Strategists",
       "interval": "annual",
-      "purpose": "Daily monthly↔annual interval preview without submitting.",
+      "purpose": "Monthly ↔ annual interval preview without submitting.",
+      "tests": [
+        "Interval preview / annual savings copy",
+        "SC-186 / SC-222 when Income fixtures exist (separate)"
+      ],
       "validates": [
         "interval-preview",
         "annual-savings-copy",
@@ -76,12 +130,58 @@
       "envPassword": "SUB_FIXTURE_INTERVAL_PASSWORD"
     },
     {
-      "key": "CANCEL_MONTHLY_INSPECT",
-      "tag": "sub-cx-mo-inspect",
-      "legacyEmail": "imhardikthanki+monthly-to-a-mvjn15yr@gmail.com",
+      "key": "INTERVAL_INCOME_MONTHLY",
+      "tag": "fx-int-income-mo",
+      "label": "Interval → annual ← Income monthly",
+      "legacyEmail": "",
       "plan": "Income Builder",
       "interval": "monthly",
-      "purpose": "Monthly cancel dialog inspect — Keep my plan only; never Yes, cancel.",
+      "purpose": "Income monthly for switch-to-annual confirmation / double-click idempotent (SC-186).",
+      "tests": [
+        "SC-186 Double-clicking annual switch confirmation is idempotent",
+        "Monthly→annual interval confirmation"
+      ],
+      "validates": [
+        "interval-monthly-to-annual",
+        "interval-double-click-annual"
+      ],
+      "safeDaily": true,
+      "mutateRisk": "preview-only",
+      "envEmail": "SUB_FIXTURE_INTERVAL_INCOME_MONTHLY_EMAIL",
+      "envPassword": "SUB_FIXTURE_INTERVAL_INCOME_MONTHLY_PASSWORD"
+    },
+    {
+      "key": "INTERVAL_INCOME_ANNUAL",
+      "tag": "fx-int-income-yr",
+      "label": "Interval → monthly ← Income annual",
+      "legacyEmail": "",
+      "plan": "Income Builder",
+      "interval": "annual",
+      "purpose": "Income annual for switch-to-monthly confirmation / double-click idempotent (SC-222).",
+      "tests": [
+        "SC-222 Double-clicking monthly switch confirmation is idempotent",
+        "Annual→monthly interval confirmation"
+      ],
+      "validates": [
+        "interval-annual-to-monthly",
+        "interval-double-click-monthly"
+      ],
+      "safeDaily": true,
+      "mutateRisk": "preview-only",
+      "envEmail": "SUB_FIXTURE_INTERVAL_INCOME_ANNUAL_EMAIL",
+      "envPassword": "SUB_FIXTURE_INTERVAL_INCOME_ANNUAL_PASSWORD"
+    },
+    {
+      "key": "CANCEL_MONTHLY_INSPECT",
+      "tag": "fx-cxmo-income-mo",
+      "label": "Monthly cancel options ← Income monthly",
+      "legacyEmail": "",
+      "plan": "Income Builder",
+      "interval": "monthly",
+      "purpose": "True monthly paid subscriber for monthly cancel dialog (Keep my plan). Never Yes, cancel.",
+      "tests": [
+        "Prepared monthly fixture shows monthly cancel options"
+      ],
       "validates": [
         "cancel-form",
         "cancel-guard",
@@ -94,11 +194,15 @@
     },
     {
       "key": "CANCEL_YEARLY_INSPECT",
-      "tag": "sub-cx-yr-inspect",
+      "tag": "fx-cxyr-overlay-yr",
+      "label": "Yearly cancel options ← Overlay annual",
       "legacyEmail": "imhardikthanki+e2e@gmail.com",
       "plan": "Overlay Strategists",
       "interval": "annual",
-      "purpose": "Annual cancel-at-expiry vs cancel-and-refund option copy; never submit.",
+      "purpose": "Annual cancel-at-expiry vs cancel-and-refund copy; never submit.",
+      "tests": [
+        "Prepared yearly fixture shows yearly cancel options"
+      ],
       "validates": [
         "yearly-cancel-options",
         "refund-option-copy",
@@ -111,11 +215,16 @@
     },
     {
       "key": "RETENTION_INSPECT",
-      "tag": "sub-retention-inspect",
+      "tag": "fx-retain-overlay-yr",
+      "label": "Retention offer ← Overlay annual",
       "legacyEmail": "imhardikthanki+plantest@gmail.com",
       "plan": "Overlay Strategists",
       "interval": "annual",
-      "purpose": "Retention offer still eligible — open, decline, close (do not accept).",
+      "purpose": "Open retention / stay offer, decline, close — do not accept.",
+      "tests": [
+        "Retention offer inspect",
+        "Downgrade retention path"
+      ],
       "validates": [
         "retention-offer-copy",
         "once-per-lifetime-eligibility"
@@ -127,11 +236,16 @@
     },
     {
       "key": "BILLING_PORTAL",
-      "tag": "sub-billing-portal",
+      "tag": "fx-portal-overlay-yr",
+      "label": "Billing portal ← Overlay annual",
       "legacyEmail": "imhardikthanki+plantest@gmail.com",
       "plan": "Overlay Strategists",
       "interval": "annual",
-      "purpose": "Stripe customer portal / payment method / invoice links.",
+      "purpose": "Stripe customer portal, payment method, invoice PDF links.",
+      "tests": [
+        "Billing management / portal",
+        "Invoice / payment method checks"
+      ],
       "validates": [
         "billing-portal",
         "payment-method",
@@ -144,10 +258,15 @@
     },
     {
       "key": "CANCEL_SCHEDULED",
-      "tag": "sub-cancel-scheduled",
+      "tag": "fx-cxsched-income-mo",
+      "label": "Cancel already scheduled ← Income monthly",
+      "legacyEmail": "",
       "plan": "Income Builder",
       "interval": "monthly",
-      "purpose": "Already scheduled to cancel at period end — access-until-expiry / renew restore UI.",
+      "purpose": "Subscription already set to cancel at period end — access-until-expiry / renew UI.",
+      "tests": [
+        "Scheduled cancellation access / resume"
+      ],
       "validates": [
         "cancel-scheduled-state",
         "access-until-expiry",
@@ -160,10 +279,15 @@
     },
     {
       "key": "RENEWAL_READY",
-      "tag": "sub-renewal-ready",
+      "tag": "fx-renew-income-mo",
+      "label": "Near renewal ← Income monthly",
+      "legacyEmail": "",
       "plan": "Income Builder",
       "interval": "monthly",
-      "purpose": "Near renewal / scheduler-controlled — auto-renew invoice and renewal notifications.",
+      "purpose": "Near renewal / scheduler — auto-renew invoice and notifications.",
+      "tests": [
+        "Auto-renewal / renewal invoice rows"
+      ],
       "validates": [
         "auto-renewal",
         "renewal-invoice",
@@ -176,10 +300,15 @@
     },
     {
       "key": "PAST_DUE_DUNNING",
-      "tag": "sub-past-due",
+      "tag": "fx-pastdue-income-mo",
+      "label": "Past due / dunning ← Income monthly",
+      "legacyEmail": "",
       "plan": "Income Builder",
       "interval": "monthly",
-      "purpose": "Failed-payment / past-due — dunning, recovery, grace-period messaging.",
+      "purpose": "Failed-payment / past-due — dunning banner and recovery copy.",
+      "tests": [
+        "FailedPaymentDunningMatrix controlled rows"
+      ],
       "validates": [
         "dunning-banner",
         "payment-recovery",
@@ -192,10 +321,15 @@
     },
     {
       "key": "EXPIRED_TRIAL_NO_CARD",
-      "tag": "sub-expired-no-card",
+      "tag": "fx-extrial-free-none",
+      "label": "Expired trial → Free",
+      "legacyEmail": "",
       "plan": "Curious Explorer",
       "interval": "none",
       "purpose": "No-card trial expired → Free — paid-feature removal and upgrade prompt.",
+      "tests": [
+        "Trial expiry free / upgrade prompt"
+      ],
       "validates": [
         "trial-expiry-free",
         "paid-feature-removal",
@@ -208,11 +342,15 @@
     },
     {
       "key": "UPGRADE_SUBMIT",
-      "tag": "sub-upg-submit",
-      "legacyEmail": "imhardikthanki+plantest@gmail.com",
+      "tag": "fx-upgsubmit-income-mo",
+      "label": "Upgrade SUBMIT ← Income monthly (mutates)",
+      "legacyEmail": "",
       "plan": "Income Builder",
       "interval": "monthly",
-      "purpose": "One-shot Confirm & pay upgrade — mutates plan; not for daily runs.",
+      "purpose": "One-shot Confirm & pay upgrade — mutates plan; not for daily safe runs.",
+      "tests": [
+        "Prepared paid user can accept terms and submit upgrade payment"
+      ],
       "validates": [
         "upgrade-submit"
       ],
@@ -223,10 +361,15 @@
     },
     {
       "key": "REFUND_SUBMIT",
-      "tag": "sub-refund-submit",
+      "tag": "fx-refund-overlay-yr",
+      "label": "Refund submit ← Overlay annual (mutates)",
+      "legacyEmail": "",
       "plan": "Overlay Strategists",
       "interval": "annual",
       "purpose": "Throwaway annual paid user for cancel-and-refund submit + refund email.",
+      "tests": [
+        "Yearly refund submit"
+      ],
       "validates": [
         "refund-submit",
         "refund-email"
@@ -235,6 +378,47 @@
       "mutateRisk": "destructive",
       "envEmail": "SUB_FIXTURE_REFUND_EMAIL",
       "envPassword": "SUB_FIXTURE_REFUND_PASSWORD"
+    },
+    {
+      "key": "UNLOCK_ACCOUNT",
+      "tag": "fx-unlock-locked-none",
+      "label": "Locked account unlock (UJ-008)",
+      "legacyEmail": "",
+      "plan": "Curious Explorer",
+      "interval": "none",
+      "purpose": "Account must be temporarily locked. Run UnlockAccount.spec.ts with RUN_UNLOCK_ACCOUNT_TEST=true (manual email link).",
+      "tests": [
+        "UJ-008 Temporarily locked account can request email unlock link"
+      ],
+      "validates": [
+        "unlock-link-request",
+        "post-unlock-login"
+      ],
+      "safeDaily": false,
+      "mutateRisk": "destructive",
+      "envEmail": "UNLOCK_ACCOUNT_EMAIL",
+      "envPassword": "UNLOCK_ACCOUNT_PASSWORD"
+    },
+    {
+      "key": "MFA_TOTP",
+      "tag": "fx-mfa-totp-none",
+      "label": "MFA / TOTP user (UJ-030+)",
+      "legacyEmail": "",
+      "plan": "Curious Explorer",
+      "interval": "none",
+      "purpose": "User with MFA enabled + MFA_LOCAL_TOTP_SECRET for authenticator / backup-code journeys.",
+      "tests": [
+        "UJ-030..UJ-035 MFA matrix rows"
+      ],
+      "validates": [
+        "mfa-enable",
+        "mfa-login",
+        "backup-codes"
+      ],
+      "safeDaily": false,
+      "mutateRisk": "preview-only",
+      "envEmail": "MFA_TEST_EMAIL",
+      "envPassword": "MFA_TEST_PASSWORD"
     }
   ]
 }

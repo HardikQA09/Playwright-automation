@@ -119,6 +119,10 @@ function getJourneyRecommendation(journey) {
   }
 
   if (journey.status === 'Warning') {
+    if ((journey.unexpectedSkipped ?? 0) > 0) {
+      return `Document or restore ${journey.unexpectedSkipped} unexpected skip(s) before treating this journey as release-ready.`;
+    }
+
     return 'Review journey warnings, failed checks, or skipped coverage.';
   }
 
