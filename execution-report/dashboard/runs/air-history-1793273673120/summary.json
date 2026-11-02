@@ -1,0 +1,153 @@
+{
+  "id": "air-history-1793273673120",
+  "at": "10/29/2026, 5:04:33 PM",
+  "generatedAt": "2026-10-29T11:34:33.120Z",
+  "duration": "0s",
+  "durationMs": 0,
+  "total": 781,
+  "passed": 619,
+  "failed": 1,
+  "skipped": 161,
+  "notRun": 161,
+  "flaky": 7,
+  "executed": 620,
+  "documentedSkipped": 15,
+  "passRate": 79,
+  "unexpectedSkipped": 146,
+  "decision": "NO GO",
+  "risk": "HIGH",
+  "qualityScore": 100,
+  "failedTitles": [
+    {
+      "title": "Signup OTP input accepts more than six digits",
+      "file": "manual-verification",
+      "status": "failed",
+      "error": "Signup OTP field does not enforce the six-digit maximum length.",
+      "scenario": "Signup OTP input accepts more than six digits",
+      "expected": "The check should complete with the expected product result.",
+      "actual": "Signup OTP field does not enforce the six-digit maximum length.",
+      "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+      "evidenceHref": "",
+      "badge": "Failed"
+    }
+  ],
+  "modules": [
+    {
+      "name": "Access Control",
+      "passed": 0,
+      "failed": 0,
+      "skipped": 1,
+      "score": 0,
+      "status": "Not Executed",
+      "critical": true
+    },
+    {
+      "name": "Accessibility",
+      "passed": 28,
+      "failed": 0,
+      "skipped": 1,
+      "score": 100,
+      "status": "Warning",
+      "critical": false
+    },
+    {
+      "name": "Authentication",
+      "passed": 66,
+      "failed": 0,
+      "skipped": 9,
+      "score": 100,
+      "status": "Warning",
+      "critical": true
+    },
+    {
+      "name": "Beta",
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "score": 100,
+      "status": "Healthy",
+      "critical": false
+    },
+    {
+      "name": "Billing",
+      "passed": 307,
+      "failed": 0,
+      "skipped": 141,
+      "score": 100,
+      "status": "Warning",
+      "critical": true
+    },
+    {
+      "name": "Dashboard",
+      "passed": 98,
+      "failed": 0,
+      "skipped": 0,
+      "score": 100,
+      "status": "Healthy",
+      "critical": true
+    },
+    {
+      "name": "General",
+      "passed": 45,
+      "failed": 0,
+      "skipped": 1,
+      "score": 100,
+      "status": "Healthy",
+      "critical": false
+    },
+    {
+      "name": "MFA",
+      "passed": 1,
+      "failed": 0,
+      "skipped": 7,
+      "score": 100,
+      "status": "Warning",
+      "critical": true
+    },
+    {
+      "name": "Onboarding",
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0,
+      "score": 100,
+      "status": "Healthy",
+      "critical": true
+    },
+    {
+      "name": "Password",
+      "passed": 18,
+      "failed": 0,
+      "skipped": 0,
+      "score": 100,
+      "status": "Healthy",
+      "critical": true
+    },
+    {
+      "name": "Profile",
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0,
+      "score": 100,
+      "status": "Healthy",
+      "critical": false
+    },
+    {
+      "name": "Roll Configuration",
+      "passed": 14,
+      "failed": 0,
+      "skipped": 0,
+      "score": 100,
+      "status": "Healthy",
+      "critical": true
+    },
+    {
+      "name": "Signup",
+      "passed": 21,
+      "failed": 1,
+      "skipped": 1,
+      "score": 91,
+      "status": "Critical",
+      "critical": true
+    }
+  ]
+}

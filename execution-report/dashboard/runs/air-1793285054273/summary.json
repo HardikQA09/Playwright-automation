@@ -1,0 +1,189 @@
+{
+  "id": "air-1793285054273",
+  "at": "10/29/2026, 8:14:14 PM",
+  "generatedAt": "2026-10-29T14:44:14.273Z",
+  "duration": "161m 14s",
+  "durationMs": 9674470,
+  "total": 780,
+  "passed": 623,
+  "failed": 4,
+  "skipped": 153,
+  "notRun": 153,
+  "flaky": 0,
+  "executed": 627,
+  "documentedSkipped": 153,
+  "passRate": 99,
+  "unexpectedSkipped": 0,
+  "decision": "NO GO",
+  "risk": "HIGH",
+  "qualityScore": 94,
+  "failedTitles": [
+    {
+      "title": "Beta surfaces > Beta menu lists broker Position Overlay and Roll destinations",
+      "file": "BetaSurfaces.spec.ts",
+      "status": "failed",
+      "error": "Error: expect(received).toMatch(expected) Expected pattern: /option overlay/i Received string: \"Broker transactions | Position P&L | Profit & Loss | Roll Configuration\"",
+      "scenario": "The scenario did not complete as expected.",
+      "expected": "The check should complete with the expected product result.",
+      "actual": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoMatch\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m",
+      "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+      "evidenceHref": "",
+      "badge": "Failed"
+    },
+    {
+      "title": "Beta surfaces > Option Overlay P&L switches periods and capital toggles",
+      "file": "BetaSurfaces.spec.ts",
+      "status": "failed",
+      "error": "Error: expect(locator).toBeVisible() failed Locator: getByRole('heading', { name: /^option overlay p&l$/i }).first() Expected: visible Timeout: 20000ms Error: element(s) not…",
+      "scenario": "An expected page element was not visible.",
+      "expected": "The check should complete with the expected product result.",
+      "actual": "The page did not show the required button, field, message, or status before the automation timeout.",
+      "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+      "evidenceHref": "",
+      "badge": "Failed"
+    },
+    {
+      "title": "Subscription Cancellation Use Case 7 Matrix > SC-298 - Cancellation state is searchable in AIR",
+      "file": "SubscriptionCancellationMatrix.spec.ts",
+      "status": "failed",
+      "error": "Error: AIR search index should contain cancellation test rows. expect(received).toBeGreaterThan(expected) Expected: > 0 Received: 0",
+      "scenario": "Billing or subscription validation did not complete as expected.",
+      "expected": "The check should complete with the expected product result.",
+      "actual": "The expected billing action, Stripe portal state, trial control, subscription detail, or prepared account state was not available during the run.",
+      "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+      "evidenceHref": "",
+      "badge": "Failed"
+    },
+    {
+      "title": "Failed Payment And Dunning Use Case 8 Matrix > SC-349 - AIR records failed payment evidence when available",
+      "file": "FailedPaymentDunningMatrix.spec.ts",
+      "status": "failed",
+      "error": "Error: AIR row \"Overlay Strategists Trial Experience > Overlay Strategists with-card trial rejects declined Stripe card\" has no attempt or attachment evidence…",
+      "scenario": "Billing or subscription validation did not complete as expected.",
+      "expected": "The check should complete with the expected product result.",
+      "actual": "The expected billing action, Stripe portal state, trial control, subscription detail, or prepared account state was not available during the run.",
+      "repro": "1. Open the app. 2. Repeat this check. 3. Confirm the expected result.",
+      "evidenceHref": "",
+      "badge": "Failed"
+    }
+  ],
+  "modules": [
+    {
+      "name": "Access Control",
+      "passed": 0,
+      "failed": 0,
+      "skipped": 1,
+      "score": 0,
+      "status": "Not Executed",
+      "critical": true
+    },
+    {
+      "name": "Accessibility",
+      "passed": 28,
+      "failed": 0,
+      "skipped": 1,
+      "score": 100,
+      "status": "Healthy",
+      "critical": false
+    },
+    {
+      "name": "Authentication",
+      "passed": 66,
+      "failed": 0,
+      "skipped": 9,
+      "score": 100,
+      "status": "Healthy",
+      "critical": true
+    },
+    {
+      "name": "Beta",
+      "passed": 4,
+      "failed": 2,
+      "skipped": 0,
+      "score": 67,
+      "status": "Warning",
+      "critical": false
+    },
+    {
+      "name": "Billing",
+      "passed": 313,
+      "failed": 2,
+      "skipped": 133,
+      "score": 99,
+      "status": "Critical",
+      "critical": true
+    },
+    {
+      "name": "Dashboard",
+      "passed": 98,
+      "failed": 0,
+      "skipped": 0,
+      "score": 100,
+      "status": "Healthy",
+      "critical": true
+    },
+    {
+      "name": "General",
+      "passed": 45,
+      "failed": 0,
+      "skipped": 1,
+      "score": 100,
+      "status": "Healthy",
+      "critical": false
+    },
+    {
+      "name": "MFA",
+      "passed": 1,
+      "failed": 0,
+      "skipped": 7,
+      "score": 100,
+      "status": "Healthy",
+      "critical": true
+    },
+    {
+      "name": "Onboarding",
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0,
+      "score": 100,
+      "status": "Healthy",
+      "critical": true
+    },
+    {
+      "name": "Password",
+      "passed": 18,
+      "failed": 0,
+      "skipped": 0,
+      "score": 100,
+      "status": "Healthy",
+      "critical": true
+    },
+    {
+      "name": "Profile",
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0,
+      "score": 100,
+      "status": "Healthy",
+      "critical": false
+    },
+    {
+      "name": "Roll Configuration",
+      "passed": 14,
+      "failed": 0,
+      "skipped": 0,
+      "score": 100,
+      "status": "Healthy",
+      "critical": true
+    },
+    {
+      "name": "Signup",
+      "passed": 21,
+      "failed": 0,
+      "skipped": 1,
+      "score": 100,
+      "status": "Healthy",
+      "critical": true
+    }
+  ]
+}

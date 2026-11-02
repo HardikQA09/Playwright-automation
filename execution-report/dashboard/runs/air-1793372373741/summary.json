@@ -1,0 +1,149 @@
+{
+  "id": "air-1793372373741",
+  "at": "11/2/2026, 10:44:10 AM",
+  "generatedAt": "2026-11-02T05:14:10.932Z",
+  "duration": "170m 55s",
+  "durationMs": 10255228,
+  "total": 786,
+  "passed": 633,
+  "failed": 0,
+  "skipped": 153,
+  "notRun": 153,
+  "flaky": 7,
+  "executed": 633,
+  "documentedSkipped": 152,
+  "passRate": 100,
+  "unexpectedSkipped": 1,
+  "decision": "CONDITIONAL GO",
+  "risk": "MEDIUM",
+  "qualityScore": 100,
+  "failedTitles": [],
+  "modules": [
+    {
+      "name": "Access Control",
+      "passed": 0,
+      "failed": 0,
+      "skipped": 1,
+      "score": 0,
+      "status": "Not Executed",
+      "critical": true
+    },
+    {
+      "name": "Accessibility",
+      "passed": 28,
+      "failed": 0,
+      "skipped": 1,
+      "score": 100,
+      "status": "Healthy",
+      "critical": false
+    },
+    {
+      "name": "Authentication",
+      "passed": 67,
+      "failed": 0,
+      "skipped": 9,
+      "score": 100,
+      "status": "Healthy",
+      "critical": true
+    },
+    {
+      "name": "Beta",
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "score": 100,
+      "status": "Healthy",
+      "critical": false
+    },
+    {
+      "name": "Billing",
+      "passed": 316,
+      "failed": 0,
+      "skipped": 130,
+      "score": 100,
+      "status": "Healthy",
+      "critical": true
+    },
+    {
+      "name": "Broker Integration",
+      "passed": 7,
+      "failed": 0,
+      "skipped": 3,
+      "score": 100,
+      "status": "Warning",
+      "critical": true
+    },
+    {
+      "name": "Dashboard",
+      "passed": 96,
+      "failed": 0,
+      "skipped": 0,
+      "score": 100,
+      "status": "Healthy",
+      "critical": true
+    },
+    {
+      "name": "General",
+      "passed": 44,
+      "failed": 0,
+      "skipped": 1,
+      "score": 98,
+      "status": "Passed",
+      "critical": false
+    },
+    {
+      "name": "MFA",
+      "passed": 1,
+      "failed": 0,
+      "skipped": 7,
+      "score": 100,
+      "status": "Healthy",
+      "critical": true
+    },
+    {
+      "name": "Onboarding",
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0,
+      "score": 100,
+      "status": "Healthy",
+      "critical": true
+    },
+    {
+      "name": "Password",
+      "passed": 18,
+      "failed": 0,
+      "skipped": 0,
+      "score": 100,
+      "status": "Healthy",
+      "critical": true
+    },
+    {
+      "name": "Profile",
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0,
+      "score": 100,
+      "status": "Healthy",
+      "critical": false
+    },
+    {
+      "name": "Roll Configuration",
+      "passed": 14,
+      "failed": 0,
+      "skipped": 0,
+      "score": 100,
+      "status": "Healthy",
+      "critical": true
+    },
+    {
+      "name": "Signup",
+      "passed": 21,
+      "failed": 0,
+      "skipped": 1,
+      "score": 100,
+      "status": "Healthy",
+      "critical": true
+    }
+  ]
+}

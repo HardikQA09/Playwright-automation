@@ -1,0 +1,252 @@
+{
+  "generatedAt": "2026-10-30T14:59:34.067Z",
+  "provenance": {
+    "mode": "CURRENT_EXECUTION",
+    "sourceArtifact": "test-results/results.json",
+    "sourceFramework": "Playwright",
+    "generatedAt": "2026-10-30T14:59:33.741Z",
+    "restoredFromHistory": false,
+    "warning": ""
+  },
+  "sourceExecution": {
+    "source": "json-reporter",
+    "total": 786,
+    "rawTestCount": 786,
+    "attempts": 793,
+    "passed": 625,
+    "failed": 1,
+    "skipped": 153,
+    "flaky": 7,
+    "interrupted": 0,
+    "statuses": {
+      "expected": 625,
+      "skipped": 153,
+      "flaky": 7,
+      "unexpected": 1
+    }
+  },
+  "airExecution": {
+    "total": 786,
+    "attempts": 793,
+    "passed": 632,
+    "failed": 1,
+    "skipped": 153,
+    "flaky": 7,
+    "interrupted": 0,
+    "retryCount": 7
+  },
+  "reconciliation": {
+    "status": "PASS",
+    "sourceTotal": 786,
+    "expectedAirTotal": 786,
+    "airTotal": 786,
+    "difference": 0
+  },
+  "duplicates": {
+    "canonicalTestIds": [],
+    "count": 0,
+    "sourceDuplicateExtraCount": 0,
+    "pipelineDuplicateExtraCount": 0
+  },
+  "orphanEvidence": [],
+  "evidenceClassification": {
+    "perTestEvidence": 15,
+    "executionArtifacts": 2,
+    "rawReports": 2,
+    "totalWithRawReports": 17,
+    "rawReportsCountAsFailureEvidence": false
+  },
+  "invalidModuleReferences": [],
+  "invalidJourneyReferences": [],
+  "historicalContaminationDetected": false,
+  "evidenceTraceability": {
+    "failedTests": [
+      {
+        "testId": "chromium > AddManualPosition.spec.ts > Add Manual Position > Bulk Upload adds one position from the template and it can be removed",
+        "testName": "Add Manual Position > Bulk Upload adds one position from the template and it can be removed",
+        "evidenceCount": 2,
+        "status": "Evidence Available"
+      }
+    ]
+  },
+  "releaseTraceability": {
+    "status": "PASS",
+    "reasons": [
+      "Critical journeys are not blocked",
+      "Warnings require review",
+      "Release can proceed after evidence review"
+    ],
+    "reasonTraceability": [
+      {
+        "reason": "Critical journeys are not blocked",
+        "source": "warnings",
+        "references": [
+          {
+            "type": "Failure",
+            "name": "Add Manual Position > Bulk Upload adds one position from the template and it can be removed",
+            "detail": "Warning severity is Medium."
+          },
+          {
+            "type": "Business Journey",
+            "name": "Access Control",
+            "detail": "Journey status is Not Executed."
+          },
+          {
+            "type": "Business Journey",
+            "name": "Broker Integration",
+            "detail": "Journey status is Warning."
+          },
+          {
+            "type": "Business Journey",
+            "name": "Session Security",
+            "detail": "Journey status is Not Executed."
+          },
+          {
+            "type": "Module",
+            "name": "Broker Integration",
+            "detail": "Module risk is Medium."
+          },
+          {
+            "type": "Module",
+            "name": "General",
+            "detail": "Module risk is Medium."
+          },
+          {
+            "type": "Coverage",
+            "name": "Blocked scenarios",
+            "detail": "134 blocked scenario(s) still need fixtures, admin, API, or third-party support before GO."
+          },
+          {
+            "type": "Coverage",
+            "name": "Unexpected skips",
+            "detail": "1 skipped check(s) were not documented as blocked, controlled, future, or traceability."
+          },
+          {
+            "type": "Reliability",
+            "name": "Flaky checks",
+            "detail": "7 check(s) passed only after retry — treat release confidence as provisional until reliability stabilizes."
+          },
+          {
+            "type": "Execution",
+            "name": "Partial execution",
+            "detail": "Execution contains unexpected skips, blocked coverage, interrupted tests, or not-executed critical journeys."
+          }
+        ]
+      },
+      {
+        "reason": "Warnings require review",
+        "source": "warnings",
+        "references": [
+          {
+            "type": "Failure",
+            "name": "Add Manual Position > Bulk Upload adds one position from the template and it can be removed",
+            "detail": "Warning severity is Medium."
+          },
+          {
+            "type": "Business Journey",
+            "name": "Access Control",
+            "detail": "Journey status is Not Executed."
+          },
+          {
+            "type": "Business Journey",
+            "name": "Broker Integration",
+            "detail": "Journey status is Warning."
+          },
+          {
+            "type": "Business Journey",
+            "name": "Session Security",
+            "detail": "Journey status is Not Executed."
+          },
+          {
+            "type": "Module",
+            "name": "Broker Integration",
+            "detail": "Module risk is Medium."
+          },
+          {
+            "type": "Module",
+            "name": "General",
+            "detail": "Module risk is Medium."
+          },
+          {
+            "type": "Coverage",
+            "name": "Blocked scenarios",
+            "detail": "134 blocked scenario(s) still need fixtures, admin, API, or third-party support before GO."
+          },
+          {
+            "type": "Coverage",
+            "name": "Unexpected skips",
+            "detail": "1 skipped check(s) were not documented as blocked, controlled, future, or traceability."
+          },
+          {
+            "type": "Reliability",
+            "name": "Flaky checks",
+            "detail": "7 check(s) passed only after retry — treat release confidence as provisional until reliability stabilizes."
+          },
+          {
+            "type": "Execution",
+            "name": "Partial execution",
+            "detail": "Execution contains unexpected skips, blocked coverage, interrupted tests, or not-executed critical journeys."
+          }
+        ]
+      },
+      {
+        "reason": "Release can proceed after evidence review",
+        "source": "warnings",
+        "references": [
+          {
+            "type": "Failure",
+            "name": "Add Manual Position > Bulk Upload adds one position from the template and it can be removed",
+            "detail": "Warning severity is Medium."
+          },
+          {
+            "type": "Business Journey",
+            "name": "Access Control",
+            "detail": "Journey status is Not Executed."
+          },
+          {
+            "type": "Business Journey",
+            "name": "Broker Integration",
+            "detail": "Journey status is Warning."
+          },
+          {
+            "type": "Business Journey",
+            "name": "Session Security",
+            "detail": "Journey status is Not Executed."
+          },
+          {
+            "type": "Module",
+            "name": "Broker Integration",
+            "detail": "Module risk is Medium."
+          },
+          {
+            "type": "Module",
+            "name": "General",
+            "detail": "Module risk is Medium."
+          },
+          {
+            "type": "Coverage",
+            "name": "Blocked scenarios",
+            "detail": "134 blocked scenario(s) still need fixtures, admin, API, or third-party support before GO."
+          },
+          {
+            "type": "Coverage",
+            "name": "Unexpected skips",
+            "detail": "1 skipped check(s) were not documented as blocked, controlled, future, or traceability."
+          },
+          {
+            "type": "Reliability",
+            "name": "Flaky checks",
+            "detail": "7 check(s) passed only after retry — treat release confidence as provisional until reliability stabilizes."
+          },
+          {
+            "type": "Execution",
+            "name": "Partial execution",
+            "detail": "Execution contains unexpected skips, blocked coverage, interrupted tests, or not-executed critical journeys."
+          }
+        ]
+      }
+    ],
+    "warnings": 10,
+    "blockers": 0
+  }
+}
