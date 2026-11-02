@@ -23,6 +23,12 @@ import {
   ScenarioUserName
 } from '../config/subscriptionScenarioUsers';
 import {
+  resolvePreparedUser
+} from '../config/preparedSubscriptionUsers';
+import {
+  LoginPage
+} from '../pages/LoginPage';
+import {
   BillingPage
 } from '../pages/BillingPage';
 import {
@@ -2790,6 +2796,109 @@ const PACKS: Record<
             ctx,
             'Overlay Strategists'
           );
+        }
+    }
+  },
+
+  DOWNGRADE_OVERLAY_REFRESH_PREVIEW: {
+    setup: async (ctx) => {
+      // Prefer prepared Overlay fixture so SC-148 stays daily-safe and does not
+      // share a disposable user with schedule-at-renewal (which hides Downgrade).
+      try {
+        const prepared =
+          resolvePreparedUser(
+            'DOWNGRADE_CALC_DAILY'
+          );
+
+        await ctx.page.context().clearCookies();
+        await new LoginPage(
+          ctx.page
+        ).login(
+          prepared.email,
+          prepared.password
+        );
+
+        await new DashboardPage(
+          ctx.page
+        ).validateLoaded();
+
+        await ctx.billing.validateActivePlan(
+          'Overlay Strategists'
+        );
+
+        ctx.email =
+          prepared.email;
+
+        console.log(
+          `[${ctx.scenario}] using prepared downgrade fixture ${prepared.email}`
+        );
+        return;
+      } catch (error) {
+        console.log(
+          `[${ctx.scenario}] prepared downgrade fixture unavailable (${error instanceof Error ? error.message : String(error)}); buying disposable Overlay`
+        );
+      }
+
+      await buyPlan(
+        ctx,
+        'Overlay Strategists',
+        'monthly'
+      );
+    },
+    steps: {
+      'refresh-leaves-account-unchanged':
+        async (ctx) => {
+          // Clear a leftover scheduled change so Downgrade CTA is visible.
+          try {
+            const cancelScheduled =
+              await findCancelScheduledControl(
+                ctx,
+                /cancel (the )?(scheduled )?(downgrade|change)|keep (my )?(current )?plan|undo (the )?(downgrade|change)/i
+              );
+            await cancelScheduled.click();
+            const dialog =
+              openPlanChangeDialog(
+                ctx.page
+              );
+            const confirm =
+              dialog.getByRole(
+                'button',
+                {
+                  name: /confirm|yes|cancel scheduled|remove/i
+                }
+              ).first();
+            if (
+              await confirm.isVisible().catch(() => false)
+            ) {
+              await confirm.click();
+            }
+            await ctx.billing.validateOverview();
+          } catch {
+            // No scheduled change — continue.
+          }
+
+          // Prepared fixture is Overlay annual; disposable fallback is monthly.
+          let lastError: unknown;
+          for (const interval of ['annual', 'monthly'] as const) {
+            try {
+              await stepRefreshLeavesAccountUnchanged(ctx, {
+                targetPlan: 'Income Builder',
+                action: 'downgrade',
+                interval,
+                targetPattern: /income/i,
+                label: 'downgrade'
+              });
+              return;
+            } catch (error) {
+              lastError = error;
+              if (
+                !(error instanceof ScenarioSkip)
+              ) {
+                throw error;
+              }
+            }
+          }
+          throw lastError;
         }
     }
   },

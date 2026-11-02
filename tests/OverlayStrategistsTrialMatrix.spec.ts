@@ -188,7 +188,7 @@ const useCaseOneScenarios: UseCaseScenario[] = [
     priority: 'Medium',
     status: 'blocked',
     dependency:
-      'Requires scheduler trigger and email/in-app notification capture.'
+      'Day-bound: run on the calendar day the prepared no-card/with-card trial reaches day 25/28/29; needs that fixture inbox plus scheduler or seeded reminder email.'
   },
   {
     id: 'SC-16',
@@ -199,7 +199,7 @@ const useCaseOneScenarios: UseCaseScenario[] = [
     priority: 'Medium',
     status: 'blocked',
     dependency:
-      'Requires scheduler trigger and email/in-app notification capture.'
+      'Day-bound: run on the calendar day the prepared no-card/with-card trial reaches day 25/28/29; needs that fixture inbox plus scheduler or seeded reminder email.'
   },
   {
     id: 'SC-17',
@@ -210,7 +210,7 @@ const useCaseOneScenarios: UseCaseScenario[] = [
     priority: 'Medium',
     status: 'blocked',
     dependency:
-      'Requires scheduler trigger and email/in-app notification capture.'
+      'Day-bound: run on the calendar day the prepared no-card/with-card trial reaches day 25/28/29; needs that fixture inbox plus scheduler or seeded reminder email.'
   },
   {
     id: 'SC-18',
@@ -221,7 +221,7 @@ const useCaseOneScenarios: UseCaseScenario[] = [
     priority: 'Medium',
     status: 'blocked',
     dependency:
-      'Requires scheduler trigger and email/in-app notification capture.'
+      'Day-bound: run on the calendar day the prepared no-card/with-card trial reaches day 25/28/29; needs that fixture inbox plus scheduler or seeded reminder email.'
   },
   {
     id: 'SC-19',

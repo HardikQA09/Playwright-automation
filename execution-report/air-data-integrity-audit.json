@@ -1,44 +1,45 @@
 {
-  "generatedAt": "2026-10-30T09:13:26.475Z",
+  "generatedAt": "2026-10-30T14:59:34.067Z",
   "provenance": {
     "mode": "CURRENT_EXECUTION",
     "sourceArtifact": "test-results/results.json",
     "sourceFramework": "Playwright",
-    "generatedAt": "2026-10-30T09:13:26.193Z",
+    "generatedAt": "2026-10-30T14:59:33.741Z",
     "restoredFromHistory": false,
     "warning": ""
   },
   "sourceExecution": {
     "source": "json-reporter",
-    "total": 780,
-    "rawTestCount": 780,
-    "attempts": 781,
-    "passed": 615,
-    "failed": 0,
-    "skipped": 164,
-    "flaky": 1,
+    "total": 786,
+    "rawTestCount": 786,
+    "attempts": 793,
+    "passed": 625,
+    "failed": 1,
+    "skipped": 153,
+    "flaky": 7,
     "interrupted": 0,
     "statuses": {
-      "expected": 615,
-      "skipped": 164,
-      "flaky": 1
+      "expected": 625,
+      "skipped": 153,
+      "flaky": 7,
+      "unexpected": 1
     }
   },
   "airExecution": {
-    "total": 780,
-    "attempts": 781,
-    "passed": 616,
-    "failed": 0,
-    "skipped": 164,
-    "flaky": 1,
+    "total": 786,
+    "attempts": 793,
+    "passed": 632,
+    "failed": 1,
+    "skipped": 153,
+    "flaky": 7,
     "interrupted": 0,
-    "retryCount": 1
+    "retryCount": 7
   },
   "reconciliation": {
     "status": "PASS",
-    "sourceTotal": 780,
-    "expectedAirTotal": 780,
-    "airTotal": 780,
+    "sourceTotal": 786,
+    "expectedAirTotal": 786,
+    "airTotal": 786,
     "difference": 0
   },
   "duplicates": {
@@ -49,17 +50,24 @@
   },
   "orphanEvidence": [],
   "evidenceClassification": {
-    "perTestEvidence": 1,
+    "perTestEvidence": 15,
     "executionArtifacts": 2,
     "rawReports": 2,
-    "totalWithRawReports": 3,
+    "totalWithRawReports": 17,
     "rawReportsCountAsFailureEvidence": false
   },
   "invalidModuleReferences": [],
   "invalidJourneyReferences": [],
   "historicalContaminationDetected": false,
   "evidenceTraceability": {
-    "failedTests": []
+    "failedTests": [
+      {
+        "testId": "chromium > AddManualPosition.spec.ts > Add Manual Position > Bulk Upload adds one position from the template and it can be removed",
+        "testName": "Add Manual Position > Bulk Upload adds one position from the template and it can be removed",
+        "evidenceCount": 2,
+        "status": "Evidence Available"
+      }
+    ]
   },
   "releaseTraceability": {
     "status": "PASS",
@@ -74,9 +82,19 @@
         "source": "warnings",
         "references": [
           {
+            "type": "Failure",
+            "name": "Add Manual Position > Bulk Upload adds one position from the template and it can be removed",
+            "detail": "Warning severity is Medium."
+          },
+          {
             "type": "Business Journey",
             "name": "Access Control",
             "detail": "Journey status is Not Executed."
+          },
+          {
+            "type": "Business Journey",
+            "name": "Broker Integration",
+            "detail": "Journey status is Warning."
           },
           {
             "type": "Business Journey",
@@ -84,14 +102,29 @@
             "detail": "Journey status is Not Executed."
           },
           {
+            "type": "Module",
+            "name": "Broker Integration",
+            "detail": "Module risk is Medium."
+          },
+          {
+            "type": "Module",
+            "name": "General",
+            "detail": "Module risk is Medium."
+          },
+          {
             "type": "Coverage",
             "name": "Blocked scenarios",
             "detail": "134 blocked scenario(s) still need fixtures, admin, API, or third-party support before GO."
           },
           {
+            "type": "Coverage",
+            "name": "Unexpected skips",
+            "detail": "1 skipped check(s) were not documented as blocked, controlled, future, or traceability."
+          },
+          {
             "type": "Reliability",
             "name": "Flaky checks",
-            "detail": "1 check(s) passed only after retry — treat release confidence as provisional until reliability stabilizes."
+            "detail": "7 check(s) passed only after retry — treat release confidence as provisional until reliability stabilizes."
           },
           {
             "type": "Execution",
@@ -105,9 +138,19 @@
         "source": "warnings",
         "references": [
           {
+            "type": "Failure",
+            "name": "Add Manual Position > Bulk Upload adds one position from the template and it can be removed",
+            "detail": "Warning severity is Medium."
+          },
+          {
             "type": "Business Journey",
             "name": "Access Control",
             "detail": "Journey status is Not Executed."
+          },
+          {
+            "type": "Business Journey",
+            "name": "Broker Integration",
+            "detail": "Journey status is Warning."
           },
           {
             "type": "Business Journey",
@@ -115,14 +158,29 @@
             "detail": "Journey status is Not Executed."
           },
           {
+            "type": "Module",
+            "name": "Broker Integration",
+            "detail": "Module risk is Medium."
+          },
+          {
+            "type": "Module",
+            "name": "General",
+            "detail": "Module risk is Medium."
+          },
+          {
             "type": "Coverage",
             "name": "Blocked scenarios",
             "detail": "134 blocked scenario(s) still need fixtures, admin, API, or third-party support before GO."
           },
           {
+            "type": "Coverage",
+            "name": "Unexpected skips",
+            "detail": "1 skipped check(s) were not documented as blocked, controlled, future, or traceability."
+          },
+          {
             "type": "Reliability",
             "name": "Flaky checks",
-            "detail": "1 check(s) passed only after retry — treat release confidence as provisional until reliability stabilizes."
+            "detail": "7 check(s) passed only after retry — treat release confidence as provisional until reliability stabilizes."
           },
           {
             "type": "Execution",
@@ -136,9 +194,19 @@
         "source": "warnings",
         "references": [
           {
+            "type": "Failure",
+            "name": "Add Manual Position > Bulk Upload adds one position from the template and it can be removed",
+            "detail": "Warning severity is Medium."
+          },
+          {
             "type": "Business Journey",
             "name": "Access Control",
             "detail": "Journey status is Not Executed."
+          },
+          {
+            "type": "Business Journey",
+            "name": "Broker Integration",
+            "detail": "Journey status is Warning."
           },
           {
             "type": "Business Journey",
@@ -146,14 +214,29 @@
             "detail": "Journey status is Not Executed."
           },
           {
+            "type": "Module",
+            "name": "Broker Integration",
+            "detail": "Module risk is Medium."
+          },
+          {
+            "type": "Module",
+            "name": "General",
+            "detail": "Module risk is Medium."
+          },
+          {
             "type": "Coverage",
             "name": "Blocked scenarios",
             "detail": "134 blocked scenario(s) still need fixtures, admin, API, or third-party support before GO."
           },
           {
+            "type": "Coverage",
+            "name": "Unexpected skips",
+            "detail": "1 skipped check(s) were not documented as blocked, controlled, future, or traceability."
+          },
+          {
             "type": "Reliability",
             "name": "Flaky checks",
-            "detail": "1 check(s) passed only after retry — treat release confidence as provisional until reliability stabilizes."
+            "detail": "7 check(s) passed only after retry — treat release confidence as provisional until reliability stabilizes."
           },
           {
             "type": "Execution",
@@ -163,7 +246,7 @@
         ]
       }
     ],
-    "warnings": 5,
+    "warnings": 10,
     "blockers": 0
   }
 }

@@ -1,0 +1,51 @@
+# =============================================================================
+# Paste a filled copy of this file into GitHub Actions secret: SUITE_ENV_FILE
+# Repo → Settings → Secrets and variables → Actions → New repository secret
+# Name: SUITE_ENV_FILE
+# Value: (entire contents of your real .env — never commit that file)
+# =============================================================================
+
+BASE_URL=https://uat.ooltool.com
+CI=true
+HEADED=false
+
+# Gmail IMAP (fixture inbox + report send)
+GMAIL_USER=imhardikthanki@gmail.com
+GMAIL_APP_PASSWORD=REPLACE_ME
+AUTH_EMAIL_VERIFICATION_REQUIRED=true
+
+# Report recipients (Pankaj is always included by scripts/report-recipients.js too)
+REPORT_EMAIL_TO=pankaj.bhatla@ooltool.com,syesha.sen@ooltool.com,chetan.thumar@quantuminfoway.com,vishal.chauhan@quantuminfoway.com,hardik.thanki@quantuminfoway.com
+REPORT_EMAIL_CC=
+REPORT_EMAIL_EXCLUDE=
+
+# Public AIR URL after GitHub Pages (gh-pages) is enabled on this repo
+# REPORT_URL=https://ooltool.github.io/ools-core-playwright/execution-report/
+
+SUB_FIXTURE_USE_CANONICAL_EMAILS=true
+SUBSCRIPTION_FIXTURE_PASSWORD=Test@123456
+
+# --- Named fx-* fixtures (copy from tests/config/fixture-accounts.env.example / your .env) ---
+PLAN_SELECTION_EXISTING_EMAIL=
+PLAN_SELECTION_EXISTING_PASSWORD=
+SUB_FIXTURE_UPGRADE_CALC_EMAIL=
+SUB_FIXTURE_UPGRADE_CALC_PASSWORD=
+SUB_FIXTURE_DOWNGRADE_EMAIL=
+SUB_FIXTURE_DOWNGRADE_PASSWORD=
+SUB_FIXTURE_INTERVAL_EMAIL=
+SUB_FIXTURE_INTERVAL_PASSWORD=
+SUB_LIFECYCLE_MONTHLY_CANCEL_EMAIL=
+SUB_LIFECYCLE_MONTHLY_CANCEL_PASSWORD=
+CANCEL_MONTHLY_EMAIL=
+CANCEL_MONTHLY_PASSWORD=
+SUB_LIFECYCLE_YEARLY_CANCEL_EMAIL=
+SUB_LIFECYCLE_YEARLY_CANCEL_PASSWORD=
+CANCEL_YEARLY_EMAIL=
+CANCEL_YEARLY_PASSWORD=
+SUB_FIXTURE_RETENTION_EMAIL=
+SUB_FIXTURE_RETENTION_PASSWORD=
+BILLING_MANAGEMENT_EMAIL=
+BILLING_MANAGEMENT_PASSWORD=
+BROKER_INTEGRATION_EMAIL=
+BROKER_INTEGRATION_PASSWORD=
+BROKER_ALPACA_CONNECT=0

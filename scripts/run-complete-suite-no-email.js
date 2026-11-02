@@ -5,12 +5,15 @@
  *   node scripts/run-complete-suite-no-email.js --headed
  *   node scripts/run-complete-suite-no-email.js --email
  *   node scripts/run-complete-suite-no-email.js --minimize-skips
+ *   node scripts/run-complete-suite-no-email.js --no-publish
  *
  * Applies complete-run-flags to this process (does not rewrite .env).
  * --minimize-skips / MINIMIZE_SKIPS=true turns lifecycle purchase+submit
  * flags ON (fewer skips, slower, more Stripe mutations).
  * Report email is OFF by default. AIR HTML is built only AFTER the heal pass
  * (never mid-suite / never from pre-heal failures alone).
+ * After AIR is built, the report is published to GitHub Pages automatically
+ * (same shareable REPORT_URL). Pass --no-publish to skip.
  * Pass --email to notify REPORT_EMAIL_* after heal+AIR (any result).
  * Pass --email-if-clean to email only when post-heal AIR has 0 failed.
  * SEND_REPORT_EMAIL in the environment is ignored so scheduled/.env flags
@@ -36,18 +39,22 @@ if (minimizeSkips) {
 
 const { hasGmail } = applyCompleteRunEnv(projectRoot);
 
-// If an agent/sandbox left PLAYWRIGHT_BROWSERS_PATH pointing at an empty cache,
-// force the real local install so the suite does not fail before any test runs.
-if (
-  /cursor-sandbox-cache/i.test(
-    String(process.env.PLAYWRIGHT_BROWSERS_PATH || '')
-  ) ||
-  !process.env.PLAYWRIGHT_BROWSERS_PATH
-) {
-  process.env.PLAYWRIGHT_BROWSERS_PATH = path.join(
-    process.env.LOCALAPPDATA || '',
-    'ms-playwright'
-  );
+// Windows local/sandbox: prefer the real ms-playwright cache. On Linux CI,
+// leave PLAYWRIGHT_BROWSERS_PATH unset so Playwright uses its default path.
+{
+  const current = String(process.env.PLAYWRIGHT_BROWSERS_PATH || '');
+  if (/cursor-sandbox-cache/i.test(current)) {
+    delete process.env.PLAYWRIGHT_BROWSERS_PATH;
+  }
+  if (
+    process.platform === 'win32' &&
+    !process.env.PLAYWRIGHT_BROWSERS_PATH
+  ) {
+    process.env.PLAYWRIGHT_BROWSERS_PATH = path.join(
+      process.env.LOCALAPPDATA || '',
+      'ms-playwright'
+    );
+  }
 }
 
 const watch = ['1', 'true', 'yes', 'on'].includes(
@@ -58,6 +65,7 @@ delete process.env.SEND_REPORT_EMAIL;
 const sendEmailAlways = argv.includes('--email');
 const sendEmailIfClean = argv.includes('--email-if-clean');
 const sendEmail = sendEmailAlways || sendEmailIfClean;
+const autoPublish = !argv.includes('--no-publish');
 
 process.env.HEADED = headed ? 'true' : 'false';
 process.env.AIR_REPORT_SCOPE = process.env.AIR_REPORT_SCOPE || 'latest';
@@ -79,6 +87,11 @@ console.log(
     : sendEmailIfClean
       ? 'Email: ON after heal+AIR only if 0 failed.'
       : 'Email: OFF — report will not be sent.'
+);
+console.log(
+  autoPublish
+    ? 'Publish: ON after AIR — shareable GitHub Pages URL will be updated.'
+    : 'Publish: OFF (--no-publish).'
 );
 
 function run(command, args) {
@@ -271,6 +284,38 @@ console.log(
 console.log(
   'AIR detailed report:     execution-report/details.html'
 );
+
+if (autoPublish) {
+  console.log(
+    '\n--- Publishing AIR to GitHub Pages (shareable URL) ---'
+  );
+
+  const publishStatus = run(node, [
+    path.join(projectRoot, 'scripts', 'publish-air-report.js')
+  ]);
+
+  if (publishStatus !== 0) {
+    console.warn(
+      'AIR publish failed — local report is still available. Fix git/Pages access and run: npm run report:publish'
+    );
+  } else {
+    const publishedUrlPath = path.join(
+      projectRoot,
+      'execution-report',
+      'published-url.txt'
+    );
+
+    if (fs.existsSync(publishedUrlPath)) {
+      console.log(
+        `Shareable AIR URL: ${fs.readFileSync(publishedUrlPath, 'utf8').trim()}`
+      );
+    }
+  }
+} else {
+  console.log(
+    'AIR publish skipped (--no-publish). Run npm run report:publish when ready.'
+  );
+}
 
 if (sendEmail) {
   const { recipients, skipped } = collectConfiguredRecipients();

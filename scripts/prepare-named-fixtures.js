@@ -68,14 +68,20 @@ process.env.SUBSCRIPTION_FIXTURE_PASSWORD =
   process.env.ONBOARDING_PASSWORD ||
   'Test@123456';
 
-if (
-  /cursor-sandbox-cache/i.test(String(process.env.PLAYWRIGHT_BROWSERS_PATH || '')) ||
-  !process.env.PLAYWRIGHT_BROWSERS_PATH
-) {
-  process.env.PLAYWRIGHT_BROWSERS_PATH = path.join(
-    process.env.LOCALAPPDATA || '',
-    'ms-playwright'
-  );
+{
+  const current = String(process.env.PLAYWRIGHT_BROWSERS_PATH || '');
+  if (/cursor-sandbox-cache/i.test(current)) {
+    delete process.env.PLAYWRIGHT_BROWSERS_PATH;
+  }
+  if (
+    process.platform === 'win32' &&
+    !process.env.PLAYWRIGHT_BROWSERS_PATH
+  ) {
+    process.env.PLAYWRIGHT_BROWSERS_PATH = path.join(
+      process.env.LOCALAPPDATA || '',
+      'ms-playwright'
+    );
+  }
 }
 
 console.log('Prepare named fx-* fixtures');

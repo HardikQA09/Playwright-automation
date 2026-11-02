@@ -6,6 +6,20 @@ Use these commands from:
 C:\Users\BAPS\Documents\Oools_paywright
 ```
 
+## GitHub Actions (daily + Pankaj email)
+
+One-time setup: [`.github/CI_SETUP.md`](.github/CI_SETUP.md)
+
+- Workflow: `.github/workflows/daily-complete.yml` (every day 09:00 IST, or **Run workflow**)
+- Secret: `SUITE_ENV_FILE` = full `.env` contents
+- Recipients include `pankaj.bhatla@ooltool.com`
+
+Local PC backup schedule (machine must be on):
+
+```powershell
+npm run schedule:register
+```
+
 ## Full Automation Suite
 
 Smoke suite:

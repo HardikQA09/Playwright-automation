@@ -1,0 +1,109 @@
+# Daily OOLTool complete suite → AIR → email Pankaj + team → publish Pages.
+#
+# Setup (once): see .github/CI_SETUP.md
+# Manual run: Actions → Daily complete suite → Run workflow
+
+name: Daily complete suite
+
+on:
+  schedule:
+    # 03:30 UTC = 09:00 IST
+    - cron: '30 3 * * *'
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: Which npm script to run
+        type: choice
+        default: complete:email
+        options:
+          - complete:email
+          - complete
+          - scheduled:daily
+          - scheduled:weekly
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ooltool-playwright-suite
+  cancel-in-progress: false
+
+jobs:
+  complete:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Write .env from SUITE_ENV_FILE secret
+        env:
+          SUITE_ENV_FILE: ${{ secrets.SUITE_ENV_FILE }}
+        run: |
+          if [ -z "$SUITE_ENV_FILE" ]; then
+            echo "::error::Add repository secret SUITE_ENV_FILE (full .env contents). See .github/CI_SETUP.md"
+            exit 1
+          fi
+          printf '%s\n' "$SUITE_ENV_FILE" > .env
+          # Ensure CI-friendly defaults without overriding secret values.
+          grep -q '^CI=' .env || echo 'CI=true' >> .env
+          grep -q '^HEADED=' .env || echo 'HEADED=false' >> .env
+
+      - name: Configure git for AIR publish
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Run suite
+        env:
+          CI: true
+          HEADED: 'false'
+          # GITHUB_TOKEN can push gh-pages for report:publish
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          SUITE="${{ github.event.inputs.suite || 'complete:email' }}"
+          echo "Running: npm run $SUITE"
+          case "$SUITE" in
+            complete:email)
+              npm run complete:email
+              ;;
+            complete)
+              npm run complete
+              ;;
+            scheduled:daily)
+              npm run scheduled:daily -- --email
+              ;;
+            scheduled:weekly)
+              npm run scheduled:weekly -- --email
+              ;;
+            *)
+              echo "Unknown suite: $SUITE"
+              exit 1
+              ;;
+          esac
+
+      - name: Upload AIR report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: execution-report
+          path: |
+            execution-report/
+            playwright-report/
+          if-no-files-found: ignore
+          retention-days: 14

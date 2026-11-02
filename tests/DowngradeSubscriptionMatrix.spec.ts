@@ -316,7 +316,7 @@ const downgradeScenarios: DowngradeScenario[] = [
     priority: 'Medium',
     status: 'automated',
     // Must start on Overlay (or higher), not Income — Income has no Downgrade CTA.
-    automation: 'scenario:DOWNGRADE_OVERLAY_TO_INCOME_MONTHLY:refresh-leaves-account-unchanged'
+    automation: 'scenario:DOWNGRADE_OVERLAY_REFRESH_PREVIEW:refresh-leaves-account-unchanged'
   },
   {
     id: 'SC-149',

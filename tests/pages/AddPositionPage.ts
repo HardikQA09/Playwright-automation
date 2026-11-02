@@ -1461,17 +1461,16 @@ export class AddPositionPage
     }
 
     await expect(
-      dialog.getByRole(
-        'heading',
-        {
-          name: /remove position|remove|delete/i
-        }
-      ).or(
-        dialog
-      )
+      dialog
     ).toBeVisible({
       timeout: 5000
     });
+
+    await expect(
+      dialog
+    ).toContainText(
+      /remove position|remove|delete/i
+    );
 
     await safeClick(
       dialog.getByRole(
@@ -1479,7 +1478,7 @@ export class AddPositionPage
         {
           name: /^remove$|^delete$/i
         }
-      ),
+      ).first(),
       'Confirm remove'
     );
 

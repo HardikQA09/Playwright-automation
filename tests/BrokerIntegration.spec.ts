@@ -201,12 +201,21 @@ test.describe(
 
     test(
       'Connect Alpaca Paper, validate connected broker, disconnect, then validate all Accounts functionality',
-      async ({ page }) => {
+      async ({ page }, testInfo) => {
+        testInfo.annotations.push({
+          type: 'automation-status',
+          description: 'controlled'
+        });
+        testInfo.annotations.push({
+          type: 'skip',
+          description:
+            'Controlled: full SnapTrade/Alpaca OAuth needs BROKER_ALPACA_EMAIL, BROKER_ALPACA_PASSWORD, and BROKER_ALPACA_CONNECT=1'
+        });
         test.skip(
           !alpacaConnectEnabled ||
             !alpacaEmail ||
             !alpacaPassword,
-          'Optional full OAuth: set BROKER_ALPACA_EMAIL, BROKER_ALPACA_PASSWORD, and BROKER_ALPACA_CONNECT=1'
+          'Controlled: full SnapTrade/Alpaca OAuth needs BROKER_ALPACA_EMAIL, BROKER_ALPACA_PASSWORD, and BROKER_ALPACA_CONNECT=1'
         );
 
         await page.goto(

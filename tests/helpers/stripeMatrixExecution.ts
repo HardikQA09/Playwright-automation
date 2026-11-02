@@ -262,13 +262,34 @@ function billingCopy(
     : /per year|annual|\/yr|\/year|year|subscription|total|due|pay/i;
 }
 
-function paidSubscriber() {
+function paidSubscriber(
+  purpose:
+    | 'upgrade'
+    | 'downgrade'
+    | 'interval' = 'upgrade'
+) {
   const prepared =
     resolvePreparedUser(
-      'UPGRADE_CALC_DAILY'
+      purpose === 'downgrade'
+        ? 'DOWNGRADE_CALC_DAILY'
+        : purpose === 'interval'
+          ? 'INTERVAL_CALC_DAILY'
+          : 'UPGRADE_CALC_DAILY'
     );
 
-  // Prepared/plantest wins. Env is only used when it is not a known-broken
+  // Downgrade / interval previews must use their dedicated Overlay fixtures.
+  // A shared BILLING_MANAGEMENT Income account has no Downgrade CTA (SC-148).
+  if (
+    purpose === 'downgrade' ||
+    purpose === 'interval'
+  ) {
+    return {
+      email: prepared.email,
+      password: prepared.password
+    };
+  }
+
+  // Upgrade: prepared Income wins. Env only when it is not a known-broken
   // paid-income / monthly-to-a / e2e address (complete-run-env also remaps these).
   const envEmail =
     process.env.BILLING_MANAGEMENT_EMAIL ??
@@ -731,10 +752,16 @@ export function inferStripeMatrixCoverageKey(
 }
 
 async function loginPaidSubscriber(
-  page: Page
+  page: Page,
+  purpose:
+    | 'upgrade'
+    | 'downgrade'
+    | 'interval' = 'upgrade'
 ) {
   const user =
-    paidSubscriber();
+    paidSubscriber(
+      purpose
+    );
 
   // Drop any prior Free/plantest session before signing in the paid fixture.
   await page.context().clearCookies();
@@ -1651,7 +1678,8 @@ async function executeDowngradePreview(
         ];
 
   await loginPaidSubscriber(
-    page
+    page,
+    'downgrade'
   );
 
   const billing =

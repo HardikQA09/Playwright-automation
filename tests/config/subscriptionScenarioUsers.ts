@@ -64,6 +64,11 @@ export const SCENARIO_USERS = {
     description:
       'Paid Overlay Strategists monthly user schedules a downgrade to Income Builder monthly and keeps access until renewal.'
   },
+  DOWNGRADE_OVERLAY_REFRESH_PREVIEW: {
+    tag: 'dn-ovl-ref',
+    description:
+      'Overlay subscriber opens downgrade confirmation and refreshes — preview-only, does not share state with schedule-at-renewal.'
+  },
   DOWNGRADE_DOUBLE_CLICK_OVERLAY_TO_INCOME: {
     tag: 'dn-dbl',
     description:
